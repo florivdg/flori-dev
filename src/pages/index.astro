@@ -3,16 +3,31 @@ import Layout from '../layouts/Layout.astro'
 ---
 
 <Layout title="Hello, I am Flori ✌️">
-  <main class="container max-w-[75ch] p-6">
-    <h1 class="mb-6 text-5xl font-extrabold">
-      Hello, I am <span
-        class="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
-        >Flori</span
-      > ✌️
-    </h1>
+  <main>
+    <section class="container max-w-[75ch] p-6">
+      <h1 class="mb-6 mt-6 text-6xl font-black sm:text-7xl lg:mt-32">
+        Hello, I am <span
+          class="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
+          >Flori</span
+        > ✌️
+      </h1>
+      <p class="text-2xl font-semibold text-slate-500 sm:text-3xl">
+        As a web developer <br class="inline sm:hidden" />I do a <span
+          class="rounded bg-gradient-to-l from-[#42d392] to-[#647eff] px-2.5 py-1 font-mono font-extrabold text-white"
+          >Vue</span
+        > things.<br />Let me introduce myself.
+      </p>
+    </section>
 
-    <p class="">
-      As a web developer I do a Vue things.<br />Let me introduce myself.
-    </p>
+    <section class="bg-gradient-to-l from-fuchsia-600 to-indigo-800 text-white">
+      <div class="container max-w-[75ch] px-6 py-12">
+        <h2 class="mb-6 text-4xl font-black">About me</h2>
+        <p class="text-xl font-semibold">
+          I am a web developer from Germany. I am passionate about web
+          development and I love to learn new things. I am currently working as
+          a freelancer and I am looking for new projects.
+        </p>
+      </div>
+    </section>
   </main>
 </Layout>
