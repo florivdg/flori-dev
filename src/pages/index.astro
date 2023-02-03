@@ -1,12 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import Boxed from '../components/Boxed.astro'
 ---
 
 <Layout title="Hello, I am Flori ✌️">
   <main>
-    <section
-      class="mx-auto max-w-[90ch] bg-white px-12 py-16 ring-1 ring-zinc-100"
-    >
+    <Boxed>
       <h1 class="mb-6 mt-6 text-6xl font-black sm:text-7xl lg:mt-32">
         Hello, I am <span
           class="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
@@ -19,17 +18,45 @@ import Layout from '../layouts/Layout.astro'
           >Vue</span
         > things.<br />Let me introduce myself.
       </p>
-    </section>
+    </Boxed>
 
-    <section class="bg-slate-100">
-      <div class="mx-auto max-w-[90ch] px-12 py-16">
-        <h2 class="mb-6 text-4xl font-black">About me</h2>
-        <p class="text-xl font-semibold">
-          I am a web developer from Germany. I am passionate about web
-          development and I love to learn new things. I am currently working as
-          a freelancer and I am looking for new projects.
-        </p>
+    <section class="bg-white">
+      <div class="mx-auto max-w-[120ch] px-12 py-16">
+        <div class="flex items-center gap-12">
+          <div>
+            <h2 class="mb-6 text-4xl font-black">About me</h2>
+            <p class="text-xl">
+              I am a web developer from Germany. I am passionate about web
+              development and I love to learn new things. I am currently working
+              as a freelancer and I am looking for new projects.
+            </p>
+          </div>
+
+          <div
+            class="relative aspect-[9/10] w-44 flex-none rotate-2 overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 sm:w-72 sm:rounded-2xl"
+          >
+            <img
+              alt="Florian van der Galiën"
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=MmBdIi2FKU&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80"
+              decoding="async"
+              class="absolute inset-0 h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </div>
       </div>
     </section>
+
+    <Boxed>
+      <h2 class="mb-6 text-4xl font-black">Projects</h2>
+      <p class="text-xl font-semibold">Here are some of my projects.</p>
+      <p class="text-xl">
+        I am currently working on a new project called <a
+          class="font-semibold text-violet-500 hover:text-violet-600"
+          href="#">Project X</a
+        >. It is a project management tool for freelancers. I am also working on
+        a new version of my website. I am using Astro to build it.
+      </p>
+    </Boxed>
   </main>
 </Layout>
