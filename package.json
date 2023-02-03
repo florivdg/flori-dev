@@ -1,5 +1,5 @@
 {
-  "name": "@example/basics",
+  "name": "@flori/website",
   "type": "module",
   "version": "0.0.1",
   "private": true,
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@astrojs/tailwind": "^3.0.1",
-    "astro": "^2.0.5",
-    "tailwindcss": "^3.0.24"
+    "astro": "^2.0.6",
+    "tailwindcss": "^3.2.4"
   },
   "devDependencies": {
     "prettier": "^2.8.3",

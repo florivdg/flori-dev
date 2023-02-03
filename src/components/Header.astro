@@ -1,0 +1,30 @@
+<header class="mx-auto max-w-5xl sm:px-8">
+  <section class="bg-white px-8">
+    <div class="py-8">
+      <nav>
+        <ul class="flex justify-center gap-8">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/articles/">Articles</a></li>
+          <li><a href="/uses/">Uses</a></li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</header>
+
+<style>
+  :root {
+    --contentPaddingY: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --contentPaddingY: 4rem;
+    }
+  }
+
+  header {
+    padding-bottom: var(--contentPaddingY);
+  }
+</style>
