@@ -1,12 +1,42 @@
 ---
 const year = new Date().getFullYear()
+
+const footerNavItems = [
+  {
+    name: 'Privacy Policy',
+    href: '/privacy-policy/',
+  },
+  {
+    name: 'Imprint',
+    href: '/imprint/',
+  },
+]
+
+const currentPath = new URL(Astro.request.url).pathname
 ---
 
 <footer class="mx-auto mt-32 max-w-5xl border-t border-zinc-100 sm:px-8">
   <section class="bg-white px-4">
     <div class="py-16">
       <div class="grid gap-8 lg:grid-cols-2">
-        <div class=""></div>
+        <div class="text-sm font-medium">
+          <ul class="flex justify-center gap-6 lg:justify-start">
+            {
+              footerNavItems.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class:list={[
+                      { 'text-pink-600': currentPath === item.href },
+                    ]}
+                  >
+                    {item.name}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
         <div class="text-center lg:text-right">
           <p class="text-sm font-medium text-zinc-500">
             © {year} Florian van der Galiën. All rights reserved.

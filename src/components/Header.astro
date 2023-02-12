@@ -1,14 +1,69 @@
+---
+/**
+ * Main navigation items.
+ */
+const navItems: {
+  name: string
+  href: string
+}[] = [
+  {
+    name: 'Home',
+    href: '/',
+  },
+  {
+    name: 'About',
+    href: '/about/',
+  },
+  {
+    name: 'Uses',
+    href: '/uses/',
+  },
+]
+
+const currentPath = new URL(Astro.request.url).pathname
+---
+
 <header class="mx-auto max-w-5xl sm:px-8">
   <section class="bg-white px-8">
     <div class="py-8">
-      <nav>
-        <ul class="flex justify-center gap-8">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/articles/">Articles</a></li>
-          <li><a href="/uses/">Uses</a></li>
-        </ul>
-      </nav>
+      <div class="fixed left-0 right-0">
+        <nav class="flex justify-center">
+          <ul
+            class="flex gap-8 rounded-full bg-white/90 px-3 text-sm font-medium shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur"
+          >
+            {
+              navItems.map((item) => (
+                <li>
+                  <a
+                    class:list={[
+                      { 'text-pink-600': currentPath === item.href },
+                      'block px-3 py-2 transition hover:text-pink-600',
+                    ]}
+                    href={item.href}
+                  >
+                    {item.href === '/' ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        class="h-5 w-5"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    ) : (
+                      item.name
+                    )}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
     </div>
   </section>
 </header>
