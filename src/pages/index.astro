@@ -3,6 +3,7 @@ import { Picture } from '@astrojs/image/components'
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
+import MyAge from '../components/MyAge.astro'
 ---
 
 <style>
@@ -39,10 +40,13 @@ import FluidContent from '../components/FluidContent.astro'
         <div>
           <h2 class="mb-12 text-4xl font-black">About me</h2>
           <p class="mb-8 text-xl">
-            Welcome to my digital realm, fellow web geeks! I'm a 36-year-old
-            father of two who spends his days delving into the mysteries of
-            Vue.js web development. When I'm not coding, you'll usually find me
-            binge-watching Stranger Things or exploring the Upside Down.
+            Welcome to my digital realm, fellow web geeks! I'm a <MyAge />
+            father of two and a loving husband who spends his days delving into the
+            mysteries of Vue.js web development. When I'm not coding, you'll usually
+            find me binge-watching Stranger Things or exploring the
+            <span class="inline-block translate-y-1 rotate-180"
+              >Upside Down</span
+            >.
           </p>
 
           <p class="mb-8 text-xl">
