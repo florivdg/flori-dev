@@ -1,6 +1,4 @@
-<my-age>
-  <span>36-year-old</span>
-</my-age>
+<my-age>36-year-old</my-age>
 
 <script>
   // Define the behaviour for our new type of HTML element.
@@ -17,8 +15,7 @@
         age--
       }
 
-      const ageSpan = this.querySelector('span')
-      if (ageSpan) ageSpan.textContent = `${age}-year-old`
+      this.textContent = `${age}-year-old`
     }
   }
 
