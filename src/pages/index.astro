@@ -1,4 +1,5 @@
 ---
+import { Picture } from '@astrojs/image/components'
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
@@ -63,10 +64,12 @@ import FluidContent from '../components/FluidContent.astro'
         <div
           class="relative aspect-[9/10] w-44 flex-none rotate-2 overflow-hidden rounded-xl sm:w-72 sm:rounded-2xl"
         >
-          <img
+          <Picture
             alt="Florian van der Galiën"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=MmBdIi2FKU&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=1024&h=1024&q=80"
-            decoding="async"
+            src="/images/flori.jpg"
+            sizes="(min-width: 760px) 300px, 180px"
+            widths={[180, 300, 360, 600, 900]}
+            aspectRatio={1 / 1}
             class="absolute inset-0 h-full w-full object-cover"
           />
         </div>
