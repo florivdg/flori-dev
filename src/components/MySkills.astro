@@ -1,0 +1,23 @@
+---
+const skills = [
+  { name: 'Vue.js', fire: true },
+  { name: 'Tailwind CSS', fire: true },
+  { name: 'TypeScript', fire: true },
+  { name: 'Node.js', fire: false },
+  { name: 'Swift', fire: false },
+  { name: 'Wordpress', fire: false },
+]
+---
+
+<ul class="grid grid-cols-1 gap-4 md:grid-cols-2">
+  {
+    skills.map((skill) => (
+      <li class="flex items-center rounded-xl border border-slate-200 bg-cyan-50 bg-gradient-to-tr from-cyan-50 to-fuchsia-50 px-5 py-3">
+        <h3 class="inline-block bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text text-2xl font-bold text-transparent">
+          {skill.name}
+        </h3>
+        {skill.fire ? <span class="ml-1">🔥</span> : undefined}
+      </li>
+    ))
+  }
+</ul>

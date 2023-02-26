@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
 import MyAge from '../components/MyAge.astro'
+import MySkills from '../components/MySkills.astro'
 ---
 
 <style>
@@ -15,6 +16,10 @@ import MyAge from '../components/MyAge.astro'
     :root {
       --contentPaddingY: 6rem;
     }
+  }
+
+  .gradient-underline {
+    @apply bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 bg-[length:100%_3px] bg-bottom bg-no-repeat font-semibold text-slate-700;
   }
 </style>
 
@@ -41,9 +46,13 @@ import MyAge from '../components/MyAge.astro'
           <h2 class="mb-12 text-4xl font-black">About me</h2>
           <p class="mb-8 text-xl">
             Welcome to my digital realm, fellow web geeks! I'm a <MyAge />
-            father of two and a loving husband who spends his days delving into the
-            mysteries of Vue.js web development. When I'm not coding, you'll usually
-            find me binge-watching Stranger Things or exploring the
+            <span class="gradient-underline">father of two</span> and a <span
+              class="gradient-underline">loving husband</span
+            >
+            who spends his days delving into the mysteries of <span
+              class="gradient-underline">Vue.js web development</span
+            >. When I'm not coding, you'll usually find me binge-watching
+            Stranger Things or exploring the
             <span class="inline-block translate-y-1 rotate-180"
               >Upside Down</span
             >.
@@ -81,15 +90,15 @@ import MyAge from '../components/MyAge.astro'
     </FluidContent>
 
     <BoxedContent>
-      <h2 class="mb-6 text-4xl font-black">Projects</h2>
-      <p class="text-xl font-semibold">Here are some of my projects.</p>
-      <p class="text-xl">
-        I am currently working on a new project called <a
-          class="font-semibold text-sky-700 hover:text-sky-800"
-          href="#">Project X</a
-        >. It is a project management tool for freelancers. I am also working on
-        a new version of my website. I am using Astro to build it.
+      <h2 class="mb-4 text-4xl font-black">Skills</h2>
+      <p class="mb-4 text-xl font-semibold">What I do for a living.</p>
+      <p class="mb-6 text-xl">
+        Check out my skills for a breakdown of my technical expertise in
+        programming languages, web development frameworks, and other tools of
+        the trade. Let's build something great together!
       </p>
+
+      <MySkills />
     </BoxedContent>
   </main>
 </Layout>
