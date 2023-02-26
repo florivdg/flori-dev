@@ -1,11 +1,11 @@
 ---
 const skills = [
-  { name: 'Vue.js', fire: true },
-  { name: 'Tailwind CSS', fire: true },
-  { name: 'TypeScript', fire: true },
-  { name: 'Node.js', fire: false },
-  { name: 'Swift', fire: false },
-  { name: 'Wordpress', fire: false },
+  { name: 'Vue.js', fire: true, puke: false },
+  { name: 'Tailwind CSS', fire: true, puke: false },
+  { name: 'TypeScript', fire: true, puke: false },
+  { name: 'Node.js', fire: false, puke: false },
+  { name: 'Swift/iOS', fire: false, puke: false },
+  { name: 'WordPress', fire: false, puke: true },
 ]
 ---
 
@@ -13,10 +13,11 @@ const skills = [
   {
     skills.map((skill) => (
       <li class="flex items-center rounded-xl border border-slate-200 bg-cyan-50 bg-gradient-to-tr from-cyan-50 to-fuchsia-50 px-5 py-3">
-        <h3 class="inline-block bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text text-2xl font-bold text-transparent">
+        <h4 class="inline-block bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text text-2xl font-bold text-transparent">
           {skill.name}
-        </h3>
+        </h4>
         {skill.fire ? <span class="ml-1">🔥</span> : undefined}
+        {skill.puke ? <span class="ml-1">🤮</span> : undefined}
       </li>
     ))
   }

@@ -91,14 +91,25 @@ import MySkills from '../components/MySkills.astro'
 
     <BoxedContent>
       <h2 class="mb-4 text-4xl font-black">Skills</h2>
-      <p class="mb-4 text-xl font-semibold">What I do for a living.</p>
-      <p class="mb-6 text-xl">
-        Check out my skills for a breakdown of my technical expertise in
-        programming languages, web development frameworks, and other tools of
-        the trade. Let's build something great together!
+      <h3 class="mb-4 text-xl font-semibold">
+        What I do for a living? <span class="gradient-underline">Code.</span>
+      </h3>
+      <p class="mb-12 text-xl">
+        With a focus on Vue.js, Tailwind CSS, TypeScript and iOS development
+        using Swift, I have a strong foundation in modern web and app
+        development. While I'm well-versed in WordPress, I'm passionate about
+        building custom solutions that deliver exceptional user experiences.
       </p>
 
       <MySkills />
+
+      <div class="mt-12 text-center">
+        <a
+          href="/about/"
+          class="inline-block rounded-full bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 text-sm font-semibold text-white"
+          >More skills at <span class="font-mono">/about/</span></a
+        >
+      </div>
     </BoxedContent>
   </main>
 </Layout>
