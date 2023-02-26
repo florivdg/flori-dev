@@ -15,7 +15,9 @@ const footerNavItems = [
 const currentPath = new URL(Astro.request.url).pathname
 ---
 
-<footer class="mx-auto mt-32 max-w-5xl border-t border-zinc-100 sm:px-8">
+<footer
+  class="mx-auto mt-32 max-w-5xl border-t border-slate-100 text-slate-500 sm:px-8"
+>
   <section class="bg-white px-4">
     <div class="py-16">
       <div class="grid gap-8 lg:grid-cols-2">
@@ -38,10 +40,27 @@ const currentPath = new URL(Astro.request.url).pathname
           </ul>
         </div>
         <div class="text-center lg:text-right">
-          <p class="text-sm font-medium text-zinc-500">
+          <p class="text-sm font-medium">
             © {year} Florian van der Galiën. All rights reserved.
           </p>
         </div>
+      </div>
+
+      <div>
+        <p class="mt-16 text-center text-sm font-medium">
+          Crafted with <a
+            href="https://astro.build/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/icons/astro.svg"
+              alt="Astro"
+              class="ml-1 inline-block h-6 w-auto"
+            />
+          </a><span class="sr-only">Astro</span> - the enchanting tool for modern
+          web wizards!
+        </p>
       </div>
     </div>
   </section>
