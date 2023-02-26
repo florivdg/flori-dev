@@ -5,6 +5,7 @@ import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
 import MyAge from '../components/MyAge.astro'
 import MySkills from '../components/MySkills.astro'
+import HotStuff from '../components/HotStuff.astro'
 ---
 
 <style>
@@ -18,8 +19,8 @@ import MySkills from '../components/MySkills.astro'
     }
   }
 
-  .gradient-underline {
-    @apply bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 bg-[length:100%_3px] bg-bottom bg-no-repeat font-semibold text-slate-700;
+  .highlight {
+    @apply inline-block -rotate-1 -skew-x-3 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-1.5  text-white;
   }
 </style>
 
@@ -27,14 +28,15 @@ import MySkills from '../components/MySkills.astro'
   <main>
     <BoxedContent>
       <h1 class="my-12 text-6xl font-black sm:text-7xl">
-        Hello, I am <span
-          class="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent"
-          >Flori</span
-        > ✌️
+        <span class="relative z-10">Hello, I am</span>
+        <span
+          class="inline-block -rotate-2 -skew-x-6 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-6 py-4 text-white"
+          >Flori ✌️</span
+        >
       </h1>
       <p class="text-2xl font-semibold text-slate-500 sm:text-3xl">
         As a web developer <br class="inline sm:hidden" />I do a <span
-          class="rounded bg-gradient-to-l from-[#42d392] to-[#647eff] px-2.5 py-1 font-mono font-extrabold text-white"
+          class="inline-block -rotate-2 -skew-x-6 rounded bg-gradient-to-l from-[#42d392] to-[#647eff] px-2.5 py-1 font-mono font-extrabold text-white"
           >Vue</span
         > things.<br />Let me introduce myself.
       </p>
@@ -46,11 +48,11 @@ import MySkills from '../components/MySkills.astro'
           <h2 class="mb-12 text-4xl font-black">About me</h2>
           <p class="mb-8 text-xl">
             Welcome to my digital realm, fellow web geeks! I'm a <MyAge />
-            <span class="gradient-underline">father of two</span> and a <span
-              class="gradient-underline">loving husband</span
+            <span class="highlight font-medium">father of two</span> and a <span
+              class="highlight font-medium">loving husband</span
             >
             who spends his days delving into the mysteries of <span
-              class="gradient-underline">Vue.js web development</span
+              class="highlight font-medium">Vue.js web development</span
             >. When I'm not coding, you'll usually find me binge-watching
             Stranger Things or exploring the
             <span class="inline-block translate-y-1 rotate-180"
@@ -92,7 +94,7 @@ import MySkills from '../components/MySkills.astro'
     <BoxedContent>
       <h2 class="mb-4 text-4xl font-black">Skills</h2>
       <h3 class="mb-4 text-xl font-semibold">
-        What I do for a living? <span class="gradient-underline">Code.</span>
+        What I do for a living? <span class="highlight">Code.</span>
       </h3>
       <p class="mb-12 text-xl">
         With a focus on Vue.js, Tailwind CSS, TypeScript and iOS development
@@ -106,10 +108,64 @@ import MySkills from '../components/MySkills.astro'
       <div class="mt-12 text-center">
         <a
           href="/about/"
-          class="inline-block rounded-full bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 text-sm font-semibold text-white"
-          >More skills at <span class="font-mono">/about/</span></a
+          class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:rotate-0 hover:skew-x-0 hover:scale-150 hover:shadow-2xl"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="mr-1 h-5 w-5"
+          >
+            <path
+              d="M4.75 3A1.75 1.75 0 003 4.75v2.752l.104-.002h13.792c.035 0 .07 0 .104.002V6.75A1.75 1.75 0 0015.25 5h-3.836a.25.25 0 01-.177-.073L9.823 3.513A1.75 1.75 0 008.586 3H4.75zM3.104 9a1.75 1.75 0 00-1.673 2.265l1.385 4.5A1.75 1.75 0 004.488 17h11.023a1.75 1.75 0 001.673-1.235l1.384-4.5A1.75 1.75 0 0016.896 9H3.104z"
+            ></path>
+          </svg>
+
+          <span>/about/</span></a
         >
       </div>
+    </BoxedContent>
+
+    <HotStuff />
+
+    <BoxedContent>
+      <h2 class="mb-4 text-xl font-semibold">
+        Now <span class="highlight">what?</span>
+      </h2>
+      <p class="text-xl">
+        You've reached the end of my homepage, but the adventure doesn't have to
+        end here. Check out my portfolio to see some of the web wonders I've
+        crafted, and don't be a stranger - contact me and let's continue our
+        journey through the ever-changing landscape of web development!
+      </p>
+
+      <ul class="mt-8 flex justify-center gap-4">
+        <li>
+          <a
+            href="https://sueden.social/@florivdg"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              src="/icons/mastodon.svg"
+              alt="Mastodon"
+              class="h-auto w-12"
+              loading="lazy"
+            /></a
+          >
+        </li>
+        <li>
+          <a
+            href="https://github.com/florivdg"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><img
+              src="/icons/github.svg"
+              alt="Github"
+              class="h-auto w-12"
+              loading="lazy"
+            /></a
+          >
+        </li>
+      </ul>
     </BoxedContent>
   </main>
 </Layout>
