@@ -29,15 +29,19 @@ const currentPath = new URL(Astro.request.url).pathname
       <div class="fixed left-0 right-0 z-50">
         <nav class="flex justify-center">
           <ul
-            class="flex -rotate-1 -skew-x-3 gap-8 rounded bg-white/90 px-3 font-medium shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur"
+            class="flex -rotate-1 -skew-x-3 overflow-hidden rounded bg-white/90 font-medium shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur"
           >
             {
               navItems.map((item) => (
                 <li>
                   <a
                     class:list={[
-                      { 'text-pink-600': currentPath === item.href },
-                      'block px-3 py-2 transition hover:text-pink-600',
+                      {
+                        'h-full bg-gradient-to-tr from-pink-500 to-blue-500 text-white':
+                          currentPath === item.href,
+                        'hover:text-slate-800': currentPath !== item.href,
+                      },
+                      'flex items-center px-4 md:px-6 py-2.5 transition',
                     ]}
                     href={item.href}
                   >

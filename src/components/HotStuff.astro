@@ -17,6 +17,12 @@ const stuff = [
     description: 'Chat with GPT-3.',
   },
   {
+    name: 'Container Queries',
+    url: 'https://developer.mozilla.org/docs/Web/CSS/CSS_Container_Queries',
+    description:
+      "Container queries enable you to apply styles to an element based on the size of the element's container.",
+  },
+  {
     name: 'Vite',
     url: 'https://vitejs.dev/',
     description: "Next generation frontend tooling. It's fast!",
@@ -49,7 +55,7 @@ const stuff = [
       </span>
     </h2>
 
-    <ul class="hot-stuff mt-12 flex justify-center gap-4">
+    <ul class="hot-stuff mt-12 flex flex-wrap justify-center gap-2 sm:gap-4">
       {
         stuff.map((s) => (
           <li>

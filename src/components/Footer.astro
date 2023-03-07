@@ -16,10 +16,66 @@ const currentPath = new URL(Astro.request.url).pathname
 ---
 
 <footer
-  class="mx-auto mt-32 max-w-5xl border-t border-slate-100 text-slate-500 sm:px-8"
+  class="mx-auto mt-16 max-w-5xl border-t border-slate-100 text-slate-500 sm:px-8"
 >
   <section class="bg-white px-4">
     <div class="py-16">
+      <div>
+        <p class="mb-16 text-center text-sm font-medium">
+          This thing was made with
+
+          <a
+            href="https://astro.build"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Astro"
+          >
+            <img
+              src="/icons/astro-icon-dark.svg"
+              alt="Astro"
+              width="63"
+              height="79"
+              class="ml-1 inline-block h-5 w-auto"
+              loading="lazy"
+            />
+          </a><span class="sr-only">Astro,</span>
+
+          <a
+            href="https://www.starbucksathome.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Starbucks coffee"
+          >
+            <img
+              src="/icons/starbucks.svg"
+              alt="Starbucks logo"
+              width="237.4"
+              height="240.3"
+              class="mx-1 inline-block h-5 w-auto"
+              loading="lazy"
+            />
+          </a><span class="sr-only">Starbucks coffee</span>
+
+          and
+
+          <a
+            href="https://code.visualstudio.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Visual Studio Code"
+          >
+            <img
+              src="/icons/vscode.svg"
+              alt="Visual Studio Code"
+              width="100"
+              height="100"
+              class="ml-1 inline-block h-5 w-auto"
+              loading="lazy"
+            />
+          </a><span class="sr-only">Visual Studio Code</span>.
+        </p>
+      </div>
+
       <div class="grid gap-8 lg:grid-cols-2">
         <div class="text-sm font-medium">
           <ul class="flex justify-center gap-6 lg:justify-start">
@@ -39,31 +95,11 @@ const currentPath = new URL(Astro.request.url).pathname
             }
           </ul>
         </div>
-        <div class="text-center lg:text-right">
-          <p class="text-sm font-medium">
+        <div class="">
+          <p class="text-center text-sm font-medium lg:text-right">
             © {year} Florian van der Galiën. All rights reserved.
           </p>
         </div>
-      </div>
-
-      <div>
-        <p class="mt-16 text-center text-sm font-medium">
-          Crafted with <a
-            href="https://astro.build/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/icons/astro.svg"
-              alt="Astro"
-              width="2712"
-              height="894"
-              class="ml-1 inline-block h-6 w-auto"
-              loading="lazy"
-            />
-          </a><span class="sr-only">Astro</span> - the enchanting tool for modern
-          web wizards!
-        </p>
       </div>
     </div>
   </section>
