@@ -10,9 +10,9 @@ export interface Props {
 const { title, secondTitle, uses } = Astro.props
 ---
 
-<h3 class="mb-4 mt-8 text-2xl font-semibold">
+<h2 class="mb-4 mt-8 text-2xl font-semibold">
   <span class="highlight">{title}</span>{secondTitle ? ` ${secondTitle}` : ''}
-</h3>
+</h2>
 
 <ul class="fancy-list space-y-2">
   {
