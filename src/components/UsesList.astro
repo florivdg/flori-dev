@@ -1,0 +1,34 @@
+---
+import type { Uses } from '../pages/uses.astro'
+
+export interface Props {
+  title: string
+  secondTitle?: string
+  uses: Uses[]
+}
+
+const { title, secondTitle, uses } = Astro.props
+---
+
+<h3 class="mb-4 mt-8 text-2xl font-semibold">
+  <span class="highlight">{title}</span>{secondTitle ? ` ${secondTitle}` : ''}
+</h3>
+
+<ul class="fancy-list space-y-2">
+  {
+    uses.map((u) => {
+      return (
+        <li>
+          {u.url ? (
+            <a href={u.url} target="_blank" rel="noopener noreferrer">
+              <strong>{u.title}:</strong>
+            </a>
+          ) : (
+            <strong>{u.title}:</strong>
+          )}{' '}
+          {u.description}
+        </li>
+      )
+    })
+  }
+</ul>
