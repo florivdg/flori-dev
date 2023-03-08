@@ -1,21 +1,134 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
+import UsesList from '../components/UsesList.astro'
+
+export interface UsesSection {
+  title: string
+  secondTitle?: string
+  uses: Uses[]
+}
+
+export interface Uses {
+  title: string
+  description: string
+  url?: string
+}
+
+const entries: UsesSection[] = [
+  {
+    title: 'Editor',
+    secondTitle: 'and Terminal',
+    uses: [
+      {
+        title: 'Visual Studio Code',
+        description: 'My go-to code editor for all things web development.',
+        url: 'https://code.visualstudio.com/',
+      },
+      {
+        title: 'Warp',
+        description:
+          "It's like the future has finally arrived in the terminal.",
+        url: 'https://warp.dev/',
+      },
+      {
+        title: 'Starship',
+        description: 'A minimal, infinitely customizable prompt for any shell.',
+        url: 'https://starship.rs/',
+      },
+      {
+        title: 'MonoLisa',
+        description:
+          'A font designed to improve developers’ productivity and reduce fatigue.',
+        url: 'https://monolisa.dev/',
+      },
+      {
+        title: 'GitHub Dark',
+        description: 'My editor theme of choice. I like to use Nord as well.',
+        url: 'https://marketplace.visualstudio.com/items?itemName=GitHub.github-vscode-theme',
+      },
+      {
+        title: 'Xcode',
+        description:
+          "You kinda have to use it for Apple development, but it doesn't suck.",
+        url: 'https://developer.apple.com/xcode/',
+      },
+    ],
+  },
+
+  {
+    title: 'Hardware',
+    uses: [
+      {
+        title: 'Apple Mac Studio',
+        description:
+          "With the Apple M1 Max from 2022. It's a beast! Love this machine.",
+        url: 'https://www.apple.com/mac-studio/',
+      },
+      {
+        title: 'LG 27UK850-W',
+        description:
+          'A 27" 4K monitor. My temporary solution until Apple releases a better Studio Display.',
+      },
+    ],
+  },
+
+  {
+    title: 'Desk',
+    secondTitle: ' setup',
+    uses: [
+      {
+        title: 'Desktopia Pro X',
+        description:
+          "An electrical height adjustable desk. It reminds me to stand up by vibrating. It's solid oak and so beautiful.",
+        url: 'https://www.ergotopia.de/ergonomie-shop/hoehenverstellbarer-schreibtisch/desktopia-pro-elektrisch-memoryschalter',
+      },
+      {
+        title: 'RECARO Exo FX',
+        description:
+          'A gaming chair. It keeps me comfortable and focused while working.',
+        url: 'https://www.recaro-gaming.com/en/product/recaro-exo-fx-iron-grey/',
+      },
+    ],
+  },
+]
 ---
 
-<Layout title="About">
+<Layout title="Uses">
   <main>
     <BoxedContent>
-      <h2 class="mb-6 text-4xl font-black">Uses</h2>
+      <article>
+        <h1 class="mb-6 text-4xl font-black">Uses</h1>
+        <p class="text-xl">
+          Welcome to my Uses page! This is a page where I list out all the
+          hardware, software, and tools that I use on a <span class="highlight"
+            >daily basis</span
+          > to help me stay productive and efficient. Inspired by Wes Bos and his
+          popular
+          <a
+            href="https://wesbos.com/uses"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link">"Uses" page</a
+          >, I wanted to create my own list to share with others who are curious
+          about what tools and resources I rely on to get things done.
+        </p>
+        <p class="mt-4 text-xl">
+          So without further ado, let's dive into my tech stack!
+        </p>
 
-      <p class="text-xl italic">
-        Whoopsie daisy! This page is a <span class="highlight"
-          >work in progress</span
-        >, but fear not - I'm on the case! While I channel my inner web wizard
-        to conjure up some fresh content, feel free to take a peek around and
-        see what I've got so far. Don't forget to check back soon for more
-        web-tastic updates!
-      </p>
+        {
+          entries.map((u) => {
+            return (
+              <UsesList
+                title={u.title}
+                secondTitle={u.secondTitle}
+                uses={u.uses}
+              />
+            )
+          })
+        }
+      </article>
     </BoxedContent>
   </main>
 </Layout>
