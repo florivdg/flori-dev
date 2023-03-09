@@ -23,14 +23,16 @@ import HotStuff from '../components/HotStuff.astro'
 <Layout title="Hello, I am Flori ✌️">
   <main>
     <BoxedContent>
-      <h1 class="my-12 text-6xl font-black sm:text-7xl">
+      <h1 class="my-12 text-6xl font-black dark:text-white sm:text-7xl">
         <span class="relative z-10">Hello, I am</span>
         <span
           class="inline-block -rotate-2 -skew-x-6 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-6 py-4 text-white"
           >Flori ✌️</span
         >
       </h1>
-      <p class="text-2xl font-semibold text-slate-500 sm:text-3xl">
+      <p
+        class="text-2xl font-semibold text-slate-500 dark:text-slate-200 sm:text-3xl"
+      >
         As a web developer <br class="inline sm:hidden" />I do a <span
           class="inline-block -rotate-2 -skew-x-6 rounded bg-gradient-to-l from-[#42d392] to-[#647eff] px-2.5 py-1 font-mono font-extrabold text-white"
           >Vue</span
@@ -158,11 +160,19 @@ import HotStuff from '../components/HotStuff.astro'
             rel="noopener noreferrer"
             class="block opacity-75 transition-opacity duration-150 hover:opacity-100"
             ><img
-              src="/icons/github.svg"
+              src="/icons/github-mark.svg"
               alt="Github"
               width="98"
               height="96"
-              class="h-auto w-12"
+              class="h-auto w-12 dark:hidden"
+              loading="lazy"
+            />
+            <img
+              src="/icons/github-mark-white.svg"
+              alt="Github"
+              width="98"
+              height="96"
+              class="hidden h-auto w-12 dark:inline"
               loading="lazy"
             /></a
           >

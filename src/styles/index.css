@@ -14,7 +14,7 @@
 
     ::before {
       content: '';
-      @apply absolute -left-3 top-2 inline-block h-2 w-1.5 -rotate-1 -skew-x-6 rounded-[1px] bg-gradient-to-tr from-slate-400 to-slate-500 leading-none;
+      @apply absolute -left-3 top-2.5 inline-block h-2 w-1.5 -rotate-1 -skew-x-6 rounded-[1px] bg-gradient-to-tr from-slate-400 to-slate-500 leading-none;
     }
   }
 }
