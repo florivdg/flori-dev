@@ -16,13 +16,13 @@ const currentPath = new URL(Astro.request.url).pathname
 ---
 
 <footer
-  class="mx-auto mt-16 max-w-5xl border-t border-slate-100 text-slate-500 sm:px-8"
+  class="mx-auto mt-16 max-w-5xl border-t border-slate-100 text-slate-500 dark:border-slate-700/60 dark:text-slate-200 sm:px-8"
 >
-  <section class="bg-white px-4">
+  <section class="bg-white px-4 dark:bg-gray-800">
     <div class="py-16">
       <div>
         <p class="mb-16 text-center text-sm font-medium">
-          This thing was made with
+          Powered by
 
           <a
             href="https://astro.build"
@@ -35,10 +35,18 @@ const currentPath = new URL(Astro.request.url).pathname
               alt="Astro"
               width="63"
               height="79"
-              class="ml-1 inline-block h-5 w-auto"
+              class="ml-1 inline-block h-5 w-auto dark:hidden"
               loading="lazy"
             />
-          </a><span class="sr-only">Astro,</span>
+            <img
+              src="/icons/astro-icon-light.svg"
+              alt="Astro"
+              width="63"
+              height="79"
+              class="ml-1 mr-3 hidden h-5 w-auto dark:inline-block"
+              loading="lazy"
+            />
+          </a><span class="sr-only">Astro.</span> Fueled by
 
           <a
             href="https://www.starbucksathome.com"
@@ -51,12 +59,10 @@ const currentPath = new URL(Astro.request.url).pathname
               alt="Starbucks logo"
               width="237.4"
               height="240.3"
-              class="mx-1 inline-block h-5 w-auto"
+              class="ml-1 mr-3 inline-block h-5 w-auto"
               loading="lazy"
             />
-          </a><span class="sr-only">Starbucks coffee</span>
-
-          and
+          </a><span class="sr-only">Starbucks coffee.</span> Coded with
 
           <a
             href="https://code.visualstudio.com"
@@ -72,7 +78,7 @@ const currentPath = new URL(Astro.request.url).pathname
               class="ml-1 inline-block h-5 w-auto"
               loading="lazy"
             />
-          </a><span class="sr-only">Visual Studio Code</span>.
+          </a><span class="sr-only">Visual Studio Code.</span>
         </p>
       </div>
 

@@ -6,15 +6,7 @@ module.exports = {
       typography: ({ theme }) => ({
         DEFAULT: {
           css: {
-            '--tw-prose-body': theme('colors.slate[600]'),
-            '--tw-prose-headings': theme('colors.slate[600]'),
-            '--tw-prose-links': theme('colors.slate[900]'),
             maxWidth: 'none',
-            a: {
-              '&:hover': {
-                color: theme('colors.pink[600]'),
-              },
-            },
           },
         },
       }),
