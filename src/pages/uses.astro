@@ -120,23 +120,39 @@ const entries: UsesSection[] = [
 
         <div class="group relative mt-8 mb-16">
           <Picture
-            alt="A futuristic Apple Mac Studio on an oak desk by night, nerdy, plants, dark walls, ambient lighting (MidJourney v4)"
-            src="/images/desk-generated.jpg"
+            alt="Coding at Night (MidJourney v4)"
+            src="/images/coding_at_night.jpg"
             sizes="(min-width: 768px) 650px, 360px"
             widths={[360, 720, 1440, 1950]}
-            aspectRatio={3 / 2}
-            width={1280}
-            height={853}
+            aspectRatio={2 / 1}
+            width={3000}
+            height={1500}
             loading="eager"
-            class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
+            class="hidden -rotate-1 -skew-x-3 rounded-lg shadow-lg dark:block"
+          />
+
+          <Picture
+            alt="Coding by Day (MidJourney v4)"
+            src="/images/coding_by_day.jpg"
+            sizes="(min-width: 768px) 650px, 360px"
+            widths={[360, 720, 1440, 1950]}
+            aspectRatio={2 / 1}
+            width={3000}
+            height={1500}
+            loading="eager"
+            class="block -rotate-1 -skew-x-3 rounded-lg shadow-lg dark:hidden"
           />
 
           <div
             class="absolute bottom-0 left-8 right-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 py-2 px-4 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 dark:bg-slate-50/90 dark:text-slate-800 sm:py-4 sm:px-12"
           >
-            <p class="text-sm font-medium italic leading-tight">
-              A futuristic Apple Mac Studio on an oak desk by night, nerdy,
-              plants, dark walls, ambient lighting (MidJourney v4)
+            <p
+              class="hidden text-sm font-medium italic leading-tight dark:inline"
+            >
+              Coding at Night (MidJourney v4)
+            </p>
+            <p class="text-sm font-medium italic leading-tight dark:hidden">
+              Coding by Day (MidJourney v4)
             </p>
           </div>
         </div>
