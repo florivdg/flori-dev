@@ -2,7 +2,9 @@
 import { Picture } from '@astrojs/image/components'
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
+import FluidContent from '../components/FluidContent.astro'
 import UsesList from '../components/UsesList.astro'
+import CurrentBrowser from '../components/CurrentBrowser.vue'
 
 export interface UsesSection {
   title: string
@@ -170,5 +172,9 @@ const entries: UsesSection[] = [
         }
       </article>
     </BoxedContent>
+
+    <FluidContent>
+      <CurrentBrowser client:visible />
+    </FluidContent>
   </main>
 </Layout>
