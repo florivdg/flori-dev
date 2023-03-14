@@ -1,7 +1,4 @@
 <template>
-  <h2 class="mb-12 flex items-center text-4xl font-black">
-    <span>My current browser 👨‍💻</span>
-  </h2>
   <p class="mb-8 text-xl">
     {{ browser.bundleId }}
     <span
@@ -102,7 +99,7 @@ watch(
   () => updatedDelta.value,
   (delta) => {
     /// Refetch browser if delta is equal or greater than 60 seconds.
-    if (delta <= -60) {
+    if (delta <= -60 && !browser.error) {
       fetchBrowser()
     }
   },
