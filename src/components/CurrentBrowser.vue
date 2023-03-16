@@ -1,16 +1,33 @@
 <template>
-  <p class="mb-8 text-xl">
-    {{ browser.bundleId }}
-    <span
-      v-if="browser.updatedAt"
-      class="mt-4 flex items-center justify-end font-mono text-xs font-medium"
-      ><span
-        title="Live"
-        class="mr-2 inline-block h-3 w-3 animate-pulse rounded-full bg-green-600"
-      ></span
-      ><span>Updated {{ updatedAtLabel }}</span></span
+  <div class="@container">
+    <div
+      class="flex -rotate-1 -skew-x-3 flex-col gap-4 rounded-lg border border-slate-300 bg-gray-100 p-4 shadow-xl @4xl:flex-row @4xl:items-center @4xl:justify-center dark:border-slate-700 dark:bg-slate-900"
     >
-  </p>
+      <h3
+        class="self-center bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text px-2 text-6xl font-black text-transparent @xl:self-start @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
+      >
+        I'm on
+      </h3>
+      <div
+        v-if="browser.bundleId"
+        class="my-8 flex aspect-square w-2/3 items-center self-center rounded-2xl bg-white @xl:w-1/2 @4xl:w-60 @4xl:self-auto dark:bg-slate-800"
+      >
+        <img
+          :src="`/icons/${browser.bundleId}.svg`"
+          :alt="browser.bundleId"
+          class="aspect-square w-full object-contain p-5 @4xl:p-10"
+          loading="lazy"
+          width="100"
+          height="100"
+        />
+      </div>
+      <p
+        class="self-center bg-gradient-to-tl from-pink-500 to-sky-500 bg-clip-text px-2 py-4 text-6xl font-black text-transparent @xl:self-end @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
+      >
+        right now.
+      </p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
