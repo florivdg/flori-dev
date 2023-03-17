@@ -18,3 +18,8 @@
     }
   }
 }
+
+.fix-bg-clip-text-safari {
+  clip-path: inset(1px);
+  padding: 1px;
+}
