@@ -1,8 +1,7 @@
 /// <reference types="@astrojs/image/client" />
 
 interface ImportMetaEnv {
-  readonly PUBLIC_VERCEL_EDGE_CONFIG_ID: string
-  readonly PUBLIC_VERCEL_EDGE_CONFIG_TOKEN: string
+  readonly PUBLIC_DEFAULT_BROWSER_WEB_SOCKET_URL: string
 }
 
 interface ImportMeta {

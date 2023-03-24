@@ -37,7 +37,7 @@ import { useWebSocket } from '@vueuse/core'
  * Reactive websocket for live updates.
  */
 const { status, data: browser } = useWebSocket<string>(
-  'ws://localhost:8787/live',
+  import.meta.env.PUBLIC_DEFAULT_BROWSER_WEB_SOCKET_URL,
   {
     autoReconnect: true,
   },
