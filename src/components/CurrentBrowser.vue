@@ -37,7 +37,7 @@ import { useWebSocket } from '@vueuse/core'
  * Reactive websocket for live updates.
  */
 const { status, data: browser } = useWebSocket<string>(
-  import.meta.env.PUBLIC_DEFAULT_BROWSER_WEB_SOCKET_URL,
+  'wss://browser.flori.dev/live',
   {
     autoReconnect: {
       retries: 3,
