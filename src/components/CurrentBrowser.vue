@@ -39,7 +39,13 @@ import { useWebSocket } from '@vueuse/core'
 const { status, data: browser } = useWebSocket<string>(
   import.meta.env.PUBLIC_DEFAULT_BROWSER_WEB_SOCKET_URL,
   {
-    autoReconnect: true,
+    autoReconnect: {
+      retries: 3,
+      delay: 1000,
+      onFailed() {
+        console.error('Failed to connect to the default browser WebSocket.')
+      },
+    },
   },
 )
 </script>
