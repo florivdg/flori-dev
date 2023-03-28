@@ -29,7 +29,11 @@
     </div>
 
     <div class="absolute bottom-0 right-0 p-4">
-      <p class="flex items-center gap-1">
+      <button
+        class="flex items-center gap-1 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 dark:focus-visible:ring-slate-600"
+        :class="[status === 'CLOSED' ? 'cursor-pointer' : 'cursor-default']"
+        @click="handleReconnect"
+      >
         <span
           class="inline-block h-2.5 w-2.5 animate-pulse rounded-full"
           :class="[status === 'OPEN' ? 'bg-lime-500' : 'bg-red-500']"
@@ -38,7 +42,7 @@
           class="font-mono text-xs font-bold uppercase text-slate-400 dark:text-slate-500"
           >{{ status === 'OPEN' ? 'Connected' : 'Not connected' }}</span
         >
-      </p>
+      </button>
     </div>
   </div>
 </template>
@@ -49,16 +53,24 @@ import { useWebSocket } from '@vueuse/core'
 /**
  * Reactive websocket for live updates.
  */
-const { status, data: browser } = useWebSocket<string>(
-  'wss://browser.flori.dev/live',
-  {
-    autoReconnect: {
-      retries: 3,
-      delay: 1000,
-      onFailed() {
-        console.error('Failed to connect to the default browser WebSocket.')
-      },
+const {
+  status,
+  data: browser,
+  open,
+} = useWebSocket<string>('wss://browser.flori.dev/live', {
+  autoReconnect: {
+    retries: 3,
+    delay: 1000,
+    onFailed() {
+      console.error('Failed to connect to the default browser WebSocket.')
     },
   },
-)
+})
+
+/**
+ * Reconnect manually to the websocket when the a button is clicked.
+ */
+const handleReconnect = () => {
+  if (status.value === 'CLOSED') open()
+}
 </script>
