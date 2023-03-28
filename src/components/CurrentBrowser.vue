@@ -40,7 +40,7 @@
         ></span>
         <span
           class="font-mono text-xs font-bold uppercase text-slate-400 dark:text-slate-500"
-          >{{ status === 'OPEN' ? 'Connected' : 'Not connected' }}</span
+          >{{ status === 'OPEN' ? 'Connected' : 'Disconnected' }}</span
         >
       </button>
     </div>
