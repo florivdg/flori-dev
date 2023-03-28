@@ -95,12 +95,13 @@ const handleReconnect = () => {
  * List of valid browser bundle ids for that exist icons.
  */
 const validBrowserBundleIds = {
-  'com.apple.Safari': 'Apple Safari',
-  'com.brave.Browser': 'Brave Browser',
-  'com.google.Chrome.canary': 'Google Chrome Canary',
-  'com.google.Chrome': 'Google Chrome',
-  'com.microsoft.edgemac': 'Microsoft Edge',
-  'org.mozilla.firefox': 'Mozilla Firefox',
+  'com.apple.Safari': 'Safari',
+  'com.apple.SafariTechnologyPreview': 'Safari Technology Preview',
+  'com.brave.Browser': 'Brave',
+  'com.google.Chrome.canary': 'Chrome Canary',
+  'com.google.Chrome': 'Chrome',
+  'com.microsoft.edgemac': 'Edge',
+  'org.mozilla.firefox': 'Firefox',
 }
 
 /**
