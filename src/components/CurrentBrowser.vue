@@ -55,7 +55,7 @@
             :class="[status === 'OPEN' ? 'bg-lime-500' : 'bg-red-500']"
           ></span>
           <span
-            class="font-mono text-xs font-bold uppercase text-slate-400 dark:text-slate-500"
+            class="font-mono text-xs font-bold uppercase text-slate-600 dark:text-slate-400"
             >{{ status === 'OPEN' ? 'Connected' : 'Reconnect?' }}</span
           >
         </button>
