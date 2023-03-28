@@ -1,7 +1,7 @@
 <template>
-  <div class="relative @container">
+  <div class="@container">
     <div
-      class="flex -rotate-1 -skew-x-3 flex-col rounded-lg border border-slate-300 bg-gray-100 p-4 shadow-xl @4xl:flex-row @4xl:items-center @4xl:justify-center @4xl:gap-4 dark:border-slate-700 dark:bg-slate-900"
+      class="relative flex -rotate-1 -skew-x-3 flex-col rounded-lg border border-slate-300 bg-gray-100 p-4 shadow-xl @4xl:flex-row @4xl:items-center @4xl:justify-center @4xl:gap-4 dark:border-slate-700 dark:bg-slate-900"
     >
       <p
         class="fix-bg-clip-text-safari self-center bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text !p-2.5 text-center text-6xl font-black text-transparent @xl:self-start @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
@@ -26,23 +26,25 @@
       >
         right now.
       </p>
-    </div>
 
-    <div class="absolute bottom-0 right-0 p-4">
-      <button
-        class="flex items-center gap-1 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 dark:focus-visible:ring-slate-600"
-        :class="[status === 'CLOSED' ? 'cursor-pointer' : 'cursor-default']"
-        @click="handleReconnect"
+      <div
+        class="relative bottom-0 right-0 mt-4 flex justify-end @4xl:absolute @4xl:mt-0 @4xl:p-4"
       >
-        <span
-          class="inline-block h-2.5 w-2.5 animate-pulse rounded-full"
-          :class="[status === 'OPEN' ? 'bg-lime-500' : 'bg-red-500']"
-        ></span>
-        <span
-          class="font-mono text-xs font-bold uppercase text-slate-400 dark:text-slate-500"
-          >{{ status === 'OPEN' ? 'Connected' : 'Disconnected' }}</span
+        <button
+          class="flex items-center gap-1 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 dark:focus-visible:ring-slate-600"
+          :class="[status === 'CLOSED' ? 'cursor-pointer' : 'cursor-default']"
+          @click="handleReconnect"
         >
-      </button>
+          <span
+            class="inline-block h-2.5 w-2.5 animate-pulse rounded-full"
+            :class="[status === 'OPEN' ? 'bg-lime-500' : 'bg-red-500']"
+          ></span>
+          <span
+            class="font-mono text-xs font-bold uppercase text-slate-400 dark:text-slate-500"
+            >{{ status === 'OPEN' ? 'Connected' : 'Reconnect?' }}</span
+          >
+        </button>
+      </div>
     </div>
   </div>
 </template>
