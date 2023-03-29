@@ -82,7 +82,6 @@ const {
       console.error('Failed to connect to the default browser WebSocket.')
     },
   },
-  heartbeat: true,
 })
 
 /**
