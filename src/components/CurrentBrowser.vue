@@ -76,12 +76,13 @@ const {
   open,
 } = useWebSocket<string>('wss://browser.flori.dev/live', {
   autoReconnect: {
-    retries: 3,
-    delay: 1000,
+    retries: 10,
+    delay: 2500,
     onFailed() {
       console.error('Failed to connect to the default browser WebSocket.')
     },
   },
+  heartbeat: true,
 })
 
 /**
