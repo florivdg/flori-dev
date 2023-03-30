@@ -65,23 +65,40 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import { useWebSocket } from '@vueuse/core'
 
 /**
  * Reactive websocket for live updates.
  */
-const {
-  status,
-  data: browser,
-  open,
-} = useWebSocket<string>('wss://browser.flori.dev/live', {
-  autoReconnect: {
-    retries: 10,
-    delay: 2500,
-    onFailed() {
-      console.error('Failed to connect to the default browser WebSocket.')
+const { status, data, open } = useWebSocket<string>(
+  'wss://browser.flori.dev/live',
+  {
+    autoReconnect: {
+      retries: 10,
+      delay: 2500,
+      onFailed() {
+        console.error('Failed to connect to the default browser WebSocket.')
+      },
+    },
+    heartbeat: {
+      message: 'ping',
+      interval: 5000,
+      pongTimeout: 1000,
     },
   },
+)
+
+/**
+ * Reactive browser data.
+ */
+const browser = ref<string | null>(null)
+
+/**
+ * Watch for changes in the websocket data.
+ */
+watch(data, (data) => {
+  if (data && data !== 'pong') browser.value = data
 })
 
 /**
