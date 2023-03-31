@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro'
+import BoxedContent from '../components/BoxedContent.astro'
+---
+
+<Layout title="Reads">
+  <main>
+    <BoxedContent>
+      <h2 class="mb-6 text-4xl font-black">
+        <span class="font-light line-through" aria-hidden="true">Blog</span> Reads
+      </h2>
+      <h3 class="mb-4 text-xl font-semibold">
+        <span class="highlight">tl;dr</span> This is not a blog. It's documentation!
+      </h3>
+
+      <p class="mb-12 text-xl">
+        Welcome to my not-a-blog. It's definitely not a blog, because blogs are
+        for rambling and ranting, and this is purely <span class="highlight"
+          >documentation</span
+        >. Okay, maybe there will be a little bit of rambling, but only in the
+        name of thoroughness.
+      </p>
+    </BoxedContent>
+  </main>
+</Layout>
