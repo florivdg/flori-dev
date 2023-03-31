@@ -19,7 +19,8 @@
   }
 }
 
-.fix-bg-clip-text-safari {
+/* Apply a fix for crappy borders in Safari */
+:where(.bg-clip-text) {
   clip-path: inset(1px);
   padding: 1px;
 }
