@@ -1,17 +1,20 @@
 ---
+import { getCollection } from 'astro:content'
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
+
+const reads = await getCollection('reads')
 ---
 
 <Layout title="Reads">
   <main>
     <BoxedContent>
-      <h2 class="mb-6 text-4xl font-black">
+      <h1 class="mb-6 text-4xl font-black">
         <span class="font-light line-through" aria-hidden="true">Blog</span> Reads
-      </h2>
-      <h3 class="mb-4 text-xl font-semibold">
+      </h1>
+      <p class="mb-4 text-xl font-semibold">
         <span class="highlight">tl;dr</span> This is not a blog. It's documentation!
-      </h3>
+      </p>
 
       <p class="mb-12 text-xl">
         Welcome to my not-a-blog. It's definitely not a blog, because blogs are
@@ -20,6 +23,18 @@ import BoxedContent from '../components/BoxedContent.astro'
         >. Okay, maybe there will be a little bit of rambling, but only in the
         name of thoroughness.
       </p>
+    </BoxedContent>
+
+    <BoxedContent>
+      <ul>
+        {
+          reads.map((entry) => (
+            <li>
+              <a href={`/reads/${entry.slug}`}>{entry.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
     </BoxedContent>
   </main>
 </Layout>

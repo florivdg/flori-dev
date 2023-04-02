@@ -42,9 +42,13 @@ const currentPath = new URL(Astro.request.url).pathname
                     class:list={[
                       {
                         'bg-gradient-to-tr from-pink-500 to-blue-500 text-white':
-                          currentPath === item.href,
+                          item.href === '/'
+                            ? currentPath === item.href
+                            : currentPath.startsWith(item.href),
                         'hover:text-slate-800 dark:hover:text-slate-400':
-                          currentPath !== item.href,
+                          item.href === '/'
+                            ? currentPath !== item.href
+                            : !currentPath.startsWith(item.href),
                       },
                       'h-full flex items-center px-3 xs:px-6 py-2.5 transition',
                     ]}
