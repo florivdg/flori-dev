@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
-import Layout from '../layouts/Layout.astro'
-import BoxedContent from '../components/BoxedContent.astro'
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
 
 const reads = await getCollection('reads')
 ---
@@ -30,7 +30,12 @@ const reads = await getCollection('reads')
         {
           reads.map((entry) => (
             <li>
-              <a href={`/reads/${entry.slug}`}>{entry.data.title}</a>
+              <a
+                href={`/reads/${entry.slug}`}
+                class=" underline hover:no-underline"
+              >
+                {entry.data.title}
+              </a>
             </li>
           ))
         }

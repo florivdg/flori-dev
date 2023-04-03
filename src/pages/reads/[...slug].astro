@@ -18,11 +18,7 @@ const { Content } = await entry.render()
 <Layout title="Reads">
   <main>
     <BoxedContent>
-      <article>
-        <h1 class="mb-6 text-4xl font-black">
-          {entry.data.title}
-        </h1>
-
+      <article class="prose prose-xl prose-slate dark:prose-invert">
         <Content />
       </article>
     </BoxedContent>

@@ -1,10 +1,10 @@
 ---
 title: 'Broadcasting my default web browser with WebSockets'
-tags:
-  - websockets
-  - browser
-  - deno
-  - swift
+pubDate: 2023-04-03
+description: ''
+tags: ['websockets', 'browser', 'deno', 'swift']
 ---
 
-Lorem ipsum dolor sit amet.
+# Broadcasting my default web browser with WebSockets
+
+Why? Because the world deserves to know!
