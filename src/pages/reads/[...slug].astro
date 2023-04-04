@@ -26,6 +26,12 @@ const { Content } = await entry.render()
   <main>
     <BoxedContent>
       <article class="prose prose-xl prose-flori dark:prose-invert">
+        <h1>{entry.data.title}</h1>
+
+        <time datetime={entry.data.pubDate.toISOString()}>
+          {entry.data.pubDate.toDateString()}
+        </time>
+
         <Content />
       </article>
     </BoxedContent>

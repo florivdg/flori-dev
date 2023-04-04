@@ -1,0 +1,22 @@
+---
+import { Picture } from '@astrojs/image/components'
+
+interface Props {
+  src: string
+  alt: string
+}
+
+const { src, alt } = Astro.props
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  sizes="(min-width: 768px) 650px, 360px"
+  widths={[360, 720, 1440, 1950]}
+  aspectRatio={3 / 2}
+  width={3000}
+  height={2000}
+  loading="lazy"
+  class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
+/>
