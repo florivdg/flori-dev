@@ -3,7 +3,9 @@ import { getCollection } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 
-const reads = await getCollection('reads')
+const reads = await getCollection('reads', ({ data }) => {
+  return import.meta.env.PROD ? data.draft !== true : true
+})
 ---
 
 <Layout title="Reads">

@@ -1,14 +1,21 @@
 ---
 import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 import Layout from '../../layouts/Layout.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 
 export async function getStaticPaths() {
-  const readsEntries = await getCollection('reads')
+  const readsEntries = await getCollection('reads', ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true
+  })
   return readsEntries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
   }))
+}
+
+interface Props {
+  entry: CollectionEntry<'reads'>
 }
 
 const { entry } = Astro.props
