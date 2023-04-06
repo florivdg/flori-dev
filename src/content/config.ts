@@ -10,7 +10,12 @@ const readsCollection = defineCollection({
     pubDate: z.date(),
     draft: z.boolean().default(false),
     tags: z.array(z.string()),
-    image: z.string().optional(),
+    image: z
+      .object({
+        src: z.string(),
+        alt: z.string(),
+      })
+      .optional(),
   }),
 })
 
