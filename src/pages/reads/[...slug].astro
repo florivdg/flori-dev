@@ -44,7 +44,9 @@ const { Content } = await entry.render()
         <TagList tags={entry.data.tags} />
       </div>
 
-      <article class="prose prose-xl prose-flori dark:prose-invert">
+      <article
+        class="prose prose-xl prose-flori dark:prose-invert prose-figcaption:mt-0 prose-figcaption:text-base"
+      >
         <Content />
       </article>
     </BoxedContent>
