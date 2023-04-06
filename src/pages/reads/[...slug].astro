@@ -24,7 +24,7 @@ const { entry } = Astro.props
 const { Content } = await entry.render()
 ---
 
-<Layout title="Reads">
+<Layout title={entry.data.title}>
   <main>
     <BoxedContent>
       <h1
