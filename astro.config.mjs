@@ -10,6 +10,9 @@ import vue from '@astrojs/vue'
 import mdx from '@astrojs/mdx'
 
 // https://astro.build/config
+import vercel from '@astrojs/vercel/static'
+
+// https://astro.build/config
 export default defineConfig({
   integrations: [
     tailwind(),
@@ -19,4 +22,8 @@ export default defineConfig({
     vue(),
     mdx(),
   ],
+  output: 'static',
+  adapter: vercel({
+    analytics: true,
+  }),
 })
