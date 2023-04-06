@@ -15,6 +15,10 @@ const navItems: {
     href: '/about/',
   },
   {
+    name: 'Reads',
+    href: '/reads/',
+  },
+  {
     name: 'Uses',
     href: '/uses/',
   },
@@ -25,7 +29,7 @@ const currentPath = new URL(Astro.request.url).pathname
 
 <header class="mx-auto max-w-5xl sm:px-8">
   <section class="bg-white px-8 dark:bg-gray-800">
-    <div class="py-8">
+    <div class="py-10">
       <div class="fixed left-0 right-0 z-50">
         <nav class="flex justify-center">
           <ul
@@ -38,11 +42,15 @@ const currentPath = new URL(Astro.request.url).pathname
                     class:list={[
                       {
                         'bg-gradient-to-tr from-pink-500 to-blue-500 text-white':
-                          currentPath === item.href,
+                          item.href === '/'
+                            ? currentPath === item.href
+                            : currentPath.startsWith(item.href),
                         'hover:text-slate-800 dark:hover:text-slate-400':
-                          currentPath !== item.href,
+                          item.href === '/'
+                            ? currentPath !== item.href
+                            : !currentPath.startsWith(item.href),
                       },
-                      'h-full flex items-center px-4 md:px-6 py-2.5 transition',
+                      'h-full flex items-center px-3 xs:px-6 py-2.5 transition',
                     ]}
                     href={item.href}
                   >
@@ -81,7 +89,7 @@ const currentPath = new URL(Astro.request.url).pathname
 
   @media (min-width: 640px) {
     :root {
-      --contentPaddingY: 4rem;
+      --contentPaddingY: 5rem;
     }
   }
 

@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
+import TagList from '../../components/reads/TagList.astro'
+import { formatDate } from '../../utils/formatters'
+
+export async function getStaticPaths() {
+  const readsEntries = await getCollection('reads', ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true
+  })
+  return readsEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }))
+}
+
+interface Props {
+  entry: CollectionEntry<'reads'>
+}
+
+const { entry } = Astro.props
+const { Content } = await entry.render()
+---
+
+<Layout title="Reads">
+  <main>
+    <BoxedContent>
+      <h1
+        class="mb-6 text-5xl font-extrabold text-slate-600 dark:text-slate-200 md:text-6xl"
+      >
+        {entry.data.title}
+      </h1>
+
+      <time
+        datetime={entry.data.pubDate.toISOString()}
+        class="my-6 inline-block text-base font-bold text-slate-500 dark:text-slate-400"
+      >
+        {formatDate(entry.data.pubDate)}
+      </time>
+
+      <div class="mb-12">
+        <TagList tags={entry.data.tags} />
+      </div>
+
+      <article class="prose prose-xl prose-flori dark:prose-invert">
+        <Content />
+      </article>
+    </BoxedContent>
+  </main>
+</Layout>
