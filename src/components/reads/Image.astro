@@ -1,0 +1,23 @@
+---
+import { Picture } from '@astrojs/image/components'
+
+interface Props {
+  src: string
+  alt: string
+  skew?: boolean
+}
+
+const { src, alt, skew: userSkew } = Astro.props
+const skew: boolean = userSkew ?? true
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  sizes="(min-width: 768px) 650px, 360px"
+  widths={[360, 720, 1440, 1950]}
+  aspectRatio={3 / 2}
+  width={1500}
+  height={1000}
+  class={skew ? '-rotate-1 -skew-x-3 rounded-lg shadow-lg' : undefined}
+/>

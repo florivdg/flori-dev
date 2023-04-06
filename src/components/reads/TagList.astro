@@ -1,0 +1,17 @@
+---
+interface Props {
+  tags: string[]
+}
+
+const { tags } = Astro.props
+---
+
+<ul class="flex-cols flex flex-wrap gap-2">
+  {
+    tags.map((tag) => (
+      <li class="rounded-full border border-orange-600 bg-orange-500 px-2.5 py-1 font-mono text-xs font-semibold leading-none text-white dark:border-orange-500 dark:bg-orange-700 dark:text-orange-50">
+        #{tag.replaceAll(' ', '')}
+      </li>
+    ))
+  }
+</ul>
