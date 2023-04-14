@@ -23,7 +23,5 @@ export default defineConfig({
     mdx(),
   ],
   output: 'static',
-  adapter: vercel({
-    analytics: true,
-  }),
+  adapter: vercel(),
 })
