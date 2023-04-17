@@ -1,29 +1,22 @@
 ---
-import OpenGraph from '../components/OpenGraph.astro'
-import type { OpenGraphData } from '../types/OpenGraph'
+import SEO from '../components/SEO.astro'
+import type { SEOData } from '../types/SEO'
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import '../styles/index.css'
 
 export interface Props {
-  title: string
-  og?: OpenGraphData
+  seo: SEOData
 }
 
-/// Title
-const { title: pageTitle, og } = Astro.props
-const currentPath = new URL(Astro.request.url).pathname
-const title = currentPath === '/' ? pageTitle : `${pageTitle} | flori.dev`
+/// SEO
+const { seo } = Astro.props
 ---
 
 <html lang="en" class="h-full antialiased">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta
-      name="description"
-      content="Personal website of Florian van der Galiën."
-    />
     <meta
       name="theme-color"
       content="#fff"
@@ -37,8 +30,7 @@ const title = currentPath === '/' ? pageTitle : `${pageTitle} | flori.dev`
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="me" href="https://sueden.social/@florivdg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    {og && <OpenGraph og={og} />}
+    <SEO seo={seo} />
   </head>
   <body class="bg-zinc-50 text-slate-600 dark:bg-gray-900 dark:text-slate-200">
     <div class="fixed inset-0 flex justify-center">

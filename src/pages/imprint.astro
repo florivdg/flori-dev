@@ -1,9 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
+import type { SEOData } from '../types/SEO'
+
+/// Page title
+const title = 'Imprint'
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: 'Personal website of Florian van der Galiën.',
+  },
+  og: {
+    type: 'website',
+  },
+}
 ---
 
-<Layout title="About">
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <div class="prose prose-flori dark:prose-invert">

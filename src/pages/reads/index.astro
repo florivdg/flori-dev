@@ -6,6 +6,21 @@ import Layout from '../../layouts/Layout.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 import FluidContent from '../../components/FluidContent.astro'
 import { formatDate } from '../../utils/formatters'
+import type { SEOData } from '../../types/SEO'
+
+/// Page title
+const title = 'Reads'
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: "This is not a blog. It's documentation!",
+  },
+  og: {
+    type: 'website',
+  },
+}
 
 const reads = (
   await getCollection('reads', ({ data }) => {
@@ -14,7 +29,7 @@ const reads = (
 ).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
 ---
 
-<Layout title="Reads">
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <h1 class="mb-6 text-4xl font-black">

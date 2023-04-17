@@ -6,16 +6,20 @@ import FluidContent from '../components/FluidContent.astro'
 import MyAge from '../components/MyAge.astro'
 import MySkills from '../components/MySkills.astro'
 import HotStuff from '../components/HotStuff.astro'
-import type { OpenGraphData } from '../types/OpenGraph'
+import type { SEOData } from '../types/SEO'
 
-/// Title tag data
+/// Page title
 const title = 'Hello, I am Flori ✌️'
 
 /// OpenGraph meta tags data
-const og: OpenGraphData = {
-  title,
-  description: 'Personal website of Florian van der Galiën.',
-  type: 'website',
+const seo: SEOData = {
+  head: {
+    title,
+    description: 'Personal website of Florian van der Galiën.',
+  },
+  og: {
+    type: 'website',
+  },
 }
 ---
 
@@ -31,7 +35,7 @@ const og: OpenGraphData = {
   }
 </style>
 
-<Layout title={title} og={og}>
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <h1 class="my-12 text-6xl font-black dark:text-white sm:text-7xl">
