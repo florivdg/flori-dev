@@ -12,9 +12,9 @@ tags: ['vercel', 'astro', 'analytics', 'web vitals']
 
 import Image from '../../components/reads/Image.astro'
 
-Integrating Vercel Analytics with Astro is a breeze - they say. Unfortunately, it's not as simple as it seems. In this blog post, I'll guide you through the actual process and fill in the gaps left by the documentation.
+Integrating Vercel Analytics with Astro is a breeze, or so they say. Unfortunately, it's not as easy as it seems. In this blog post, I'll walk you through the actual process and fill in the gaps left by the documentation.
 
-By following the steps outlined here, I was able to successfully implement Web Vitals and Audience Analytics on my personal website - the very site you're visiting now, which is a static site generated using Astro (no SSR enabled).
+By following the steps outlined here, I was able to successfully implement Web Vitals and Audience Analytics on my personal website - the very site you're visiting now, which is a static site generated with Astro (no SSR enabled).
 
 <Image
   src="/reads/vercel_analytics_with_astro_to_the_moon.jpg"
@@ -25,7 +25,7 @@ By following the steps outlined here, I was able to successfully implement Web V
 
 ## Configure Astro
 
-Make sure to install the `@astrojs/vercel` package like outlined in the [docs](https://docs.astro.build/en/guides/integrations-guide/vercel/) and configure it to enable analytics.
+Make sure you install the `@astrojs/vercel` package as described in the [docs](https://docs.astro.build/en/guides/integrations-guide/vercel/) and configure it to enable analytics.
 
 ```ts
 /// astro.config.mjs
@@ -41,21 +41,21 @@ export default defineConfig({
 })
 ```
 
-Make sure to import `vercel` from the correct adapter package that you are building for (serverless, edge, static). In my case it is `@astrojs/vercel/static`.
+Make sure you import `vercel` from the correct adapter export that you are building for (serverless, edge, static). In my case it is `@astrojs/vercel/static`.
 
 ## Configure Vercel
 
-In the Vercel dashboard enable the Analytics feature for your project. This is where I stumbled upon the first issue. After enabling the Web Vitals feature (that I was going for at this time) I was greeted with the following error after deploying my site:
+In the Vercel dashboard, enable the Analytics feature for your project. This is where I ran into the first problem. After enabling the Web Vitals feature (which I was going for at the time), I was greeted with the following error after deploying my site:
 
 ```js
 404 [Not Found] /_vercel/insights/script.js
 ```
 
-Turns out you need to also activate the Audiences feature to make analytics work per se in Astro. It just then deploys the missing script on your site. There is no mention of this in the docs, so I had to figure it out myself with a little help of [GitHub](https://github.com/withastro/astro/issues/6230).
+It turns out that you also need to enable the Audiences feature to make the analytics per se work in Astro. It will then deploy the missing script to your site. There is no mention of this in the docs, so I had to figure it out myself with a little help from [GitHub](https://github.com/withastro/astro/issues/6230).
 
-### Web Vitals are not incoming
+### Web Vitals are not coming in
 
-The next issue was that Web Vitals were not coming in on the Vercel dashboard. In the browser console there was a hint that an environment variable was missing:
+The next problem was that the Web Vitals data was not coming in to the Vercel dashboard. The browser console indicated that an environment variable was missing:
 
 ```js
 [Analytics] VERCEL_ANALYTICS_ID not found
@@ -63,7 +63,7 @@ The next issue was that Web Vitals were not coming in on the Vercel dashboard. I
 
 Turns out there is a bug in the `@astrojs/vercel` package that tries to load `PUBLIC_VERCEL_ANALYTICS_ID`, but Vercel defines your analytics ID as `VERCEL_ANALYTICS_ID`.
 
-But thanks to [Astro's Discord](https://discord.com/channels/830184174198718474/1094974420256292914) I found a workaround for this issue, too:
+But thanks to [Astro's Discord](https://discord.com/channels/830184174198718474/1094974420256292914) I found a workaround for this problem as well:
 
 ```ts
 /// astro.config.mjs
@@ -78,4 +78,4 @@ vite: {
   },
 ```
 
-With this fix applied, everything started working as expected 🎉.
+With this fix applied, everything started working as expected 🎉. Now stats can go to the moon 🚀.
