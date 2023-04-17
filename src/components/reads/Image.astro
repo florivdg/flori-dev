@@ -6,10 +6,12 @@ interface Props {
   alt: string
   caption?: string
   skew?: boolean
+  lazy?: boolean
 }
 
-const { src, alt, skew: userSkew, caption } = Astro.props
+const { src, alt, skew: userSkew, caption, lazy: userLazy } = Astro.props
 const skew: boolean = userSkew ?? true
+const lazy: boolean = userLazy ?? true
 ---
 
 <figure>
@@ -22,6 +24,7 @@ const skew: boolean = userSkew ?? true
     width={1500}
     height={1000}
     class={skew ? '-rotate-1 -skew-x-3 rounded-lg shadow-lg' : undefined}
+    loading={lazy ? 'lazy' : 'eager'}
   />
   {caption ? <figcaption class="!-mt-[1em]">{caption}</figcaption> : undefined}
 </figure>
