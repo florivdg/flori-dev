@@ -69,13 +69,13 @@ But thanks to [Astro's Discord](https://discord.com/channels/830184174198718474/
 /// astro.config.mjs
 
 vite: {
-    define: {
-      'import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID':
-        JSON.stringify(
-          process.env.VERCEL_ANALYTICS_ID
-      ),
-    },
+  define: {
+    'import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID':
+      JSON.stringify(
+        process.env.VERCEL_ANALYTICS_ID
+    ),
   },
+},
 ```
 
 With this fix applied, everything started working as expected 🎉. Now stats can go to the moon 🚀.
