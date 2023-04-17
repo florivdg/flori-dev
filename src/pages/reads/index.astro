@@ -36,7 +36,7 @@ const reads = (
     <FluidContent>
       <ul class="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {
-          reads.map((entry) => (
+          reads.map((entry, i) => (
             <li class="flex -rotate-[0.1deg] -skew-x-[0.5deg] rounded-lg shadow-xl shadow-slate-700/10 transition-transform duration-150 hover:motion-safe:rotate-[0.5deg] dark:shadow-slate-950/20">
               <a
                 href={`/reads/${entry.slug}`}
@@ -47,6 +47,7 @@ const reads = (
                     src={entry.data.image?.src}
                     alt={entry.data.image?.alt}
                     skew={false}
+                    lazy={i >= 2}
                   />
                 ) : undefined}
 
