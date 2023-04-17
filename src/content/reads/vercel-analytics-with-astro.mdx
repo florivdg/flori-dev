@@ -1,0 +1,81 @@
+---
+title: 'Vercel Analytics with Astro: To The Moon 🚀'
+pubDate: 2023-04-17
+description: "Integrating Vercel Analytics with Astro is a breeze - they say. Well, turns out it's not. In here I will show you how to actually do it and what's missing from the documentation."
+image:
+  {
+    src: '/reads/vercel_analytics_with_astro_to_the_moon.jpg',
+    alt: 'Vector art of a website user statistics chart in a space environment with a rocket going to the moon.',
+  }
+tags: ['vercel', 'astro', 'analytics', 'web vitals']
+---
+
+import Image from '../../components/reads/Image.astro'
+
+Integrating Vercel Analytics with Astro is a breeze - they say. Unfortunately, it's not as simple as it seems. In this blog post, I'll guide you through the actual process and fill in the gaps left by the documentation.
+
+By following the steps outlined here, I was able to successfully implement Web Vitals and Audience Analytics on my personal website - the very site you're visiting now, which is a static site generated using Astro (no SSR enabled).
+
+<Image
+  src="/reads/vercel_analytics_with_astro_to_the_moon.jpg"
+  alt="Vector art of a website user statistics chart in a space environment with a rocket going to the moon."
+  caption="With Vercel Analytics to the moon 🚀, but with some required workarounds."
+  lazy={false}
+/>
+
+## Configure Astro
+
+Make sure to install the `@astrojs/vercel` package like outlined in the [docs](https://docs.astro.build/en/guides/integrations-guide/vercel/) and configure it to enable analytics.
+
+```ts
+/// astro.config.mjs
+
+import { defineConfig } from 'astro/config'
+import vercel from '@astrojs/vercel/static'
+
+export default defineConfig({
+  output: 'static',
+  adapter: vercel({
+    analytics: true,
+  }),
+})
+```
+
+Make sure to import `vercel` from the correct adapter package that you are building for (serverless, edge, static). In my case it is `@astrojs/vercel/static`.
+
+## Configure Vercel
+
+In the Vercel dashboard enable the Analytics feature for your project. This is where I stumbled upon the first issue. After enabling the Web Vitals feature (that I was going for at this time) I was greeted with the following error after deploying my site:
+
+```js
+404 [Not Found] /_vercel/insights/script.js
+```
+
+Turns out you need to also activate the Audiences feature to make analytics work per se in Astro. It just then deploys the missing script on your site. There is no mention of this in the docs, so I had to figure it out myself with a little help of [GitHub](https://github.com/withastro/astro/issues/6230).
+
+### Web Vitals are not incoming
+
+The next issue was that Web Vitals were not coming in on the Vercel dashboard. In the browser console there was a hint that an environment variable was missing:
+
+```js
+[Analytics] VERCEL_ANALYTICS_ID not found
+```
+
+Turns out there is a bug in the `@astrojs/vercel` package that tries to load `PUBLIC_VERCEL_ANALYTICS_ID`, but Vercel defines your analytics ID as `VERCEL_ANALYTICS_ID`.
+
+But thanks to [Astro's Discord](https://discord.com/channels/830184174198718474/1094974420256292914) I found a workaround for this issue, too:
+
+```ts
+/// astro.config.mjs
+
+vite: {
+    define: {
+      'import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID':
+        JSON.stringify(
+          process.env.VERCEL_ANALYTICS_ID
+      ),
+    },
+  },
+```
+
+With this fix applied, everything started working as expected 🎉.
