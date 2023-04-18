@@ -1,9 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
+import type { SEOData } from '../types/SEO'
+
+/// Page title
+const title = 'About'
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: 'As web developer I do a Vue things.',
+  },
+  og: {
+    type: 'website',
+  },
+}
 ---
 
-<Layout title="About">
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <h1 class="mb-6 text-4xl font-black">About me</h1>

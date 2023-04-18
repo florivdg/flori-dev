@@ -5,6 +5,7 @@ import Layout from '../../layouts/Layout.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 import TagList from '../../components/reads/TagList.astro'
 import { formatDate } from '../../utils/formatters'
+import type { SEOData } from '../../types/SEO'
 
 export async function getStaticPaths() {
   const readsEntries = await getCollection('reads', ({ data }) => {
@@ -22,9 +23,24 @@ interface Props {
 
 const { entry } = Astro.props
 const { Content } = await entry.render()
+
+/// Page title
+const title = entry.data.title
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: entry.data.description,
+  },
+  og: {
+    image_url: entry.data.image?.src,
+    type: 'article',
+  },
+}
 ---
 
-<Layout title={entry.data.title}>
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <h1
