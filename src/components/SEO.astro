@@ -8,6 +8,11 @@ export interface Props {
 const { seo } = Astro.props
 const { head, og } = seo
 
+/// Prepend Vercel URL to og:image
+if (import.meta.env.PUBLIC_VERCEL_URL && og.image_url) {
+  og.image_url = `https://${import.meta.env.PUBLIC_VERCEL_URL}${og.image_url}`
+}
+
 /// Use a fallback image if no image is provided
 const ogImage = og.image_url ? og.image_url : '/og-image.jpg'
 
