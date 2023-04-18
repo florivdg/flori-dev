@@ -31,6 +31,10 @@ export default defineConfig({
       'import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID': JSON.stringify(
         process.env.VERCEL_ANALYTICS_ID,
       ),
+
+      'import.meta.env.PUBLIC_VERCEL_URL': JSON.stringify(
+        process.env.VERCEL_URL,
+      ),
     },
   },
 })
