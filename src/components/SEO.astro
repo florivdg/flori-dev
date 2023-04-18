@@ -1,4 +1,5 @@
 ---
+import { getImage } from '@astrojs/image'
 import type { SEOData } from '../types/SEO'
 
 export interface Props {
@@ -9,7 +10,41 @@ const { seo } = Astro.props
 const { head, og } = seo
 
 /// Use a fallback image if no image is provided
-let ogImage = og.image_url ? og.image_url : '/og-image.jpg'
+let ogImage = '/og-image.jpg'
+
+if (og.image_url) {
+  /// Since we are using dynamic imports, we need stick to vite's/rollup's rules as described here:
+  /// https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#how-it-works
+
+  /// Make sure that og.image_url is a path with one folder and one jpg file by using a regex
+  const matches = og.image_url.match(
+    /\/(?<folder>[a-z0-9-_]+)\/(?<filename>[a-z0-9-_]+)\.jpg/i,
+  )
+
+  if (matches && matches.groups?.folder && matches.groups?.filename) {
+    /// Get properly sized image when a path is provided
+    const folder = matches.groups.folder
+    const file = matches.groups.filename
+
+    /// Get scaled and cropped image src
+    const { src } = await getImage({
+      src: import(`../../public/${folder}/${file}.jpg`),
+      alt: og.title ?? head.title,
+      width: 1200,
+      height: 630,
+      format: 'jpg',
+      fit: 'cover',
+      quality: 70,
+    })
+
+    /// Set ogImage to the image path
+    ogImage = src ?? ogImage
+  } else {
+    console.warn(
+      '[WARNING] You passed a folder value to `og.image_url` that the SEO component currently does not support. Please pass a path with exactly one folder and a jpg file like `/reads/to_the_moon.jpg`.',
+    )
+  }
+}
 
 /// Prepend Vercel URL to og:image
 if (import.meta.env.PUBLIC_VERCEL_URL) {
