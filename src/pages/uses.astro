@@ -5,6 +5,21 @@ import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
 import UsesList from '../components/UsesList.astro'
 import CurrentBrowser from '../components/CurrentBrowser.vue'
+import type { SEOData } from '../types/SEO'
+
+/// Page title
+const title = 'Uses'
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: 'My Wes Bos inspired /uses page.',
+  },
+  og: {
+    type: 'website',
+  },
+}
 
 export interface UsesSection {
   title: string
@@ -122,7 +137,7 @@ const entries: UsesSection[] = [
 ]
 ---
 
-<Layout title="Uses">
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <article>

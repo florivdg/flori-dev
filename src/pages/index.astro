@@ -6,6 +6,21 @@ import FluidContent from '../components/FluidContent.astro'
 import MyAge from '../components/MyAge.astro'
 import MySkills from '../components/MySkills.astro'
 import HotStuff from '../components/HotStuff.astro'
+import type { SEOData } from '../types/SEO'
+
+/// Page title
+const title = 'Hello, I am Flori ✌️'
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: 'Personal website of Florian van der Galiën.',
+  },
+  og: {
+    type: 'website',
+  },
+}
 ---
 
 <style>
@@ -20,7 +35,7 @@ import HotStuff from '../components/HotStuff.astro'
   }
 </style>
 
-<Layout title="Hello, I am Flori ✌️">
+<Layout seo={seo}>
   <main>
     <BoxedContent>
       <h1 class="my-12 text-6xl font-black dark:text-white sm:text-7xl">

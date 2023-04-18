@@ -1,0 +1,26 @@
+---
+import type { SEOData } from '../types/SEO'
+
+export interface Props {
+  seo: SEOData
+}
+
+const { seo } = Astro.props
+const { head, og } = seo
+
+/// Use a fallback image if no image is provided
+const ogImage = og.image_url ? og.image_url : '/og-image.jpg'
+
+/// Title template with site name
+const siteName = 'flori.dev'
+const currentPath = new URL(Astro.request.url).pathname
+const pageTitle = currentPath === '/' ? head.title : `${head.title} | flori.dev`
+---
+
+<meta name="description" content={head.description} />
+<title>{pageTitle}</title>
+<meta property="og:title" content={og.title ?? head.title} />
+<meta property="og:type" content={og.type} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:description" content={og.description ?? head.description} />
+<meta property="og:site_name" content={siteName} />
