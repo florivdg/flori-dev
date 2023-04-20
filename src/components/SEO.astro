@@ -47,8 +47,8 @@ if (og.image_url) {
 }
 
 /// Prepend Vercel URL to og:image
-if (import.meta.env.PUBLIC_VERCEL_URL) {
-  ogImage = `https://${import.meta.env.PUBLIC_VERCEL_URL}${ogImage}`
+if (import.meta.env.PUBLIC_URL) {
+  ogImage = `https://${import.meta.env.PUBLIC_URL}${ogImage}`
 }
 
 /// Title template with site name
