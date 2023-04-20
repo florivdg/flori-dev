@@ -1,0 +1,59 @@
+---
+title: 'One Script to Rule Them All: Upgrade All The Things 🛠️'
+pubDate: 2023-04-20
+description: "As a software and web developer, I know the hassle of updating CLI tools like Node, Homebrew stuff, and others individually. To simplify this process, I've created a straightforward upgrade script."
+image:
+  {
+    src: '/reads/cute_robot_package_manager.jpg',
+    alt: 'An adorably cute robot package manager',
+  }
+tags: ['homebrew', 'nvm', 'script']
+---
+
+import Image from '../../components/reads/Image.astro'
+
+As a software and web developer, I know the pain of upgrading CLI tools like Node, Homebrew stuff, and others individually. To simplify this process, I've created a simple upgrade script, "Upgrade All The Things". And gave it a handy shell alias.
+
+<Image
+  src="/reads/cute_robot_package_manager.jpg"
+  alt="An adorably cute robot package manager"
+  caption="An adorably cute robot package manager."
+  lazy={false}
+/>
+
+## The Script
+
+The script itself is just a simple shell script that runs the following commands:
+
+```zsh
+#!/bin/zsh
+
+# Homebrew
+brew update && brew upgrade && brew cleanup && brew doctor
+
+# Source nvm
+. ~/.nvm/nvm.sh
+
+# Node
+nvm install 19 --reinstall-packages-from=node --latest-npm
+
+# Global npm packages
+ncu -g
+
+# corepack
+corepack disable
+```
+
+### What's going on here?
+
+The Homebrew stuff is pretty straightforward. For Node, I use [`nvm`](https://github.com/nvm-sh/nvm) as the version manager, so I have to load it before using it. Then I install the latest version of Node (which I have pinned to a specific version) and reinstall all global packages.
+
+I also use [`ncu`](https://github.com/raineorshine/npm-check-updates) to check for outdated global npm packages. Finally, I disable Corepack, because it messes up my `pnpm` installation from Homebrew (since Corepack does not always ship the latest version).
+
+## Shell Alias
+
+To make it easier to run the script, I've created a shell alias for it. I've added the following line to my `.zshrc` file:
+
+```zsh
+alias uatt="~/Scripts/upgrade-all-the-things.sh"
+```
