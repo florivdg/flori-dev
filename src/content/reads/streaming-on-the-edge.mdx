@@ -1,0 +1,153 @@
+---
+title: 'Streaming on the Edge: ChatGPT clone with Streams on Deno'
+pubDate: 2023-05-08
+description: 'More for a demo than actual needed functionality, I tried to mimic ChatGPT''s "typewriter" visual effect when chunks come back from the streaming OpenAI API. I was surprised how easy it was to get something working with Deno''s built-in Web Streams API.'
+image:
+  {
+    src: '/reads/dinosaur_and_paper_planes.jpg',
+    alt: 'Cute dinosaur, a lot of paper planes flying in mid air, flat vector illustration, orange and blue colors',
+  }
+tags: ['deno', 'gpt', 'openai', 'edge', 'supabase']
+---
+
+import Image from '../../components/reads/Image.astro'
+
+In my day job, I am currently working on a [GPT-powered](https://openai.com/product/gpt-4) web application running on [Supabase](https://supabase.com) that makes heavy use of the built-in Edge Functions. These Edge Functions run on [Deno Deploy](https://deno.com/deploy), so I learned a lot about Deno and its ecosystem.
+
+More for a demo than actual needed functionality, I tried to mimic ChatGPT's "typewriter" visual effect when chunks come back from the streaming OpenAI API. I was surprised how easy it was to get something working with Deno's built-in Web Streams API.
+
+<Image
+  src="/reads/dinosaur_and_paper_planes.jpg"
+  alt="Cute dinosaur, a lot of paper planes flying in mid air, flat vector illustration, orange and blue colors"
+  caption="Cute dinosaur, a lot of paper planes flying in mid air, flat vector illustration, orange and blue colors."
+  lazy={false}
+/>
+
+## The server part
+
+Deno's built-in `fetch' and `ReadableStream' implementations make it really easy to get started.
+
+First, create a function to interact with the OpenAI API. The `createChatCompletion()` function takes a prompt and returns a response promise of type `Promise<Response>` from the `fetch` request. Be sure to enable streaming by setting the `stream` property in the request body to `true`. This way OpenAI will also stream chunks of data as they are available.
+
+Also note that this is not an async function that waits for the response. Instead, we will pass the return value directly back to the response of our edge function to handle incoming chunks of data on the client side.
+
+```ts
+export function createChatCompletion(prompt: string) {
+  const headers = {
+    Authorization: `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+    'Content-Type': 'application/json',
+  }
+
+  const body = JSON.stringify({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a helpful assistant.',
+      },
+      {
+        role: 'user',
+        content: prompt,
+      },
+    ],
+    stream: true, /// The important part!
+  })
+
+  return fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers,
+    body,
+  })
+}
+```
+
+### Handle the request
+
+To handle incoming `/chat` requests, use the serve handler from Deno's `http` implementation.
+
+For better readability, this is just an abbreviated outline of the most important part, which is returning the response body. We await the response from the OpenAI API and return the body itself which is of type `ReadableStream<Uint8Array> | null`.
+
+While the response itself is finished, the readable stream from the body will see incoming chunks of data as they become available. The client will then be able to handle these chunks and display them in the UI accordingly.
+
+```ts
+const handleChatStream = async (req: Request) => {
+  // Extract prompt from request body.
+  const { prompt } = await req.json()
+
+  const headers = {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+  }
+
+  /// Create chat completion and return the body.
+  const completion = await createChatCompletion(prompt)
+  return new Response(completion.body, { headers }) /// The important part!
+}
+```
+
+## The client part
+
+On the client side, we can use the native `fetch` API to retrieve the chat completion response, grab a reader from the response body that we just sent from the server and use it to process incoming data chunks.
+
+In this example, we use Vue.js to handle the UI and state management, but the same principle applies to any other framework or vanilla JavaScript.
+
+```ts
+import { ref } from 'vue'
+
+const prompt = ref('')
+const answer = ref('')
+
+const getAnswer = async () => {
+  answer.value = ''
+
+  const response = await fetch('https://example.com/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ prompt: prompt.value }),
+  })
+
+  if (response.body) {
+    const reader = response.body.getReader() /// The important part!
+    const decoder = new TextDecoder('utf-8')
+
+    while (true) {
+      const { done, value } = await reader.read()
+
+      if (done) {
+        break
+      }
+
+      const messages = decoder
+        .decode(value)
+        .trim()
+        .split('\n\n')
+        .map((msg) => {
+          const data = msg.replace('data: ', '')
+          return data !== '[DONE]' ? JSON.parse(data) : undefined
+        })
+        .filter((msg) => msg)
+
+      messages.forEach((msg) => {
+        if (msg.choices[0]?.delta?.content) {
+          answer.value += msg.choices[0].delta.content
+        }
+      })
+    }
+  }
+}
+```
+
+The important steps are:
+
+1. Grab the reader from the stream: `response.body.getReader()`
+2. Decode the incoming data chunks using the `TextDecoder` constructor: `const decoder = new TextDecoder('utf-8')`
+3. Read the incoming data chunks using `reader.read()`: `const { done, value } = await reader.read()`
+4. Split the incoming data chunks into separate messages using the newline character as a separator: `.split('\n\n')`
+5. Parse the messages into JSON using the `JSON.parse()` method: `.map((msg) => JSON.parse(msg))`
+6. Retrieve the content that needs to be appended by following the OpenAI docs: `msg.choices[0].delta.content`
+
+## Conclusion
+
+I was surprised at how easy it was to get something working with Deno's built-in Web Streams API. I am sure there are many more use cases for this and I look forward to exploring them.
