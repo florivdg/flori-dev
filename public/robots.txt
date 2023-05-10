@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://flori.dev/sitemap-index.xml

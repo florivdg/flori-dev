@@ -13,6 +13,9 @@ import mdx from '@astrojs/mdx'
 import vercel from '@astrojs/vercel/static'
 
 // https://astro.build/config
+import sitemap from '@astrojs/sitemap'
+
+// https://astro.build/config
 export default defineConfig({
   site: 'https://flori.dev',
   integrations: [
@@ -22,6 +25,7 @@ export default defineConfig({
     }),
     vue(),
     mdx(),
+    sitemap(),
   ],
   output: 'static',
   adapter: vercel({
