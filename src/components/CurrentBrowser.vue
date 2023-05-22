@@ -119,6 +119,7 @@ const validBrowserBundleIds = {
   'com.google.Chrome': 'Chrome',
   'com.microsoft.edgemac': 'Edge',
   'org.mozilla.firefox': 'Firefox',
+  'company.thebrowser.Browser': 'Arc',
 }
 
 /**
