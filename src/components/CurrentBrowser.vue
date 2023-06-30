@@ -45,10 +45,9 @@
       <div
         class="relative bottom-0 right-0 mt-4 flex justify-end @4xl:absolute @4xl:mt-0 @4xl:px-3.5 @4xl:py-2.5"
       >
-        <button
+        <span
           class="flex items-center gap-1 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 dark:focus-visible:ring-slate-600"
           :class="[status === 'CLOSED' ? 'cursor-pointer' : 'cursor-default']"
-          @click="handleReconnect"
         >
           <span
             class="inline-block h-2.5 w-2.5 animate-pulse rounded-full"
@@ -58,7 +57,7 @@
             class="font-mono text-xs font-bold uppercase text-slate-600 dark:text-slate-400"
             >{{ status === 'OPEN' ? 'Connected' : 'Reconnect?' }}</span
           >
-        </button>
+        </span>
       </div>
     </div>
   </div>
@@ -66,27 +65,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useWebSocket } from '@vueuse/core'
+import { useEventSource } from '@vueuse/core'
 
-/**
- * Reactive websocket for live updates.
- */
-const { status, data, open } = useWebSocket<string>(
-  'wss://browser.flori.dev/live',
-  {
-    autoReconnect: {
-      retries: 10,
-      delay: 2500,
-      onFailed() {
-        console.error('Failed to connect to the default browser WebSocket.')
-      },
-    },
-    heartbeat: {
-      message: 'ping',
-      interval: 5000,
-      pongTimeout: 1000,
-    },
-  },
+const { status, data } = useEventSource(
+  'https://van-der-hub.flori.dev/browser/live',
 )
 
 /**
@@ -98,15 +80,8 @@ const browser = ref<string | null>(null)
  * Watch for changes in the websocket data.
  */
 watch(data, (data) => {
-  if (data && data !== 'pong') browser.value = data
+  if (data) browser.value = data
 })
-
-/**
- * Reconnect manually to the websocket when the a button is clicked.
- */
-const handleReconnect = () => {
-  if (status.value === 'CLOSED') open()
-}
 
 /**
  * List of valid browser bundle ids for that exist icons.
