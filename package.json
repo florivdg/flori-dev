@@ -18,7 +18,7 @@
     "@astrojs/vercel": "^3.5.1",
     "@astrojs/vue": "^2.2.1",
     "@vueuse/core": "^10.2.1",
-    "astro": "^2.7.2",
+    "astro": "^2.7.0",
     "sharp": "^0.32.1",
     "tailwindcss": "^3.3.2",
     "vue": "^3.3.4"
