@@ -1,15 +1,29 @@
 ---
 title: 'Broadcasting my default Browser with Server-sent Events'
-pubDate: 2023-07-05
+pubDate: 2023-07-03
 description: 'My Uses page updates in real-time which default browser I am using right now. Whether I’m feeling a fiery passion for Firefox or a magnetic attraction to Safari, it will always reveal which browser has stolen my heart (for now). So sit back, let it refresh, and witness the drama unfold. Why? Because the world deserves to know!'
+image:
+  {
+    src: '/reads/web_browser_tv_show.jpg',
+    alt: 'A TV show like The Bachelor in which different web browsers compete with each other.',
+  }
 tags: ['sse', 'browser', 'deno deploy', 'kv', 'swift']
 ---
+
+import Image from '../../components/reads/Image.astro'
 
 My [Uses page](/uses) updates in real-time, indicating which default browser I'm using at the moment.
 
 Whether I'm experiencing a fiery passion for Firefox or a magnetic attraction to Safari, it will always reveal which browser has currently stolen my heart. So, sit back, let the page refresh, and witness the drama unfold. It's like The Bachelor, but for browsers.
 
 Why do this, you ask? Because the world deserves to know!
+
+<Image
+  src="/reads/web_browser_tv_show.jpg"
+  alt="A TV show like The Bachelor in which different web browsers compete with each other"
+  caption="A TV show like The Bachelor in which different web browsers compete with each other."
+  lazy={false}
+/>
 
 ## The macOS part
 
