@@ -1,0 +1,129 @@
+---
+title: 'Broadcasting my default Browser with Server-sent Events'
+pubDate: 2023-07-03
+description: 'My Uses page updates in real-time which default browser I am using right now. Whether I’m feeling a fiery passion for Firefox or a magnetic attraction to Safari, it will always reveal which browser has stolen my heart (for now). So sit back, let it refresh, and witness the drama unfold. Why? Because the world deserves to know!'
+image:
+  {
+    src: '/reads/web_browser_tv_show.jpg',
+    alt: 'A TV show like The Bachelor in which different web browsers compete with each other.',
+  }
+tags: ['sse', 'browser', 'deno deploy', 'kv', 'swift']
+---
+
+import Image from '../../components/reads/Image.astro'
+
+My [Uses page](/uses) updates in real-time, indicating which default browser I'm using at the moment.
+
+Whether I'm experiencing a fiery passion for Firefox or a magnetic attraction to Safari, it will always reveal which browser has currently stolen my heart. So, sit back, let the page refresh, and witness the drama unfold. It's like The Bachelor, but for browsers.
+
+Why do this, you ask? Because the world deserves to know!
+
+<Image
+  src="/reads/web_browser_tv_show.jpg"
+  alt="A TV show like The Bachelor in which different web browsers compete with each other"
+  caption="A TV show like The Bachelor in which different web browsers compete with each other."
+  lazy={false}
+/>
+
+## The macOS part
+
+I developed a tiny Swift command line application that runs as a LaunchAgent in the background. It broadcasts my default browser to a [Deno Deploy](https://deno.com/deploy) backend, which operates on the edge, distributed across various data centers [around the world](https://deno.com/deploy/docs/regions).
+
+```swift
+// Get the URL of the current default browser
+let workspace = NSWorkspace.shared
+let newURL = workspace.urlForApplication(toOpen: webURL)
+
+// If the URL has changed, create a dictionary with the new default browser data
+let bundle = Bundle(url: newURL!)
+let browserIdentifier = bundle?.bundleIdentifier ?? "unknown"
+let defaultBrowserData = [
+    "browser": browserIdentifier
+]
+```
+
+The shared NSWorkspace singleton is used to fetch the local file system URL of the current default browser. If the URL has changed, a dictionary is created with the new default browser's bundle identifier (for example, `com.apple.Safari` for Apple's Safari browser).
+
+## The Deno KV part
+
+The Swift app sends a POST request to a Deno Deploy backend. The backend is not only responsible for broadcasting the new default browser to all connected clients but also to persist the current default browser in a [Deno KV](https://deno.com/kv) store (which is currently in Beta on Deno Deploy).
+
+```typescript
+/// Update the value in Deno.Kv
+const db = await Deno.openKv()
+await db.set(KV_KEY, value)
+```
+
+### What is Deno KV?
+
+As the marketing copy says, Deno KV is a globally distributed, serverless key-value database for Deno applications. Built on FoundationDB, it supports ACID transactions, provides zero-setup deployment with various consistency options, and enables seamless scaling from side projects to enterprise platforms.
+
+Enterprise platforms, you say? Well, it seems perfectly suited to store my current default browser and distribute the information to all connected clients in real-time.
+
+## The Server-sent Events part
+
+Initially, I began this project using [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) to broadcast the new default browser to all connected clients. However, I soon realized that a full-duplex connection between the client and the server wasn't necessary. What I needed was a one-way connection from the server to the client.
+
+While working with the OpenAI API on a different project, I stumbled upon [Server-sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events). This technology allows a client to receive automatic updates, pushed from a server via an HTTP connection.
+
+```typescript
+/// Create a event target that keeps the connection alive
+const target = context.sendEvents({ keepAlive: true })
+
+/// Subscribe to changes to the default browser
+const unsubscribe = browser.subscribe((value) => {
+  target.dispatchMessage(value)
+})
+```
+
+I am currently running an Oak server on Deno Deploy. The `sendEvents` method returns a `Target` object, which can be used to send events to the client. Consequently, the `dispatchMessage` method is responsible for transmitting that message to the client.
+
+## The Edge part
+
+Since this backend application runs on Deno Deploy, it's distributed across various data centers around the world. So, when I change my default browser on my machine, the new default browser is sent to the instance nearest to me. This instance then stores the new bundle identifier in the Deno KV store. However, as long as there are clients already connected to the server, the rest of the world remains unaware of this change, since the data isn't reloaded from the KV store after the initial connection.
+
+Given that there's no way to subscribe to changes in the Deno KV store, I need to ensure that all instances are informed about the new default browser. In other words, I need to broadcast this information to all other regions.
+
+To accomplish this, I use the [`BroadcastChannel`](https://deno.com/deploy/docs/runtime-broadcast-channel) API.
+
+> In Deno Deploy, the BroadcastChannel API provides a communication mechanism between the various instances; a simple message bus that connects the various Deploy instances world wide.
+
+```typescript
+/// Create a BroadcastChannel to communicate with other edge instances
+const channel = new BroadcastChannel('earth')
+
+/// Broadcast the change to all edge instances
+channel.postMessage(value)
+```
+
+The other instances are then notified of the new default browser and can promptly inform their connected clients. As you may have noticed, time is of the essence here.
+
+```typescript
+/// Handle messages from other edge instances
+channel.onmessage = (event) => {
+  /// Do not update the origin instance
+  if (event.data === browser.value) return
+
+  /* Update code here */
+}
+```
+
+## The client part
+
+On the client side, a simple `EventSource` is employed to listen for new default browser events. As I'm using Vue.js for rendering the browser component, I'm able to utilize the `@vueuse/core` package to create a reactive `EventSource`.
+
+```typescript
+import { useEventSource } from '@vueuse/core'
+
+const { status, data } = useEventSource(
+  'https://van-der-hub.flori.dev/browser/live',
+)
+```
+
+And there you have it! Whenever I change my default browser, the world will be informed. Witness the drama unfold on my [Uses page](/uses).
+
+## Source code
+
+Swift app: [`main.swift`](https://github.com/florivdg/Default-Browser-Watcher/blob/main/Default%20Browser%20Watcher/main.swift)  
+Deno Backend: [`browser.ts`](https://github.com/florivdg/van-der-hub/blob/main/browser.ts)  
+Website: [`CurrentBrowser.vue`](https://github.com/florivdg/flori-dev/blob/main/src/components/CurrentBrowser.vue)
