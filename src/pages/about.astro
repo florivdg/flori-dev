@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
 import type { SEOData } from '../types/SEO'
+import { Picture } from '@astrojs/image/components'
 
 /// Page title
 const title = 'About'
@@ -31,6 +32,29 @@ const seo: SEOData = {
         see what I've got so far. Don't forget to check back soon for more
         web-tastic updates!
       </p>
+
+      <div class="group relative mb-16 mt-8">
+        <Picture
+          alt="Cute toddler girl and cute baby boy as software engineers in their kids playroom cartoon, flat vector illustration (MidJourney v5.2)"
+          src="/images/cute_toddler_girl_and_cute_baby_boy_as_software_engineers.png"
+          sizes="(min-width: 768px) 650px, 360px"
+          widths={[360, 720, 1440, 1950]}
+          aspectRatio={2 / 1}
+          width={3000}
+          height={1500}
+          loading="eager"
+          class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
+        />
+
+        <div
+          class="absolute bottom-0 left-8 right-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 dark:bg-slate-50/90 dark:text-slate-800 sm:px-12 sm:py-4"
+        >
+          <p class="text-sm font-medium italic leading-tight">
+            Cute toddler girl and cute baby boy as software engineers in their
+            kids playroom cartoon, flat vector illustration (MidJourney v5.2)
+          </p>
+        </div>
+      </div>
     </BoxedContent>
   </main>
 </Layout>
