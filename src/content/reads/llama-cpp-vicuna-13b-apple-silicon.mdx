@@ -1,0 +1,62 @@
+---
+title: 'How to run Vicuna-13B with llama.cpp on an Apple Silicon GPU'
+pubDate: 2023-07-10
+description: 'Run Vicuna-13B with GPU acceleration on a Apple Silicon machine by compiling the `llama.cpp` port specifically for Apple Silicon, find a GGMLv3 compatible version of Vicuna, and execute the model with parameter `-ngl 1`.
+'
+image:
+  {
+    src: '/reads/vicuna_in_a_tech_environment_macos_terminal_gpu_acceleration.jpg',
+    alt: 'A Vicuna standing next to a computer screen with mountains in the background.',
+  }
+tags: ['ai', 'llama', 'vicuna', 'apple silicon']
+---
+
+import Image from '../../components/reads/Image.astro'
+
+The other day I was trying to get [Vicuna-13B](https://lmsys.org/blog/2023-03-30-vicuna/) running on my local machine using the [llama.cpp port](https://github.com/ggerganov/llama.cpp). While getting it to work on the CPU was not difficult, I had some problems getting the GPU acceleration to work. This is a short description of how I managed to get it running.
+
+<Image
+  src="/reads/vicuna_in_a_tech_environment_macos_terminal_gpu_acceleration.jpg"
+  alt="A Vicuna standing next to a computer screen with mountains in the background"
+  caption="A Vicuna standing next to a computer screen with mountains in the background."
+  lazy={false}
+/>
+
+## Compile llama.cpp
+
+First, we need to compile the `llama.cpp` port for Apple Silicon, since the official releases and Docker images don't support the M1/M2 procesors. The following command can be found in the [docs](https://github.com/ggerganov/llama.cpp#metal-build):
+
+```zsh
+mkdir build-metal
+cd build-metal
+cmake -DLLAMA_METAL=ON ..
+cmake --build . --config Release
+```
+
+_Note:_ I used `cmake` for this step, which can be installed using [Homebrew](https://brew.sh/):
+
+```zsh
+brew install cmake
+```
+
+## Find a compatible model version
+
+`llama.cpp` needs to have GGMLv3 compatible versions of the model you want it to run. So dug myself into the Hugging Face model repository and found the following versions of Vicuna: https://huggingface.co/TheBloke/stable-vicuna-13B-GGML
+
+Make sure to download the **4-bit** models for use on the GPU (eg. `stable-vicuna-13B.ggmlv3.q4_0.bin`).
+
+## Run in interactive mode
+
+From a GitHub discussion I found the following command to run the model in interactive mode:
+
+```zsh
+./build-metal/bin/main \
+  -m ./models/stable-vicuna-13B.ggmlv3.q4_0.bin \
+  -t 4 -c 2048 -n 2048 -ngl 1 --color -i \
+  --reverse-prompt '### Human:' \
+  -p '### Human: What is the relation between llama and vicuna? ### Assistant:'
+```
+
+The important here is the `-ngl 1` parameter, which tells the model to use the GPU.
+
+And et voilà, we have a working Vicuna-13B model running on an Apple Silicon GPU to chat with!
