@@ -1,7 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
+import FluidContent from '../components/FluidContent.astro'
+import MyAge from '../components/MyAge.astro'
+import MySkills from '../components/MySkills.astro'
 import type { SEOData } from '../types/SEO'
+import { Picture } from '@astrojs/image/components'
 
 /// Page title
 const title = 'About'
@@ -23,14 +27,147 @@ const seo: SEOData = {
     <BoxedContent>
       <h1 class="mb-6 text-4xl font-black">About me</h1>
 
-      <p class="text-xl italic">
-        Whoopsie daisy! This page is a <span class="highlight"
-          >work in progress</span
-        >, but fear not - I'm on the case! While I channel my inner web wizard
-        to conjure up some fresh content, feel free to take a peek around and
-        see what I've got so far. Don't forget to check back soon for more
-        web-tastic updates!
+      <p class="mb-4 text-xl font-semibold">
+        <span class="highlight">tl;dr</span> Florian van der Galiën, creates stuff
+        with code.
+      </p>
+
+      <p class="mb-12 text-xl [text-wrap:balance]">
+        In here I'll let you know who I am, what I do for a living and what
+        inspires me the most.
       </p>
     </BoxedContent>
+
+    <FluidContent>
+      <div class="flex flex-col items-center gap-12 md:flex-row">
+        <div>
+          <h2 class="mb-4 text-xl font-semibold">
+            My name is Florian van der Galiën.
+          </h2>
+          <p class="mb-8 text-xl">
+            I am a <MyAge /> web developer with a focus on <span
+              class="highlight">Vue.js</span
+            >, Tailwind CSS, <span class="highlight">Deno</span>, TypeScript, <span
+              class="highlight">Supabase</span
+            >, and iOS development using Swift. I have a strong foundation in
+            modern web and app development. While I am well-versed in WordPress,
+            I am passionate about building custom solutions that deliver
+            exceptional user experiences.
+          </p>
+        </div>
+
+        <div
+          class="relative aspect-[9/10] w-full flex-none rotate-2 overflow-hidden rounded-xl sm:w-72 sm:rounded-2xl"
+        >
+          <Picture
+            alt="Florian van der Galiën"
+            src="/images/flori.jpg"
+            sizes="(min-width: 760px) 300px, 180px"
+            widths={[180, 300, 360, 600, 900]}
+            aspectRatio={1 / 1}
+            class="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </FluidContent>
+
+    <BoxedContent>
+      <h2 class="mb-4 text-xl font-semibold">My 9 to 5</h2>
+
+      <p class="mb-8 text-xl">
+        I work at <a
+          href="https://www.tmt.de"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link highlight">TMT</a
+        >, a mid-sized company based in Bayreuth, Germany, where we provide
+        innovative IT, Internet, and media services. We value a balanced
+        work-life environment, and I enjoy the open and familial atmosphere. My
+        role allows me to stay at the forefront of technology, contributing to
+        our diverse range of services.<br /><br />As a <span class="highlight"
+          >Full Stack Developer</span
+        >, I constantly strive to bring innovation to my work at TMT. I leverage
+        my expertise in frontend as well as backend technologies to create
+        cutting-edge solutions that push the boundaries of what's <span
+          class="italic"
+        >
+          inside the box</span
+        >. I'm always exploring new technologies and methodologies, and I'm not
+        afraid to <span class="highlight">challenge the status quo</span>. My
+        ability to adapt and learn allows me to stay ahead of the curve and
+        bring fresh ideas to the table. Fortunately, thanks to my colleagues and
+        superiors, this is also desired and not only advances the projects, but
+        also me as a developer.
+      </p>
+
+      <h2 class="mb-4 text-xl font-semibold">Loving husband, father of two</h2>
+
+      <p class="mb-8 text-xl">
+        In my personal life, I am a dedicated husband and a proud <span
+          class="highlight">father of two</span
+        >
+        wonderful children. My children bring an immense amount of joy and fulfillment
+        to my life, and they are a constant reminder of what truly matters. My family
+        is my source of inspiration and motivation, and they play a significant role
+        in who I am both personally and professionally.
+      </p>
+
+      <figure class="mb-8">
+        <div class="group relative mb-16 mt-8">
+          <Picture
+            alt="Cute toddler girl and cute baby boy as software engineers in their kids playroom cartoon, flat vector illustration (MidJourney v5.2)"
+            src="/images/cute_toddler_girl_and_cute_baby_boy_as_software_engineers.png"
+            sizes="(min-width: 768px) 650px, 360px"
+            widths={[360, 720, 1440, 1950]}
+            aspectRatio={2 / 1}
+            width={3000}
+            height={1500}
+            loading="eager"
+            class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
+          />
+
+          <div
+            class="absolute bottom-0 left-8 right-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 dark:bg-slate-50/90 dark:text-slate-800 sm:px-12 sm:py-4"
+          >
+            <p class="text-sm font-medium italic leading-tight">
+              Cute toddler girl and cute baby boy as software engineers in their
+              kids playroom cartoon, flat vector illustration (MidJourney v5.2)
+            </p>
+          </div>
+        </div>
+        <figcaption class="!-mt-[2em]">
+          This is how I imagine my kids will be hacking things together when
+          they're older.
+        </figcaption>
+      </figure>
+
+      <p class="mb-8 text-xl">
+        My <span class="highlight">wife</span>, once my best friend, is now my
+        constant companion and the cornerstone of my life. Her support has been
+        instrumental in my personal and professional growth. She challenges me,
+        supports me, and inspires me in ways I never thought possible.
+      </p>
+
+      <p class="text-xl">
+        <span class="highlight">Thanks to my family</span>, I am not only a
+        better person, but also a better coder.
+      </p>
+    </BoxedContent>
+
+    <FluidContent>
+      <h2 class="mb-4 text-4xl font-black">Skills</h2>
+      <h3 class="mb-4 text-xl font-semibold">
+        What I do for a living? <span class="highlight">Code.</span>
+      </h3>
+      <p class="mb-12 text-xl">
+        With a focus on Vue.js, Tailwind CSS, TypeScript and iOS development
+        using Swift, I have a strong foundation in modern web and app
+        development. While I'm well-versed in WordPress, I'm passionate about
+        building custom solutions that deliver exceptional user experiences.
+      </p>
+
+      <MySkills />
+    </FluidContent>
   </main>
 </Layout>
