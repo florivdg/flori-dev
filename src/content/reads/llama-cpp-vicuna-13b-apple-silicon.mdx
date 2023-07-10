@@ -23,7 +23,7 @@ The other day I was trying to get [Vicuna-13B](https://lmsys.org/blog/2023-03-30
 
 ## Compile llama.cpp Port
 
-First, we need to compile the `llama.cpp` port for Apple Silicon, since the official releases and Docker images don't support the M1/M2 procesors. The following command can be found in the [docs](https://github.com/ggerganov/llama.cpp#metal-build):
+First, we need to compile the `llama.cpp` port for Apple Silicon, since the official releases and Docker images don't support the M1/M2 processors. The following command can be found in the [docs](https://github.com/ggerganov/llama.cpp#metal-build):
 
 ```zsh
 mkdir build-metal
@@ -46,7 +46,7 @@ Make sure to download the **4-bit** models for use on the GPU (eg. `stable-vicun
 
 ## Run in interactive mode
 
-From a GitHub discussion I found the following command to run the model in interactive mode:
+From a [GitHub discussion](https://github.com/ggerganov/llama.cpp/discussions/643#discussioncomment-5522592) I found the following command to run the model in interactive mode:
 
 ```zsh
 ./build-metal/bin/main \
@@ -56,6 +56,6 @@ From a GitHub discussion I found the following command to run the model in inter
   -p '### Human: What is the relation between llama and vicuna? ### Assistant:'
 ```
 
-Importantly, the `-ngl 1` parameter tells the model to use the GPU.
+Importantly, the `-ngl 1` parameter tells `llama.cpp` to run the model on the GPU.
 
 Et voilà! We now have a working Vicuna-13B model running on an Apple Silicon GPU for us to chat with!
