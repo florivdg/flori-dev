@@ -1,8 +1,6 @@
 import { defineConfig } from 'astro/config'
 import tailwind from '@astrojs/tailwind'
 
-import image from '@astrojs/image'
-
 // https://astro.build/config
 import vue from '@astrojs/vue'
 
@@ -18,15 +16,7 @@ import sitemap from '@astrojs/sitemap'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://flori.dev',
-  integrations: [
-    tailwind(),
-    image({
-      serviceEntryPoint: '@astrojs/image/sharp',
-    }),
-    vue(),
-    mdx(),
-    sitemap(),
-  ],
+  integrations: [tailwind(), vue(), mdx(), sitemap()],
   output: 'static',
   adapter: vercel({
     analytics: true,

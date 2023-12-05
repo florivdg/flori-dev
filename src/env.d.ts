@@ -1,5 +1,5 @@
 /// <reference path="../.astro/types.d.ts" />
-/// <reference types="@astrojs/image/client" />
+/// <reference types="astro/client" />
 
 interface ImportMetaEnv {
   readonly PUBLIC_DEFAULT_BROWSER_WEB_SOCKET_URL: string

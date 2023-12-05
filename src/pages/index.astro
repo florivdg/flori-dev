@@ -1,5 +1,5 @@
 ---
-import { Picture } from '@astrojs/image/components'
+import { Picture } from 'astro:assets'
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
@@ -39,7 +39,7 @@ const seo: SEOData = {
   <main>
     <BoxedContent>
       <h1 class="my-12 text-6xl font-black dark:text-white sm:text-7xl">
-        <span class="relative z-10">Hello, I am</span>
+        <span class="relative z-10">Hello, I am</span><br />
         <span
           class="inline-block -rotate-2 -skew-x-6 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-6 py-4 text-white"
           >Flori ✌️</span
@@ -97,7 +97,8 @@ const seo: SEOData = {
             src="/images/flori.jpg"
             sizes="(min-width: 760px) 300px, 180px"
             widths={[180, 300, 360, 600, 900]}
-            aspectRatio={1 / 1}
+            width={300}
+            height={300}
             class="absolute inset-0 h-full w-full object-cover"
             loading="eager"
           />

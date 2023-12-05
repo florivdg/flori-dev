@@ -5,7 +5,7 @@ import FluidContent from '../components/FluidContent.astro'
 import MyAge from '../components/MyAge.astro'
 import MySkills from '../components/MySkills.astro'
 import type { SEOData } from '../types/SEO'
-import { Picture } from '@astrojs/image/components'
+import { Picture } from 'astro:assets'
 
 /// Page title
 const title = 'About'
@@ -64,7 +64,8 @@ const seo: SEOData = {
             src="/images/flori.jpg"
             sizes="(min-width: 760px) 300px, 180px"
             widths={[180, 300, 360, 600, 900]}
-            aspectRatio={1 / 1}
+            width={300}
+            height={300}
             class="absolute inset-0 h-full w-full object-cover"
             loading="eager"
           />
@@ -120,7 +121,6 @@ const seo: SEOData = {
             src="/images/cute_toddler_girl_and_cute_baby_boy_as_software_engineers.png"
             sizes="(min-width: 768px) 650px, 360px"
             widths={[360, 720, 1440, 1950]}
-            aspectRatio={2 / 1}
             width={3000}
             height={1500}
             loading="eager"

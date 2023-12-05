@@ -1,5 +1,5 @@
 ---
-import { Picture } from '@astrojs/image/components'
+import { Picture } from 'astro:assets'
 import Layout from '../layouts/Layout.astro'
 import BoxedContent from '../components/BoxedContent.astro'
 import FluidContent from '../components/FluidContent.astro'
@@ -173,7 +173,6 @@ const entries: UsesSection[] = [
             src="/images/coding_at_night.jpg"
             sizes="(min-width: 768px) 650px, 360px"
             widths={[360, 720, 1440, 1950]}
-            aspectRatio={2 / 1}
             width={3000}
             height={1500}
             loading="eager"
@@ -185,7 +184,6 @@ const entries: UsesSection[] = [
             src="/images/coding_by_day.jpg"
             sizes="(min-width: 768px) 650px, 360px"
             widths={[360, 720, 1440, 1950]}
-            aspectRatio={2 / 1}
             width={3000}
             height={1500}
             loading="eager"
