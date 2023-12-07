@@ -10,14 +10,15 @@ const { seo } = Astro.props
 const { head, og } = seo
 
 /// Use a fallback image if no image is provided
-let ogImage = '/og-image.jpg'
+import fallbackOgImage from '/public/og-image.jpg'
+let ogImage = fallbackOgImage.src
 
-if (og.image_url) {
+if (og.image) {
   /// Since we are using dynamic imports, we need stick to vite's/rollup's rules as described here:
   /// https://github.com/rollup/plugins/tree/master/packages/dynamic-import-vars#how-it-works
 
   /// Make sure that og.image_url is a path with one folder and one jpg file by using a regex
-  const matches = og.image_url.match(
+  const matches = og.image.src.match(
     /\/(?<folder>[a-z0-9-_]+)\/(?<filename>[a-z0-9-_]+)\.jpg/i,
   )
 

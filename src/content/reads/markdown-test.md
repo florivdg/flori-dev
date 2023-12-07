@@ -5,7 +5,7 @@ description: 'Test markup'
 tags: ['markdown']
 image:
   {
-    src: '/reads/the_concept_of_an_ai_generating_imaginative_visuals.jpg',
+    src: '../../assets/reads/the_concept_of_an_ai_generating_imaginative_visuals.jpg',
     alt: 'A cute articial intelligence as a cartoon character',
   }
 draft: true
