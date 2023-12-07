@@ -4,20 +4,21 @@ pubDate: 2023-04-15
 description: 'Text-to-image generators are popular these days, but often suffer from limited resolution due to computational constraints. To overcome this hurdle, I discovered a fantastic open source AI tool called Upscayl.'
 image:
   {
-    src: '/reads/from_pixels_to_stunning_visuals.jpg',
+    src: '../../assets/reads/from_pixels_to_stunning_visuals.jpg',
     alt: 'From pixels to stunning visuals',
   }
 tags: ['ai', 'midjourney', 'upscayl']
 ---
 
 import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/from_pixels_to_stunning_visuals.jpg'
 
 As an AI and especially Midjourney enthusiast, I've often faced the challenge of limited resolution in AI-generated images. Text-to-image generators are popular these days, but often suffer from limited resolution due to computational constraints. Resizing these generated images for high-resolution displays can result in a loss of detail and visual quality. And I love visual quality! 😍
 
 To overcome this hurdle, I discovered a fantastic open source AI tool called [Upscayl](https://github.com/upscayl/upscayl).
 
 <Image
-  src="/reads/from_pixels_to_stunning_visuals.jpg"
+  src={coverImage}
   alt="From pixels to stunning visuals"
   caption="From pixels to stunning visuals."
   lazy={false}

@@ -4,20 +4,21 @@ pubDate: 2023-05-08
 description: 'More for a demo than actual needed functionality, I tried to mimic ChatGPT''s "typewriter" visual effect when chunks come back from the streaming OpenAI API. I was surprised how easy it was to get something working with Deno''s built-in Web Streams API.'
 image:
   {
-    src: '/reads/dinosaur_and_paper_planes.jpg',
+    src: '../../assets/reads/dinosaur_and_paper_planes.jpg',
     alt: 'Cute dinosaur, a lot of paper planes flying in mid air, flat vector illustration, orange and blue colors',
   }
 tags: ['deno', 'gpt', 'openai', 'edge', 'supabase']
 ---
 
 import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/dinosaur_and_paper_planes.jpg'
 
 In my day job, I am currently working on a [GPT-powered](https://openai.com/product/gpt-4) web application running on [Supabase](https://supabase.com) that makes heavy use of the built-in Edge Functions. These Edge Functions run on [Deno Deploy](https://deno.com/deploy), so I learned a lot about Deno and its ecosystem.
 
 More for a demo than actual needed functionality, I tried to mimic ChatGPT's "typewriter" visual effect when chunks come back from the streaming OpenAI API. I was surprised how easy it was to get something working with Deno's built-in Web Streams API.
 
 <Image
-  src="/reads/dinosaur_and_paper_planes.jpg"
+  src={coverImage}
   alt="Cute dinosaur, a lot of paper planes flying in mid air, flat vector illustration, orange and blue colors"
   caption="Cute dinosaur, a lot of paper planes flying in mid air, flat vector illustration, orange and blue colors."
   lazy={false}

@@ -1,8 +1,9 @@
 ---
-import { Picture } from '@astrojs/image/components'
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
 
 interface Props {
-  src: string
+  src: ImageMetadata
   alt: string
   caption?: string
   skew?: boolean
@@ -18,11 +19,10 @@ const lazy: boolean = userLazy ?? true
   <Picture
     src={src}
     alt={alt}
-    sizes="(min-width: 768px) 650px, 360px"
-    widths={[360, 720, 1440, 1950]}
-    aspectRatio={3 / 2}
-    width={1500}
-    height={1000}
+    formats={['avif', 'webp']}
+    densities={[1, 2, 3]}
+    width={700}
+    height={350}
     class={skew ? '-rotate-1 -skew-x-3 rounded-lg shadow-lg' : undefined}
     loading={lazy ? 'lazy' : 'eager'}
   />
