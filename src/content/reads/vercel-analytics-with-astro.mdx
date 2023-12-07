@@ -11,13 +11,14 @@ tags: ['vercel', 'astro', 'analytics', 'web vitals']
 ---
 
 import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/vercel_analytics_with_astro_to_the_moon.jpg'
 
 Integrating Vercel Analytics with Astro is a breeze, or so they say. Unfortunately, it's not as easy as it seems. In this blog post, I'll walk you through the actual process and fill in the gaps left by the documentation.
 
 By following the steps outlined here, I was able to successfully implement Web Vitals and Audience Analytics on my personal website - the very site you're visiting now, which is a static site generated with Astro (no SSR enabled).
 
 <Image
-  src="/reads/vercel_analytics_with_astro_to_the_moon.jpg"
+  src={coverImage}
   alt="Vector art of a website user statistics chart in a space environment with a rocket going to the moon."
   caption="With Vercel Analytics to the moon 🚀, but with some required workarounds."
   lazy={false}

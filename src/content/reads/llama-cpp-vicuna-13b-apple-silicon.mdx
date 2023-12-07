@@ -11,11 +11,12 @@ tags: ['ai', 'llama', 'vicuna', 'apple silicon']
 ---
 
 import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/vicuna_in_a_tech_environment_macos_terminal_gpu_acceleration.jpg'
 
 The other day I was trying to get [Vicuna-13B](https://lmsys.org/blog/2023-03-30-vicuna/) running on my local machine using the [llama.cpp port](https://github.com/ggerganov/llama.cpp). While getting it to work on the CPU was not difficult, I had some problems getting the GPU acceleration to work. This is a short description of how I managed to get it running.
 
 <Image
-  src="/reads/vicuna_in_a_tech_environment_macos_terminal_gpu_acceleration.jpg"
+  src={coverImage}
   alt="A Vicuna standing next to a computer screen with mountains in the background"
   caption="A Vicuna standing next to a computer screen with mountains in the background."
   lazy={false}
