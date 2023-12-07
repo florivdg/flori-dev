@@ -7,6 +7,9 @@ import UsesList from '../components/UsesList.astro'
 import CurrentBrowser from '../components/CurrentBrowser.vue'
 import type { SEOData } from '../types/SEO'
 
+import imageCodingByDay from '../assets/images/coding_by_day.jpg'
+import imageCodingAtNight from '../assets/images/coding_at_night.jpg'
+
 /// Page title
 const title = 'Uses'
 
@@ -153,8 +156,8 @@ const entries: UsesSection[] = [
           Welcome to my Uses page! This is a page where I list out all the
           hardware, software, and tools that I use on a <span class="highlight"
             >daily basis</span
-          > to help me stay productive and efficient. Inspired by Wes Bos and his
-          popular
+          > to help me stay productive and efficient. Inspired by Wes Bos and
+          his popular
           <a
             href="https://wesbos.com/uses"
             target="_blank"
@@ -170,22 +173,22 @@ const entries: UsesSection[] = [
         <div class="group relative mb-16 mt-8">
           <Picture
             alt="A guy coding at night, sitting on a desk, wearing a hoodie, camera from behind, cartoon, super detailed, ambient lighting (MidJourney v5)"
-            src="/images/coding_at_night.jpg"
-            sizes="(min-width: 768px) 650px, 360px"
-            widths={[360, 720, 1440, 1950]}
-            width={3000}
-            height={1500}
+            formats={['avif', 'webp']}
+            src={imageCodingAtNight}
+            densities={[1, 2, 3]}
+            width={700}
+            height={350}
             loading="eager"
             class="hidden -rotate-1 -skew-x-3 rounded-lg shadow-lg dark:block"
           />
 
           <Picture
             alt="A guy from behind sitting at a Starbucks at day with a laptop and drinking a coffee. He is coding software and is wearing a hoodie. You can't see his face. The light is ambient and the details are super realistic and everything is much detailed. Make it cartoon style and bright. (MidJourney v5)"
-            src="/images/coding_by_day.jpg"
-            sizes="(min-width: 768px) 650px, 360px"
-            widths={[360, 720, 1440, 1950]}
-            width={3000}
-            height={1500}
+            formats={['avif', 'webp']}
+            src={imageCodingByDay}
+            densities={[1, 2, 3]}
+            width={700}
+            height={350}
             loading="eager"
             class="block -rotate-1 -skew-x-3 rounded-lg shadow-lg dark:hidden"
           />

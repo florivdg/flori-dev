@@ -8,6 +8,8 @@ import MySkills from '../components/MySkills.astro'
 import HotStuff from '../components/HotStuff.astro'
 import type { SEOData } from '../types/SEO'
 
+import imageFlori from '../assets/images/flori.jpg'
+
 /// Page title
 const title = 'Hello, I am Flori ✌️'
 
@@ -64,7 +66,7 @@ const seo: SEOData = {
             <span class="highlight font-medium">father of two</span> and a <span
               class="highlight font-medium">loving husband</span
             >
-            who spends his days delving into the mysteries of <span
+             who spends his days delving into the mysteries of <span
               class="highlight font-medium">Vue.js web development</span
             >. When I'm not coding, you'll usually find me binge-watching
             Stranger Things or exploring the
@@ -94,9 +96,9 @@ const seo: SEOData = {
         >
           <Picture
             alt="Florian van der Galiën"
-            src="/images/flori.jpg"
-            sizes="(min-width: 760px) 300px, 180px"
-            widths={[180, 300, 360, 600, 900]}
+            src={imageFlori}
+            formats={['avif', 'webp']}
+            densities={[1, 2, 3]}
             width={300}
             height={300}
             class="absolute inset-0 h-full w-full object-cover"

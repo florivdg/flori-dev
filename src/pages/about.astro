@@ -7,6 +7,9 @@ import MySkills from '../components/MySkills.astro'
 import type { SEOData } from '../types/SEO'
 import { Picture } from 'astro:assets'
 
+import imageFlori from '../assets/images/flori.jpg'
+import imageKids from '../assets/images/cute_toddler_girl_and_cute_baby_boy_as_software_engineers.png'
+
 /// Page title
 const title = 'About'
 
@@ -28,8 +31,8 @@ const seo: SEOData = {
       <h1 class="mb-6 text-4xl font-black">About me</h1>
 
       <p class="mb-4 text-xl font-semibold">
-        <span class="highlight">tl;dr</span> Florian van der Galiën, creates stuff
-        with code.
+        <span class="highlight">tl;dr</span> Florian van der Galiën, creates
+        stuff with code.
       </p>
 
       <p class="mb-12 text-xl [text-wrap:balance]">
@@ -61,9 +64,8 @@ const seo: SEOData = {
         >
           <Picture
             alt="Florian van der Galiën"
-            src="/images/flori.jpg"
-            sizes="(min-width: 760px) 300px, 180px"
-            widths={[180, 300, 360, 600, 900]}
+            src={imageFlori}
+            densities={[1, 2, 3]}
             width={300}
             height={300}
             class="absolute inset-0 h-full w-full object-cover"
@@ -108,21 +110,21 @@ const seo: SEOData = {
         In my personal life, I am a dedicated husband and a proud <span
           class="highlight">father of two</span
         >
-        wonderful children. My children bring an immense amount of joy and fulfillment
-        to my life, and they are a constant reminder of what truly matters. My family
-        is my source of inspiration and motivation, and they play a significant role
-        in who I am both personally and professionally.
+         wonderful children. My children bring an immense amount of joy and
+        fulfillment to my life, and they are a constant reminder of what truly
+        matters. My family is my source of inspiration and motivation, and they
+        play a significant role in who I am both personally and professionally.
       </p>
 
       <figure class="mb-8">
         <div class="group relative mb-16 mt-8">
           <Picture
             alt="Cute toddler girl and cute baby boy as software engineers in their kids playroom cartoon, flat vector illustration (MidJourney v5.2)"
-            src="/images/cute_toddler_girl_and_cute_baby_boy_as_software_engineers.png"
-            sizes="(min-width: 768px) 650px, 360px"
-            widths={[360, 720, 1440, 1950]}
-            width={3000}
-            height={1500}
+            src={imageKids}
+            formats={['avif', 'webp']}
+            densities={[1, 2, 3]}
+            width={700}
+            height={350}
             loading="eager"
             class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
           />
