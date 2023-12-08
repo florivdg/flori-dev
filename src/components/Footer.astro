@@ -21,7 +21,7 @@ const currentPath = new URL(Astro.request.url).pathname
   <section class="bg-white px-4 dark:bg-gray-800">
     <div class="py-16">
       <div>
-        <p class="mb-16 text-center text-sm font-medium">
+        <p class="mb-8 text-center text-sm font-medium">
           Powered by
 
           <a
@@ -79,6 +79,20 @@ const currentPath = new URL(Astro.request.url).pathname
               loading="lazy"
             />
           </a><span class="sr-only">Visual Studio Code.</span>
+        </p>
+        <p class="mb-16 mt-8 text-center">
+          <a
+            href="https://astro.build"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block"
+            ><span class="sr-only">Built with Astro</span><img
+              src="https://astro.badg.es/v2/built-with-astro/large.svg"
+              alt="Built with Astro"
+              width="288"
+              height="48"
+            /></a
+          >
         </p>
       </div>
 
