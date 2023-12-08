@@ -1,0 +1,128 @@
+---
+title: 'Streaming with FastAPI and Python'
+pubDate: 2023-12-08
+description: "For an upcoming project, instead of using Supabase as the backend, we're opting for Python and FastAPI. Personally, I've never coded anything in Python beyond some basic proof-of-concept stuff, so I'm excited to learn something new."
+image:
+  {
+    src: '../../assets/reads/python_fastapi_event_stream.jpg',
+    alt: 'A cartoon Python snake creatively intertwined with a flowing stream of text and data, symbolizing text/event-stream. The Python snake is depicted with a friendly and intelligent look, interacting with the stream. In the background, a simplified representation of the FastAPI logo, with its characteristic green and white colors, is visible. The overall atmosphere is tech-savvy and engaging',
+  }
+tags: ['python', 'gpt', 'openai', 'fastapi']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/python_fastapi_event_stream.jpg'
+
+Exactly seven months ago today, I published an article about [streaming on the edge with Deno](/reads/streaming-on-the-edge). At that time, I worked on a project involving streaming OpenAI API responses to users, similar to what ChatGPT does.
+
+For our upcoming project, instead of using Supabase as the backend, we're opting for Python and FastAPI. Personally, I've never coded anything in Python beyond some basic proof-of-concept stuff, so I'm excited to learn something new.
+
+<Image
+  src={coverImage}
+  alt="A cartoon Python snake creatively intertwined with a flowing stream of text and data, symbolizing text/event-stream. The Python snake is depicted with a friendly and intelligent look, interacting with the stream. In the background, a simplified representation of the FastAPI logo, with its characteristic green and white colors, is visible. The overall atmosphere is tech-savvy and engaging."
+  caption="A cartoon Python snake intertwined with a flowing stream of text and data, symbolizing text/event-stream."
+  lazy={false}
+/>
+
+## Inspiration
+
+While creating our prototype, I stumbled upon an article on [tech.clevertap.com](https://tech.clevertap.com/streaming-openai-app-in-python/). I quickly realized that this article was based on a pre-1.0 version of OpenAI's Python library, and that the API had changed significantly. So, I decided to write about what I learned in the process of making this work.
+
+## Project Setup with JetBrains PyCharm
+
+As you probably know (since you've diligently read my [Uses](/uses) page), I'm a daily Visual Studio Code user. For this upcoming project, my development team at work decided to use JetBrains PyCharm. I must admit that I'm quite impressed with the IDE so far.
+
+Setting up a FastAPI project in PyCharm is pretty straightforward. It offers a project template and lets you choose to use a virtual environment. `uvicorn`, the server of choice for FastAPI, was already configured in the project template. Thumbs up for that! 👍
+
+### Dependencies
+
+The dependencies required for this dummy project are also pretty straightforward. We need `fastapi`, `python-dotenv`, and `openai`—the latter being the official OpenAI Python library. Of course, we also need `uvicorn` as the server.
+
+```bash
+# requirements.txt
+
+fastapi
+openai
+python-dotenv
+uvicorn
+```
+
+I added `python-dotenv` to read my OpenAI API key from a `.env` file by calling `load_dotenv()` in the `main.py` file.
+
+## The OpenAI API Client
+
+Since version 1.0.0, the OpenAI Python library has undergone significant changes. First, you need to instantiate a client to use the API.
+
+```python
+# main.py
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
+if not OPENAI_API_KEY:
+  print("Please set the OPENAI_API_KEY environment variable. Exiting.")
+  sys.exit(1)
+
+client = OpenAI()
+client.api_key = OPENAI_API_KEY
+```
+
+You can find more about the recent Python API changes in the [v1.0.0 Migration Guide](https://github.com/openai/openai-python/discussions/742).
+
+### Streaming Completions
+
+To stream completions from the OpenAI API, you need to set the `stream` parameter to `True` when calling `client.chat.completions.create()`. This returns a generator that you can iterate over and yield the response chunks in our response.
+
+```python
+# main.py
+
+def get_response_openai(prompt):
+  try:
+    completion = client.chat.completions.create(
+      model="gpt-3.5-turbo",
+      n=1,
+      top_p=1,
+      frequency_penalty=0,
+      presence_penalty=0,
+      messages=[
+        {"role": "system",
+          "content": "You are an expert creative marketer. Create a campaign for the brand the user enters."},
+        {"role": "user", "content": prompt},
+      ],
+      stream=True,
+    )
+  except Exception as e:
+    print("Error creating campaigns from OpenAI:", str(e))
+    return 503
+  try:
+    for chunk in completion:
+      current_content = chunk.choices[0].delta.content
+      if current_content:
+        yield current_content
+      else:
+        continue
+  except Exception as e:
+    print("Error yielding response chunks from OpenAI:", str(e))
+    return 503
+```
+
+## FastAPI's `StreamingResponse`
+
+To stream back the chunks we receive from the OpenAI API, we need to use FastAPI's `StreamingResponse`. This class takes a generator as its first parameter and yields the chunks to the client.
+
+The following is the complete API endpoint needed to stream back the OpenAI API responses to the client.
+
+```python
+# main.py
+
+@app.get(
+  "/campaign/",
+  tags=["APIs"],
+  response_model=str,
+)
+def campaign(prompt: str = Query(..., max_length=20)):
+  return StreamingResponse(get_response_openai(prompt), media_type="text/event-stream")
+```
+
+## Conclusion
+
+I'm really impressed with FastAPI and Python so far. It's a great combination for building APIs. It seems quite performant and the code is very readable. Projects built with FastAPI appear to be quite maintainable, too. This is why we chose FastAPI over a full-blown Django project for something lightweight and efficient.
