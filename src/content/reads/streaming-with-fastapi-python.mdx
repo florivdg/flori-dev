@@ -38,8 +38,8 @@ Setting up a FastAPI project in PyCharm is pretty straightforward. It offers a p
 
 The dependencies required for this dummy project are also pretty straightforward. We need `fastapi`, `python-dotenv`, and `openai`—the latter being the official OpenAI Python library. Of course, we also need `uvicorn` as the server.
 
-```bash
-# requirements.txt
+```python
+# Requirements.txt
 
 fastapi
 openai
@@ -53,7 +53,7 @@ I added `python-dotenv` to read my OpenAI API key from a `.env` file by calling 
 
 Since version 1.0.0, the OpenAI Python library has undergone significant changes. First, you need to instantiate a client to use the API.
 
-```python
+```python {9-10}
 # main.py
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -72,7 +72,7 @@ You can find more about the recent Python API changes in the [v1.0.0 Migration G
 
 To stream completions from the OpenAI API, you need to set the `stream` parameter to `True` when calling `client.chat.completions.create()`. This returns a generator that you can iterate over and yield the response chunks in our response.
 
-```python
+```python {16}
 # main.py
 
 def get_response_openai(prompt):

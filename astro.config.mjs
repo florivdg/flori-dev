@@ -14,9 +14,12 @@ import vercel from '@astrojs/vercel/static'
 import sitemap from '@astrojs/sitemap'
 
 // https://astro.build/config
+import expressiveCode from 'astro-expressive-code'
+
+// https://astro.build/config
 export default defineConfig({
   site: 'https://flori.dev',
-  integrations: [tailwind(), vue(), mdx(), sitemap()],
+  integrations: [tailwind(), vue(), expressiveCode(), mdx(), sitemap()],
   output: 'static',
   adapter: vercel({
     analytics: true,
@@ -26,7 +29,6 @@ export default defineConfig({
       'import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID': JSON.stringify(
         process.env.VERCEL_ANALYTICS_ID,
       ),
-
       'import.meta.env.PUBLIC_VERCEL_URL': JSON.stringify(
         process.env.VERCEL_URL,
       ),
