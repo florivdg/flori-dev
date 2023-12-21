@@ -26,6 +26,7 @@ const readsCollection = defineCollection({
  * Define a content collection for photos.
  */
 const gridCollection = defineCollection({
+  type: 'data',
   schema: ({ image }) =>
     z.object({
       id: z.string(),
