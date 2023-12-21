@@ -25,7 +25,7 @@ const readsCollection = defineCollection({
 /**
  * Define a content collection for photos.
  */
-const momentsCollection = defineCollection({
+const gridCollection = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -42,5 +42,5 @@ const momentsCollection = defineCollection({
 /// Export all collections.
 export const collections = {
   reads: readsCollection,
-  moments: momentsCollection,
+  grid: gridCollection,
 }

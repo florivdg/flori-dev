@@ -7,15 +7,15 @@ import Layout from '../../layouts/Layout.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 
 export async function getStaticPaths() {
-  const momentsEntries = await getCollection('moments')
-  return momentsEntries.map((entry) => ({
+  const gridEntries = await getCollection('grid')
+  return gridEntries.map((entry) => ({
     params: { slug: entry.slug },
     props: { entry },
   }))
 }
 
 interface Props {
-  entry: CollectionEntry<'moments'>
+  entry: CollectionEntry<'grid'>
 }
 
 const { entry } = Astro.props
