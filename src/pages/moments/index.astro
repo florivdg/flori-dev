@@ -1,10 +1,8 @@
 ---
-import { getCollection } from 'astro:content'
-import { Image } from 'astro:assets'
 import Layout from '../../layouts/Layout.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 import FluidContent from '../../components/FluidContent.astro'
-import { formatDate } from '../../utils/formatters'
+import MomentsGallery from '../../components/MomentsGallery.astro'
 import type { SEOData } from '../../types/SEO'
 
 /// Page title
@@ -20,14 +18,6 @@ const seo: SEOData = {
     type: 'website',
   },
 }
-
-const moments = (await getCollection('moments')).sort((a, b) => {
-  const dateComparison = b.data.date.getTime() - a.data.date.getTime()
-  if (dateComparison === 0) {
-    return b.id.localeCompare(a.id)
-  }
-  return dateComparison
-})
 ---
 
 <Layout seo={seo}>
@@ -45,56 +35,14 @@ const moments = (await getCollection('moments')).sort((a, b) => {
       <p class="mb-12 text-xl">
         This is a collection of <span class="highlight">actual light</span>
          hitting an actual sensor in an actual camera. No AI-generated images
-        here. Just moments captured in time.
+        here. Just moments captured in time.<br />
+         Although this does not mean that I don't use AI to help me with my
+        edits.
       </p>
     </BoxedContent>
 
     <FluidContent>
-      <ul class="masonry">
-        {
-          moments.map((entry, i) => (
-            <li class="-rotate-1 -skew-x-1 overflow-hidden rounded-lg shadow-lg">
-              <Image
-                src={entry.data.image}
-                alt={entry.data.alt}
-                width="600"
-                densities={[1, 2, 3]}
-                class="h-auto w-full"
-              />
-            </li>
-          ))
-        }
-      </ul>
+      <MomentsGallery />
     </FluidContent>
   </main>
 </Layout>
-
-<style>
-  .masonry {
-    @supports (grid-template-rows: masonry) {
-      @apply grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3;
-      grid-template-rows: masonry;
-    }
-
-    @supports not (grid-template-rows: masonry) {
-      @apply grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3;
-
-      & li {
-        aspect-ratio: 4 / 5;
-
-        & img {
-          object-fit: cover;
-          object-position: center;
-          height: 100%;
-          width: 100%;
-        }
-      }
-      /* @apply columns-1 break-inside-avoid sm:columns-2 lg:columns-3;
-      column-gap: 2.5rem;
-
-      & li {
-        margin-bottom: 2.5rem;
-      } */
-    }
-  }
-</style>

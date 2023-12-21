@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+
+const moments = (await getCollection('moments')).sort((a, b) => {
+  const dateComparison = b.data.date.getTime() - a.data.date.getTime()
+  if (dateComparison === 0) {
+    return b.id.localeCompare(a.id)
+  }
+  return dateComparison
+})
+---
+
+<ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  {
+    moments.map((entry, i) => (
+      <li class="aspect-[4/5] -rotate-1 -skew-x-1 overflow-hidden rounded-lg shadow-lg">
+        <a href={`/moments/${entry.slug}`} class="block h-full w-full">
+          <Image
+            src={entry.data.image}
+            alt={entry.data.alt}
+            width="600"
+            densities={[1, 2, 3]}
+            class="h-full w-full object-cover object-center"
+            loading={i >= 3 ? 'lazy' : 'eager'}
+          />
+        </a>
+      </li>
+    ))
+  }
+</ul>

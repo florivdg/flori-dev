@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import type { SEOData } from '../../types/SEO'
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
+
+export async function getStaticPaths() {
+  const momentsEntries = await getCollection('moments')
+  return momentsEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }))
+}
+
+interface Props {
+  entry: CollectionEntry<'moments'>
+}
+
+const { entry } = Astro.props
+const { Content } = await entry.render()
+
+/// Page title
+const title = entry.data.title
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: entry.data.alt,
+  },
+  og: {
+    image: entry.data.image,
+    type: 'article',
+  },
+}
+---
+
+<Layout seo={seo}>
+  <main>
+    <BoxedContent>
+      <h1
+        class="mb-6 text-5xl font-extrabold text-slate-600 dark:text-slate-200 md:text-6xl"
+      >
+        {entry.data.title}
+      </h1>
+
+      <Image
+        src={entry.data.image}
+        alt={entry.data.alt}
+        width="1000"
+        densities={[1, 2, 3]}
+      />
+    </BoxedContent>
+  </main>
+</Layout>
