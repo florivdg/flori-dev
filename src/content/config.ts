@@ -28,13 +28,14 @@ const readsCollection = defineCollection({
 const gridCollection = defineCollection({
   schema: ({ image }) =>
     z.object({
+      id: z.string(),
       title: z.string(),
       image: image().refine((img) => img.width >= 3000, {
         message: 'Photos must be at least 3000 pixels wide!',
       }),
       alt: z.string(),
       location: z.string().optional(),
-      date: z.date(),
+      date: z.string().transform((str) => new Date(str)),
       tags: z.array(z.string()),
     }),
 })

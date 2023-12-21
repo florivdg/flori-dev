@@ -9,7 +9,7 @@ import BoxedContent from '../../components/BoxedContent.astro'
 export async function getStaticPaths() {
   const gridEntries = await getCollection('grid')
   return gridEntries.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { id: entry.id },
     props: { entry },
   }))
 }
@@ -19,7 +19,6 @@ interface Props {
 }
 
 const { entry } = Astro.props
-const { Content } = await entry.render()
 
 /// Page title
 const title = entry.data.title
