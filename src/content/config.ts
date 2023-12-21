@@ -22,7 +22,25 @@ const readsCollection = defineCollection({
     }),
 })
 
+/**
+ * Define a content collection for photos.
+ */
+const momentsCollection = defineCollection({
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      image: image().refine((img) => img.width >= 3000, {
+        message: 'Photos must be at least 3000 pixels wide!',
+      }),
+      alt: z.string(),
+      location: z.string().optional(),
+      date: z.date(),
+      tags: z.array(z.string()),
+    }),
+})
+
 /// Export all collections.
 export const collections = {
   reads: readsCollection,
+  moments: momentsCollection,
 }
