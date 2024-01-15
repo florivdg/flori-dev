@@ -38,6 +38,14 @@ const gridCollection = defineCollection({
       location: z.string().optional(),
       date: z.string().transform((str) => new Date(str)),
       tags: z.array(z.string()),
+      exif: z.object({
+        camera: z.string(),
+        lens: z.string(),
+        aperture: z.string(),
+        focal_length: z.string(),
+        shutter_speed: z.string(),
+        iso: z.string(),
+      }),
     }),
 })
 

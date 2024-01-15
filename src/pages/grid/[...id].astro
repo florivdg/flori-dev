@@ -40,7 +40,7 @@ const seo: SEOData = {
   <main>
     <BoxedContent>
       <h1
-        class="mb-6 text-5xl font-extrabold text-slate-600 dark:text-slate-200 md:text-6xl"
+        class="mb-6 text-5xl font-extrabold text-slate-600 md:text-6xl dark:text-slate-200"
       >
         {entry.data.title}
       </h1>
@@ -51,6 +51,11 @@ const seo: SEOData = {
         width="1000"
         densities={[1, 2, 3]}
       />
+
+      <code
+        class="mt-4 inline-block border border-slate-400 p-2 dark:border-slate-600"
+        >{JSON.stringify(entry, null, 2)}</code
+      >
     </BoxedContent>
   </main>
 </Layout>
