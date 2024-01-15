@@ -1,9 +1,16 @@
 {
   "id": "2R9A9821",
-  "title": "The Moon",
+  "title": "The Moon's Night Whisper",
   "image": "./2R9A9821.jpg",
-  "alt": "",
+  "alt": "The image captures a waxing crescent moon centered in a dark, textured night sky. The moon is brightly lit on its curved edge, fading into darkness toward the rest of its surface, which is barely visible against the backdrop of the evening glow.",
   "location": "Bayreuth, Germany",
   "date": "2023-12-17",
-  "tags": ["moon"]
+  "tags": ["moon", "night", "sky", "crescent", "astronomy"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "1250",
+    "focal_length": "200.0"
+  }
 }

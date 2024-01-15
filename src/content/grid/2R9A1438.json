@@ -1,9 +1,16 @@
 {
   "id": "2R9A1438",
-  "title": "Pacific Sea Nettle",
+  "title": "The Dance of the Medusae",
   "image": "./2R9A1438.jpg",
-  "alt": "",
-  "location": "Zoo Leipzig, Germany",
+  "alt": "A prominent translucent blue jellyfish is centered in the image, with detailed, delicate tentacles visible within its bell, illuminated against a deep blue, almost black underwater background. Smaller, faint jellyfish are visible in the background, providing a sense of depth.",
+  "location": "Zoo Leipzig, Leipzig, Germany",
   "date": "2023-09-04",
-  "tags": ["jellyfish", "zoo"]
+  "tags": ["jellyfish", "underwater", "blue", "marine", "wildlife"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "5.6",
+    "iso": "6400",
+    "focal_length": "35.0"
+  }
 }

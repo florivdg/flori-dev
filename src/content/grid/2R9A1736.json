@@ -1,9 +1,16 @@
 {
   "id": "2R9A1736",
-  "title": "Orang-Utan at the Zoo",
+  "title": "Basking in Sunlight: Orangutan in Repose",
   "image": "./2R9A1736.jpg",
-  "alt": "",
-  "location": "Zoo Leipzig, Germany",
+  "alt": "The image captures a lush, green outdoor orangutan exhibit on a sunny day. There is an orangutan sitting on the grass, likely enjoying a moment of rest or foraging for food. The habitat is equipped with tall, dead trees arranged to mimic a natural environment, complete with multiple ropes strung between them for the orangutans to climb and swing on. The backdrop includes a clear blue sky and a variety of greenery, including trees and shrubs, enhancing the sense of a tranquil, natural setting.",
+  "location": "Zoo Leipzig, Leipzig, Germany",
   "date": "2023-09-04",
-  "tags": ["orangutan", "zoo"]
+  "tags": ["orangutan", "habitat", "zoo", "nature", "wildlife"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "5.6",
+    "iso": "100",
+    "focal_length": "35.0"
+  }
 }

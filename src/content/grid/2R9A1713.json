@@ -1,9 +1,16 @@
 {
   "id": "2R9A1713",
-  "title": "Family Day at the Zoo",
+  "title": "Family Day at the Park",
   "image": "./2R9A1713.jpg",
-  "alt": "",
-  "location": "Zoo Leipzig, Germany",
+  "alt": "A child in a pink sweater and white hat being held up by an adult to look over a rustic wooden fence, while another small child in a beige hat and green pants stands facing the fence, at a park with lush greenery and rock formations in the background under a clear blue sky.",
+  "location": "Zoo Leipzig, Leipzig, Germany",
   "date": "2023-09-04",
-  "tags": ["family", "zoo"]
+  "tags": ["family", "nature", "children", "park", "exploration"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "1.8",
+    "iso": "100",
+    "focal_length": "35.0"
+  }
 }
