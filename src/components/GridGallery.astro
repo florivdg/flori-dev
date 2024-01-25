@@ -14,8 +14,8 @@ const images = (await getCollection('grid')).sort((a, b) => {
 <ul class="moments grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
   {
     images.map((entry, i) => (
-      <li class="moment aspect-[4/5] -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
-        <a href={`/grid/${entry.id}`} class="block h-full w-full">
+      <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
+        <a href={`/grid/${entry.id}`} class="block">
           <Image
             src={entry.data.image}
             alt={entry.data.alt}
@@ -31,7 +31,24 @@ const images = (await getCollection('grid')).sort((a, b) => {
 </ul>
 
 <style>
-  .moments:has(.moment:hover) .moment:not(:hover) {
-    opacity: 0.75;
+  .moments {
+    @supports (grid-template-rows: masonry) {
+      grid-template-rows: masonry;
+    }
+
+    @supports not (grid-template-rows: masonry) {
+      aspect-ratio: 4 / 5;
+
+      a {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    &:has(.moment:hover) {
+      .moment:not(:hover) {
+        opacity: 0.75;
+      }
+    }
   }
 </style>
