@@ -21,7 +21,7 @@ const images = (await getCollection('grid')).sort((a, b) => {
             alt={entry.data.alt}
             width="600"
             densities={[1, 2, 3]}
-            class="h-full w-full object-cover object-center"
+            class="object-cover object-center"
             loading={i >= 3 ? 'lazy' : 'eager'}
           />
         </a>
@@ -34,14 +34,16 @@ const images = (await getCollection('grid')).sort((a, b) => {
   .moments {
     @supports (grid-template-rows: masonry) {
       grid-template-rows: masonry;
+
+      img {
+        height: 100%;
+        width: 100%;
+      }
     }
 
     @supports not (grid-template-rows: masonry) {
-      aspect-ratio: 4 / 5;
-
-      a {
-        height: 100%;
-        width: 100%;
+      img {
+        aspect-ratio: 4 / 5;
       }
     }
 
