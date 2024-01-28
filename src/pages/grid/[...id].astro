@@ -1,0 +1,116 @@
+---
+import { getCollection } from 'astro:content'
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import type { SEOData } from '../../types/SEO'
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
+
+export async function getStaticPaths() {
+  const gridEntries = await getCollection('grid')
+  return gridEntries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }))
+}
+
+interface Props {
+  entry: CollectionEntry<'grid'>
+}
+
+const { entry } = Astro.props
+
+/// Page title
+const title = entry.data.title
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: entry.data.alt,
+  },
+  og: {
+    image: entry.data.image,
+    type: 'article',
+  },
+}
+---
+
+<Layout seo={seo}>
+  <main>
+    <BoxedContent>
+      <h1
+        class="mb-6 text-balance text-5xl font-extrabold text-slate-600 md:text-6xl dark:text-slate-200"
+      >
+        {entry.data.title}
+      </h1>
+
+      <article class="mb-12 text-xl">
+        {entry.data.alt}
+      </article>
+
+      <dialog
+        class="fixed inset-0 z-[500] flex h-dvh w-full items-center justify-center bg-white dark:bg-gray-950"
+      >
+        <Image
+          src={entry.data.image}
+          alt={entry.data.alt}
+          width="1800"
+          format="avif"
+          quality="mid"
+          densities={[1, 2]}
+          class="mx-auto h-auto max-h-full w-auto max-w-full"
+        />
+
+        <div class="absolute right-0 top-0 z-10 p-4">
+          <a
+            href="/grid/"
+            data-back
+            class="flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-200/80 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1"
+              stroke="currentColor"
+              class="h-8 w-8 text-slate-700 dark:text-slate-300"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"></path>
+            </svg>
+          </a>
+        </div>
+      </dialog>
+    </BoxedContent>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('back') && params.get('back') === '1') {
+      /// Grab the back link and add a click event to it
+      const backLink = document.querySelector('[data-back]')
+      if (backLink) {
+        backLink.addEventListener('click', (e) => {
+          e.preventDefault()
+          window.history.back()
+        })
+
+        /// Reset the URL params
+        params.delete('back')
+        window.history.replaceState(
+          {},
+          '',
+          `${window.location.pathname}?${params}`,
+        )
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      overflow: hidden;
+    }
+  </style>
+</Layout>

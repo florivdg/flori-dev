@@ -36,12 +36,8 @@ const stuff = [
     @apply transition-opacity duration-150;
   }
 
-  .hot-stuff:has(:hover) li {
+  .hot-stuff:has(:hover) li:not(:hover) {
     opacity: 0.5;
-  }
-
-  .hot-stuff li:hover {
-    opacity: 1;
   }
 </style>
 

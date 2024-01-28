@@ -1,0 +1,17 @@
+{
+  "id": "2R9A1438",
+  "title": "The Dance of the Medusae",
+  "image": "./2R9A1438.jpg",
+  "alt": "A prominent translucent blue jellyfish is centered in the image, with detailed, delicate tentacles visible within its bell, illuminated against a deep blue, almost black underwater background. Smaller, faint jellyfish are visible in the background, providing a sense of depth.",
+  "location": "Zoo Leipzig, Leipzig, Germany",
+  "date": "2023-09-04",
+  "tags": ["jellyfish", "underwater", "blue", "marine", "wildlife"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "5.6",
+    "iso": "6400",
+    "focal_length": "35.0",
+    "shutter_speed": "1/160"
+  }
+}

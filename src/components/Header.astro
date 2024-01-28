@@ -19,6 +19,10 @@ const navItems: {
     href: '/reads/',
   },
   {
+    name: 'Grid',
+    href: '/grid/',
+  },
+  {
     name: 'Uses',
     href: '/uses/',
   },
@@ -50,11 +54,12 @@ const currentPath = new URL(Astro.request.url).pathname
                             ? currentPath !== item.href
                             : !currentPath.startsWith(item.href),
                       },
-                      'h-full flex items-center px-3 xs:px-6 py-2.5 transition',
+                      'flex h-full items-center px-2 py-2.5 transition xs:px-4 sm:px-6',
                     ]}
                     href={item.href}
                   >
                     {item.href === '/' ? (
+                      <span class="sr-only">Go to home</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 20 20"

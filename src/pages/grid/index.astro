@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
+import FluidContent from '../../components/FluidContent.astro'
+import GridGallery from '../../components/GridGallery.astro'
+import type { SEOData } from '../../types/SEO'
+
+/// Page title
+const title = 'Grid'
+
+/// OpenGraph meta tags data
+const seo: SEOData = {
+  head: {
+    title,
+    description: "This is not artificial. It's photography!",
+  },
+  og: {
+    type: 'website',
+  },
+}
+---
+
+<Layout seo={seo}>
+  <main>
+    <BoxedContent>
+      <h1 class="mb-6 text-4xl font-black">
+        <span class="font-light line-through" aria-hidden="true">Photos</span>
+         Grid
+      </h1>
+      <p class="mb-4 text-xl font-semibold">
+        <span class="highlight">tl;dr</span> This is not artificial. It's
+        photography!
+      </p>
+
+      <p class="mb-12 text-xl">
+        This is a collection of <span class="highlight">actual light</span>
+         hitting an actual sensor in an actual camera. No AI-generated images
+        here. Just moments captured in time.<br />
+         Although this does not mean that I don't use AI to help me with my
+        edits.
+      </p>
+    </BoxedContent>
+
+    <FluidContent>
+      <GridGallery />
+    </FluidContent>
+  </main>
+</Layout>

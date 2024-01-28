@@ -1,0 +1,17 @@
+{
+  "id": "2R9A0154",
+  "title": "Museum of Locomotion",
+  "image": "./2R9A0154.jpg",
+  "alt": "The image features an atmospheric view of the interior of a dark-themed train museum. Silhouetted visitors are scattered throughout the exhibit, some standing and others in motion, engaging with the displays. A large, vintage locomotive model is prominently displayed in the center, brightly lit and serving as the focal point. To the right, a well-lit enclosure showcases model trains on tracks. Explanatory text panels are visible throughout, softly illuminated, inviting viewers to learn. The ambient lighting casts a soft glow on the sleek museum floors, creating a reflective surface that enhances the ambiance.",
+  "location": "DB Museum, Nuremberg, Germany",
+  "date": "2023-12-29",
+  "tags": ["Museum", "Locomotive", "Visitors", "Exhibition", "Lighting"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "2.2",
+    "iso": "1000",
+    "focal_length": "35.0",
+    "shutter_speed": "1/80"
+  }
+}
