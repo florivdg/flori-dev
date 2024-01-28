@@ -40,17 +40,26 @@ const seo: SEOData = {
   <main>
     <BoxedContent>
       <h1
-        class="mb-6 text-5xl font-extrabold text-slate-600 md:text-6xl dark:text-slate-200"
+        class="mb-6 text-balance text-5xl font-extrabold text-slate-600 md:text-6xl dark:text-slate-200"
       >
         {entry.data.title}
       </h1>
 
-      <Image
-        src={entry.data.image}
-        alt={entry.data.alt}
-        width="1000"
-        densities={[1, 2, 3]}
-      />
+      <article class="mb-12 text-xl">
+        {entry.data.alt}
+      </article>
+
+      <dialog
+        class="fixed inset-0 z-[500] flex h-dvh w-full items-center justify-center bg-white dark:bg-gray-950"
+      >
+        <Image
+          src={entry.data.image}
+          alt={entry.data.alt}
+          width="2000"
+          densities={[1, 2, 3]}
+          class="mx-auto h-auto max-h-full w-auto max-w-full"
+        />
+      </dialog>
 
       <code
         class="mt-4 inline-block border border-slate-400 p-2 dark:border-slate-600"
@@ -59,3 +68,9 @@ const seo: SEOData = {
     </BoxedContent>
   </main>
 </Layout>
+
+<style>
+  body {
+    overflow: hidden;
+  }
+</style>
