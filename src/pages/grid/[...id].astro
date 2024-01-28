@@ -64,7 +64,8 @@ const seo: SEOData = {
 
         <div class="absolute right-0 top-0 z-10 p-4">
           <a
-            href="/grid"
+            href="/grid/"
+            data-back
             class="flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-200/80 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
@@ -84,6 +85,28 @@ const seo: SEOData = {
       </dialog>
     </BoxedContent>
   </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('back') && params.get('back') === '1') {
+      /// Grab the back link and add a click event to it
+      const backLink = document.querySelector('[data-back]')
+      if (backLink) {
+        backLink.addEventListener('click', (e) => {
+          e.preventDefault()
+          window.history.back()
+        })
+
+        /// Reset the URL params
+        params.delete('back')
+        window.history.replaceState(
+          {},
+          '',
+          `${window.location.pathname}?${params}`,
+        )
+      }
+    }
+  </script>
 
   <style>
     body {
