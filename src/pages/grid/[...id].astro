@@ -61,18 +61,33 @@ const seo: SEOData = {
           densities={[1, 2]}
           class="mx-auto h-auto max-h-full w-auto max-w-full"
         />
-      </dialog>
 
-      <code
-        class="mt-4 inline-block border border-slate-400 p-2 dark:border-slate-600"
-        >{JSON.stringify(entry, null, 2)}</code
-      >
+        <div class="absolute right-0 top-0 z-10 p-4">
+          <a
+            href="/grid"
+            class="flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-200/80 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1"
+              stroke="currentColor"
+              class="h-8 w-8 text-slate-700 dark:text-slate-300"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"></path>
+            </svg>
+          </a>
+        </div>
+      </dialog>
     </BoxedContent>
   </main>
-</Layout>
 
-<style>
-  body {
-    overflow: hidden;
-  }
-</style>
+  <style>
+    body {
+      overflow: hidden;
+    }
+  </style>
+</Layout>
