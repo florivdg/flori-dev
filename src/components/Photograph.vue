@@ -8,7 +8,7 @@
       class="mx-auto h-auto max-h-full w-auto max-w-full"
     />
 
-    <div class="absolute right-0 top-0 z-20 p-6">
+    <div class="absolute left-0 top-0 z-20 p-6">
       <a
         href="/grid/"
         title="Go back to the photo grid"
@@ -17,15 +17,15 @@
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1"
+          stroke-width="1.25"
           stroke="currentColor"
-          class="h-8 w-8 text-slate-700 dark:text-slate-300"
+          class="h-6 w-6 text-slate-700 dark:text-slate-300"
         >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            d="M6 18 18 6M6 6l12 12"
-          ></path>
+            d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+          />
         </svg>
       </a>
     </div>
@@ -35,15 +35,15 @@
         type="button"
         @click="showInfo = !showInfo"
         title="Show info about the photograph"
-        class="flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-200/80 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+        class="flex h-10 w-10 -rotate-1 -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-200/80 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1"
+          stroke-width="1.25"
           stroke="currentColor"
-          class="h-8 w-8 text-slate-700 dark:text-slate-300"
+          class="h-6 w-6 text-slate-700 dark:text-slate-300"
         >
           <path
             stroke-linecap="round"
