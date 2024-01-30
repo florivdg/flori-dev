@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
-import { Image } from 'astro:assets'
+import { getImage } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import type { SEOData } from '../../types/SEO'
 import Layout from '../../layouts/Layout.astro'
@@ -35,12 +35,24 @@ const seo: SEOData = {
     type: 'article',
   },
 }
+
+/**
+ * Generate an optimized version of the image.
+ */
+const optimizedImage = await getImage({
+  src: entry.data.image,
+  format: 'webp',
+  quality: 'high',
+  width: entry.data.image.width > entry.data.image.height ? 1800 : undefined,
+  height: entry.data.image.width > entry.data.image.height ? undefined : 1800,
+  densities: [1, 2],
+})
 ---
 
 <Layout seo={seo}>
   <main>
     <BoxedContent>
-      <Photograph entry={entry} client:load />
+      <Photograph entry={entry} optimizedImage={optimizedImage} client:load />
     </BoxedContent>
   </main>
 

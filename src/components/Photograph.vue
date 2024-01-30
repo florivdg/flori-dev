@@ -3,7 +3,8 @@
     class="fixed inset-0 z-[500] flex h-dvh w-full items-center justify-center bg-white dark:bg-gray-950"
   >
     <img
-      :src="entry.data.image.src"
+      :src="optimizedImage.src"
+      :srcset="optimizedImage.srcSet.attribute"
       :alt="entry.data.alt"
       class="mx-auto h-auto max-h-full w-auto max-w-full"
     />
@@ -66,16 +67,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import { useMagicKeys, useLocalStorage } from '@vueuse/core'
 import PhotographInfo from './PhotographInfo.vue'
 import type { CollectionEntry } from 'astro:content'
+import type { GetImageResult } from 'astro'
 
 /*
  * Props.
  */
 defineProps<{
   entry: CollectionEntry<'grid'>
+  optimizedImage: GetImageResult
 }>()
 
 /**
