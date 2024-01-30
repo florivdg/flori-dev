@@ -1,0 +1,17 @@
+{
+  "id": "2R9A0151",
+  "title": "Era of Steam Revived",
+  "image": "./2R9A0151.jpg",
+  "alt": "The image showcases a detailed scale model of a classic steam locomotive, predominantly black with red trimmings, displayed on tracks. The model is identified as '23 001' marked on the locomotive's front, with the 'DB' logo on the front. The setting appears to be an exhibition with carefully directed lighting highlighting the train model and creating a reflective surface below it. In the background there are informational displays and subdued lighting, suggesting an indoor museum environment.",
+  "location": "DB Museum, Nuremberg, Germany",
+  "date": "2023-12-29",
+  "tags": ["train", "museum", "model", "exhibit", "locomotive"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "2.2",
+    "iso": "2500",
+    "focal_length": "35.0",
+    "shutter_speed": "1/80"
+  }
+}
