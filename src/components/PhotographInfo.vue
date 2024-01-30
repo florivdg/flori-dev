@@ -21,12 +21,14 @@
 
           <p
             v-if="entry.data.location"
-            class="-mt-2 mb-4 text-sm font-semibold text-slate-600 dark:text-slate-300"
+            class="-mt-2 mb-4 text-sm font-semibold text-slate-700 dark:text-slate-300"
           >
             {{ entry.data.location }}
           </p>
 
-          <table class="mb-4 text-sm font-medium">
+          <table
+            class="mb-4 text-sm font-medium text-slate-700 dark:text-slate-300"
+          >
             <tbody>
               <tr>
                 <td class="w-10">
@@ -35,7 +37,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
-                    class="h-6 w-6 fill-current text-slate-400 dark:text-slate-500"
+                    class="h-6 w-6 fill-current text-slate-500"
                   >
                     <path
                       d="M29,26H3a1,1,0,0,1-1-1V8A1,1,0,0,1,3,7H9.46l1.71-2.55A1,1,0,0,1,12,4h8a1,1,0,0,1,.83.45L22.54,7H29a1,1,0,0,1,1,1V25A1,1,0,0,1,29,26ZM4,24H28V9H22a1,1,0,0,1-.83-.45L19.46,6H12.54L10.83,8.55A1,1,0,0,1,10,9H4Z"
@@ -47,7 +49,7 @@
                   <span class="sr-only">Camera</span>
                 </td>
                 <td>
-                  {{ entry.data.exif.camera }}
+                  {{ cameraName }}
                 </td>
               </tr>
               <tr>
@@ -57,7 +59,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
-                    class="h-6 w-6 fill-current text-slate-400 dark:text-slate-500"
+                    class="h-6 w-6 fill-current text-slate-500"
                   >
                     <path
                       d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,26A12,12,0,1,1,28,16,12,12,0,0,1,16,28Z"
@@ -76,7 +78,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
-                    class="h-6 w-6 fill-current text-slate-400 dark:text-slate-500"
+                    class="h-6 w-6 fill-current text-slate-500"
                   >
                     <path
                       d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM27.84,14.14,22,17.52V5.62A12,12,0,0,1,27.84,14.14ZM12,18.68V13.32L16,11l4,2.31v5.36L16,21Zm8-14V11L10.34,5.42A11.9,11.9,0,0,1,20,4.7Zm-11.52,2L14,9.85,4,15.62A12,12,0,0,1,8.48,6.66ZM4.16,17.85,10,14.47V26.38A12,12,0,0,1,4.16,17.85ZM12,27.3V21l9.67,5.58A11.92,11.92,0,0,1,16,28,12.05,12.05,0,0,1,12,27.3Zm11.52-2L18,22.14l10-5.77A12,12,0,0,1,23.52,25.34Z"
@@ -93,7 +95,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
-                    class="h-6 w-6 fill-current text-slate-400 dark:text-slate-500"
+                    class="h-6 w-6 fill-current text-slate-500"
                   >
                     <path
                       d="M9,24a3.51,3.51,0,0,0-.88-1.86L17.65,5.56l-1.73-1L6.35,21.12A3.06,3.06,0,0,0,5.5,21a3.5,3.5,0,1,0,3.15,5H28V24ZM5.5,26A1.5,1.5,0,1,1,7,24.5,1.5,1.5,0,0,1,5.5,26Z"
@@ -114,7 +116,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
-                    class="h-6 w-6 fill-current text-slate-400 dark:text-slate-500"
+                    class="h-6 w-6 fill-current text-slate-500"
                   >
                     <path
                       d="M16,28A11,11,0,1,1,27,17,11,11,0,0,1,16,28ZM16,8a9,9,0,1,0,9,9A9,9,0,0,0,16,8Z"
@@ -150,7 +152,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
-                    class="h-6 w-6 fill-current text-slate-400 dark:text-slate-500"
+                    class="h-6 w-6 fill-current text-slate-500"
                   >
                     <path
                       d="M24,21H21a2,2,0,0,1-2-2V13a2,2,0,0,1,2-2h3a2,2,0,0,1,2,2v6A2,2,0,0,1,24,21Zm-3-8v6h3V13Z"
@@ -172,7 +174,11 @@
             </tbody>
           </table>
 
-          <p class="mb-6 text-sm font-medium">{{ entry.data.alt }}</p>
+          <p
+            class="mb-6 text-sm font-medium text-slate-700 dark:text-slate-300"
+          >
+            {{ entry.data.alt }}
+          </p>
 
           <ul class="flex-cols flex flex-wrap gap-2">
             <li
@@ -190,13 +196,31 @@
 
 <script setup lang="ts">
 import type { CollectionEntry } from 'astro:content'
+import { computed } from 'vue'
 
 /*
  * Props.
  */
-defineProps<{
+const props = defineProps<{
   entry: CollectionEntry<'grid'>
 }>()
 
+/*
+ * v-model.
+ */
 const open = defineModel<boolean>()
+
+/*
+ * Computed.
+ */
+const cameraName = computed(() => {
+  const camera = props.entry.data.exif.camera
+  switch (camera) {
+    case 'Canon EOS R6m2':
+      return 'Canon EOS R6 Mark II'
+
+    default:
+      return camera
+  }
+})
 </script>
