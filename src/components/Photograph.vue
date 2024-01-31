@@ -14,6 +14,7 @@
         href="/grid/"
         title="Go back to the photo grid"
         class="flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-300/50 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+        @click="handleBackNavigation($event)"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -69,8 +70,13 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
-import { useMagicKeys, useLocalStorage } from '@vueuse/core'
+import { ref, watch } from 'vue'
+import {
+  useMagicKeys,
+  useLocalStorage,
+  useSessionStorage,
+  watchOnce,
+} from '@vueuse/core'
 import PhotographInfo from './PhotographInfo.vue'
 import type { CollectionEntry } from 'astro:content'
 import type { GetImageResult } from 'astro'
@@ -84,10 +90,31 @@ defineProps<{
 }>()
 
 /**
+ * Whether to go back to grid via history.
+ */
+const backToGrid = ref(false)
+
+/**
  * Show info about the photograph.
  */
 const showInfo = useLocalStorage('show-photograph-info', false, {
   initOnMounted: true,
+})
+
+/**
+ * Check origin for altering the back navigation.
+ */
+const fromGrid = useSessionStorage<boolean>('from-grid', false, {
+  initOnMounted: true,
+})
+
+/**
+ * Go back to grid if requested.
+ */
+watchOnce(fromGrid, (grid) => {
+  if (grid) backToGrid.value = true
+  fromGrid.value = false
+  console.log('backToGrid', backToGrid.value)
 })
 
 /**
@@ -97,4 +124,15 @@ const { i } = useMagicKeys()
 watch(i, (i) => {
   if (i) showInfo.value = !showInfo.value
 })
+
+/**
+ * Handle a click on the back to grid button.
+ * @param e The MouseEvent object.
+ */
+const handleBackNavigation = (e: MouseEvent) => {
+  if (backToGrid.value) {
+    e.preventDefault()
+    window.history.back()
+  }
+}
 </script>

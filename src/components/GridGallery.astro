@@ -15,7 +15,7 @@ const images = (await getCollection('grid')).sort((a, b) => {
   {
     images.map((entry, i) => (
       <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
-        <a href={`/grid/${entry.id}/`} class="block">
+        <a href={`/grid/${entry.id}/`} class="block" data-grid-link>
           <Picture
             src={entry.data.image}
             alt={entry.data.alt}
@@ -52,3 +52,16 @@ const images = (await getCollection('grid')).sort((a, b) => {
     }
   }
 </style>
+
+<script>
+  /// Find all grid links on the page.
+  const links = document.querySelectorAll('a[data-grid-link]')
+
+  /// Add event listeners to set sessions storage value when clicked.
+  links.forEach((l) => {
+    l.addEventListener('click', () => {
+      /// Save a boolean value to session storage
+      sessionStorage.setItem('from-grid', 'true')
+    })
+  })
+</script>
