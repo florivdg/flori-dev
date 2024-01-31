@@ -11,7 +11,9 @@ const images = (await getCollection('grid')).sort((a, b) => {
 })
 ---
 
-<ul class="moments grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+<ul
+  class="moments -mx-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:mx-0 sm:grid-cols-3 lg:gap-6"
+>
   {
     images.map((entry, i) => (
       <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
