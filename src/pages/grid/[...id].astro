@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import { getImage } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import type { SEOData } from '../../types/SEO'
-import Layout from '../../layouts/Layout.astro'
+import BasicLayout from '../../layouts/Basic.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
 import Photograph from '../../components/Photograph.vue'
 
@@ -49,7 +49,7 @@ const optimizedImage = await getImage({
 })
 ---
 
-<Layout seo={seo}>
+<BasicLayout seo={seo}>
   <main>
     <BoxedContent>
       <Photograph entry={entry} optimizedImage={optimizedImage} client:load />
@@ -61,4 +61,4 @@ const optimizedImage = await getImage({
       overflow: hidden;
     }
   </style>
-</Layout>
+</BasicLayout>
