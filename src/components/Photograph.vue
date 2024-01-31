@@ -1,12 +1,12 @@
 <template>
   <div
-    class="fixed inset-0 z-[500] flex h-dvh w-full items-center justify-center bg-white dark:bg-gray-950"
+    class="fixed inset-0 z-[500] flex h-dvh w-full items-center justify-center bg-slate-50 px-2 py-3 dark:bg-gray-950"
   >
     <img
       :src="optimizedImage.src"
       :srcset="optimizedImage.srcSet.attribute"
       :alt="entry.data.alt"
-      class="mx-auto h-auto max-h-full w-auto max-w-full"
+      class="mx-auto h-auto max-h-full w-auto max-w-full -rotate-[0.5deg] -skew-x-[0.5deg] overflow-hidden rounded-xl shadow-xl shadow-slate-700/10 dark:shadow-slate-950/20"
     />
 
     <div class="absolute left-0 top-0 z-20 p-6">
@@ -87,6 +87,8 @@ import type { GetImageResult } from 'astro'
 defineProps<{
   entry: CollectionEntry<'grid'>
   optimizedImage: GetImageResult
+  prevId?: string
+  nextId?: string
 }>()
 
 /**
@@ -114,7 +116,6 @@ const fromGrid = useSessionStorage<boolean>('from-grid', false, {
 watchOnce(fromGrid, (grid) => {
   if (grid) backToGrid.value = true
   fromGrid.value = false
-  console.log('backToGrid', backToGrid.value)
 })
 
 /**

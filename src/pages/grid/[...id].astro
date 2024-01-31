@@ -9,17 +9,35 @@ import Photograph from '../../components/Photograph.vue'
 
 export async function getStaticPaths() {
   const gridEntries = await getCollection('grid')
-  return gridEntries.map((entry) => ({
-    params: { id: entry.id },
-    props: { entry },
-  }))
+  const sortedEntries = gridEntries.sort((a, b) => {
+    const dateComparison = b.data.date.getTime() - a.data.date.getTime()
+    if (dateComparison === 0) {
+      return b.id.localeCompare(a.id)
+    }
+    return dateComparison
+  })
+
+  return sortedEntries.map((entry, i) => {
+    const props = {
+      entry,
+      prev: sortedEntries[i - 1],
+      next: sortedEntries[i + 1],
+    }
+
+    return {
+      params: { id: entry.id },
+      props,
+    }
+  })
 }
 
 interface Props {
   entry: CollectionEntry<'grid'>
+  prev?: CollectionEntry<'grid'>
+  next?: CollectionEntry<'grid'>
 }
 
-const { entry } = Astro.props
+const { entry, prev, next } = Astro.props
 
 /// Page title
 const title = entry.data.title
@@ -52,7 +70,13 @@ const optimizedImage = await getImage({
 <BasicLayout seo={seo}>
   <main>
     <BoxedContent>
-      <Photograph entry={entry} optimizedImage={optimizedImage} client:load />
+      <Photograph
+        entry={entry}
+        optimizedImage={optimizedImage}
+        prevId={prev?.id}
+        nextId={next?.id}
+        client:load
+      />
     </BoxedContent>
   </main>
 
