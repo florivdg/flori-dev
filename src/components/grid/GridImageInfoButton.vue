@@ -1,15 +1,12 @@
 <template>
-  <div class="absolute bottom-0 right-0 z-20 p-6">
+  <div class="absolute bottom-0 right-0 z-50 p-6">
     <button
       type="button"
       @click="showInfo = !showInfo"
       title="Show info about the photograph"
-      class="flex h-10 w-10 -rotate-1 -skew-x-[0.5deg] items-center justify-center rounded-lg text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:rotate-2 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+      class="image-grid-button"
       :class="{
-        'bg-slate-200/80 text-slate-700 dark:bg-slate-700/80 dark:text-slate-300':
-          !showInfo,
-        'bg-slate-800/80 text-slate-100 dark:bg-slate-200/80 dark:text-slate-700':
-          showInfo,
+        active: showInfo,
       }"
     >
       <svg

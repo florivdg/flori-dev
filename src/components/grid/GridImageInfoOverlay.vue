@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute bottom-0 right-0 top-0 z-10 w-96 p-4">
+  <div class="absolute bottom-0 right-0 top-0 z-30 w-96 p-4">
     <Transition
       enter-from-class="translate-x-[105%] scale-95"
       enter-active-class="transform transition ease-in-out duration-500 sm:duration-700"

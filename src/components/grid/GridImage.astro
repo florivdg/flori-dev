@@ -3,6 +3,7 @@ import { Picture } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import GridImageBackButton from './GridImageBackButton.vue'
 import GridImageInfoOverlay from './GridImageInfoOverlay.vue'
+import GridImageNavigation from './GridImageNavigation.vue'
 
 interface Props {
   entry: CollectionEntry<'grid'>
@@ -27,7 +28,9 @@ const { entry, prev, next } = Astro.props
     loading="eager"
   />
 
-  <GridImageBackButton client:idle />
+  <GridImageBackButton client:load />
 
   <GridImageInfoOverlay entry={entry} client:load />
+
+  <GridImageNavigation prev={prev} next={next} client:load />
 </div>
