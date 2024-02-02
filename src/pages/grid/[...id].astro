@@ -1,24 +1,42 @@
 ---
 import { getCollection } from 'astro:content'
-import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import type { SEOData } from '../../types/SEO'
-import Layout from '../../layouts/Layout.astro'
+import BasicLayout from '../../layouts/Basic.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
+import GridImage from '../../components/grid/GridImage.astro'
 
 export async function getStaticPaths() {
   const gridEntries = await getCollection('grid')
-  return gridEntries.map((entry) => ({
-    params: { id: entry.id },
-    props: { entry },
-  }))
+  const sortedEntries = gridEntries.sort((a, b) => {
+    const dateComparison = b.data.date.getTime() - a.data.date.getTime()
+    if (dateComparison === 0) {
+      return b.id.localeCompare(a.id)
+    }
+    return dateComparison
+  })
+
+  return sortedEntries.map((entry, i) => {
+    const props = {
+      entry,
+      prev: sortedEntries[i - 1],
+      next: sortedEntries[i + 1],
+    }
+
+    return {
+      params: { id: entry.id },
+      props,
+    }
+  })
 }
 
 interface Props {
   entry: CollectionEntry<'grid'>
+  prev?: CollectionEntry<'grid'>
+  next?: CollectionEntry<'grid'>
 }
 
-const { entry } = Astro.props
+const { entry, prev, next } = Astro.props
 
 /// Page title
 const title = entry.data.title
@@ -36,81 +54,14 @@ const seo: SEOData = {
 }
 ---
 
-<Layout seo={seo}>
+<BasicLayout seo={seo}>
   <main>
-    <BoxedContent>
-      <h1
-        class="mb-6 text-balance text-5xl font-extrabold text-slate-600 md:text-6xl dark:text-slate-200"
-      >
-        {entry.data.title}
-      </h1>
-
-      <article class="mb-12 text-xl">
-        {entry.data.alt}
-      </article>
-
-      <dialog
-        class="fixed inset-0 z-[500] flex h-dvh w-full items-center justify-center bg-white dark:bg-gray-950"
-      >
-        <Image
-          src={entry.data.image}
-          alt={entry.data.alt}
-          width="1800"
-          format="avif"
-          quality="mid"
-          densities={[1, 2]}
-          class="mx-auto h-auto max-h-full w-auto max-w-full"
-        />
-
-        <div class="absolute right-0 top-0 z-10 p-4">
-          <a
-            href="/grid/"
-            data-back
-            class="flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-200/80 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1"
-              stroke="currentColor"
-              class="h-8 w-8 text-slate-700 dark:text-slate-300"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18 18 6M6 6l12 12"></path>
-            </svg>
-          </a>
-        </div>
-      </dialog>
-    </BoxedContent>
+    <GridImage entry={entry} prev={prev} next={next} />
   </main>
-
-  <script>
-    const params = new URLSearchParams(window.location.search)
-    if (params.has('back') && params.get('back') === '1') {
-      /// Grab the back link and add a click event to it
-      const backLink = document.querySelector('[data-back]')
-      if (backLink) {
-        backLink.addEventListener('click', (e) => {
-          e.preventDefault()
-          window.history.back()
-        })
-
-        /// Reset the URL params
-        params.delete('back')
-        window.history.replaceState(
-          {},
-          '',
-          `${window.location.pathname}?${params}`,
-        )
-      }
-    }
-  </script>
 
   <style>
     body {
       overflow: hidden;
     }
   </style>
-</Layout>
+</BasicLayout>

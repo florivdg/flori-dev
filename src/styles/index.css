@@ -28,3 +28,11 @@
 .prose-flori :where(h1, h2, h3, h4, h5, h6) {
   text-wrap: balance;
 }
+
+.image-grid-button {
+  @apply flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-300/50 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-300 dark:focus-visible:ring-offset-gray-950;
+
+  &.active {
+    @apply bg-slate-800/80 text-slate-100 dark:bg-slate-200/80 dark:text-slate-700;
+  }
+}

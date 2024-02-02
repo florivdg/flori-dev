@@ -1,0 +1,17 @@
+{
+  "id": "2R9A7447",
+  "title": "Autumn's Golden Hues",
+  "image": "./2R9A7447.jpg",
+  "alt": "Close-up of vibrant yellow and brown oak leaves in soft focus, with sunlight filtering through the foliage, highlighting the intricate textures and warm hues of the autumn season.",
+  "location": "Studentenwald, Bayreuth, Germany",
+  "date": "2023-10-29",
+  "tags": ["autumn", "leaves", "nature", "oak", "vibrant"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "1.8",
+    "iso": "100",
+    "focal_length": "35.0",
+    "shutter_speed": "1/250"
+  }
+}

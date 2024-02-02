@@ -1,0 +1,17 @@
+{
+  "id": "2R9A8986",
+  "title": "A Peaceful Winter Dusk",
+  "image": "./2R9A8986.jpg",
+  "alt": "A solitary leafless tree stands in a snow-covered landscape under a softly hued dawn or dusk sky with shades of pink and blue. A dusting of snow rests on each branch, and the ground is blanketed in undisturbed white snow, the scene conveying a quiet and serene winter moment.",
+  "location": "Sanspareil, Germany",
+  "date": "2023-12-03",
+  "tags": ["winter", "tree", "snow", "dusk", "tranquility"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "100",
+    "focal_length": "77.0",
+    "shutter_speed": "1/500"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "2R9A8786",
+  "title": "Grazing in a Winter Wonderland",
+  "image": "./2R9A8786.jpg",
+  "alt": "A chestnut pony with a thick blonde mane stands in a snowy landscape, wearing a white saddle pad and a blue halter. It is grazing on a sparse patch of grass, with a serene backdrop of a sunlit forest in the distance.",
+  "location": "Sanspareil, Germany",
+  "date": "2023-12-03",
+  "tags": ["pony", "winter", "nature", "animal", "snow"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "100",
+    "focal_length": "70.0",
+    "shutter_speed": "1/400"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "2R9A7529",
+  "title": "Mirror of Nature",
+  "image": "./2R9A7529.jpg",
+  "alt": "A serene autumn forest scene with a variety of trees displaying vibrant golden yellow and some green leaves. A fallen tree trunk lies across a still body of water, which reflects the rich colors of the foliage and trunks above, creating a mirror-like effect. The forest floor is carpeted with fallen leaves, and the calm water serves as a natural border at the foreground of the image.",
+  "location": "Studentenwald, Bayreuth, Germany",
+  "date": "2023-10-29",
+  "tags": ["autumn", "forest", "reflection", "tranquil", "foliage"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "1.8",
+    "iso": "800",
+    "focal_length": "35.0",
+    "shutter_speed": "1/500"
+  }
+}

@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content'
+import { Picture } from 'astro:assets'
+
+const images = (await getCollection('grid')).sort((a, b) => {
+  const dateComparison = b.data.date.getTime() - a.data.date.getTime()
+  if (dateComparison === 0) {
+    return b.id.localeCompare(a.id)
+  }
+  return dateComparison
+})
+---
+
+<ul
+  class="moments -mx-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:mx-0 sm:grid-cols-3 lg:gap-6"
+>
+  {
+    images.map((entry, i) => (
+      <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
+        <a href={`/grid/${entry.id}/`} class="block" data-grid-link>
+          <Picture
+            src={entry.data.image}
+            alt={entry.data.alt}
+            width="700"
+            height="875"
+            densities={[1, 2, 3]}
+            formats={['webp']}
+            quality="high"
+            class="aspect-[4/5] h-full w-full object-cover object-center"
+            loading={i >= 3 ? 'lazy' : 'eager'}
+          />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .moments {
+    /* @supports (grid-template-rows: masonry) {
+      grid-template-rows: masonry;
+    }
+
+    @supports not (grid-template-rows: masonry) {
+      img {
+        aspect-ratio: 4 / 5;
+      }
+    } */
+
+    &:has(.moment:hover) {
+      .moment:not(:hover) {
+        opacity: 0.75;
+      }
+    }
+  }
+</style>
+
+<script>
+  /// Find all grid links on the page.
+  const links = document.querySelectorAll('a[data-grid-link]')
+
+  /// Add event listeners to set sessions storage value when clicked.
+  links.forEach((l) => {
+    l.addEventListener('click', () => {
+      /// Save a boolean value to session storage
+      sessionStorage.setItem('from-grid', 'true')
+    })
+  })
+</script>
