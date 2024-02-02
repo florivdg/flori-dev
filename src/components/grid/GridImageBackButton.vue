@@ -27,8 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useSessionStorage, watchOnce } from '@vueuse/core'
+import { ref, watch } from 'vue'
+import { useSessionStorage, watchOnce, useMagicKeys } from '@vueuse/core'
 
 /**
  * Whether to go back to grid via history.
@@ -60,4 +60,15 @@ const handleBackNavigation = (e: MouseEvent) => {
     window.history.back()
   }
 }
+
+/**
+ * Handle keyboard shortcuts.
+ */
+const { g } = useMagicKeys()
+watch(g, (gPressed) => {
+  if (gPressed) {
+    if (backToGrid.value) window.history.back()
+    else window.location.href = '/grid/'
+  }
+})
 </script>

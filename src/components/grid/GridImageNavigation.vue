@@ -58,7 +58,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useMagicKeys } from '@vueuse/core'
 import type { CollectionEntry } from 'astro:content'
 
 /**
@@ -82,4 +83,27 @@ const prevLink = computed(() =>
 const nextLink = computed(() =>
   props.next ? `/grid/${props.next.id}/` : undefined,
 )
+
+/**
+ * Whether navigation is underway.
+ */
+const navigationIsUnderway = ref(false)
+
+/**
+ * Use keyboard navigation.
+ */
+const { ArrowLeft, ArrowRight } = useMagicKeys()
+watch([ArrowLeft, ArrowRight], ([pressedLeft, pressedRight]) => {
+  if (navigationIsUnderway.value) return
+
+  if (pressedLeft && prevLink.value) {
+    navigationIsUnderway.value = true
+    window.location.href = prevLink.value
+  }
+
+  if (pressedRight && nextLink.value) {
+    navigationIsUnderway.value = true
+    window.location.href = nextLink.value
+  }
+})
 </script>
