@@ -26,6 +26,7 @@ export default defineConfig({
   }),
   vite: {
     define: {
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
       'import.meta.env.PUBLIC_VERCEL_ANALYTICS_ID': JSON.stringify(
         process.env.VERCEL_ANALYTICS_ID,
       ),
