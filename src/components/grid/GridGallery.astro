@@ -21,10 +21,11 @@ const images = (await getCollection('grid')).sort((a, b) => {
           <Picture
             src={entry.data.image}
             alt={entry.data.alt}
-            width="600"
-            height="480"
+            width="700"
+            height="875"
             densities={[1, 2, 3]}
-            formats={['avif', 'webp']}
+            formats={['webp']}
+            quality="high"
             class="aspect-[4/5] h-full w-full object-cover object-center"
             loading={i >= 3 ? 'lazy' : 'eager'}
           />
