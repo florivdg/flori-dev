@@ -1,0 +1,106 @@
+---
+title: 'Organize TypeScript Imports with Prettier'
+pubDate: 2024-02-02
+description: "As your TypeScript projects grow, it’s easy to lose track of your imports. Prettier itself cannot help you keep them organized out of the box. I tried several Prettier plugins I found on the web, but none of them really worked for me. But finally I found a solution that works for me."
+image:
+  {
+    src: '../../assets/reads/trivago_prettier_sort_imports.jpg',
+    alt: 'A polished cartoon-style illustration showcasing a computer screen with a JavaScript code editor organizing imports into a neat list. Subtle arrows indicate sorting, set against a minimal workspace with a wooden desk, a muted coffee cup, and a green plant. The color palette is organic and subdued, focusing on the tranquility of coding.',
+  }
+tags: ['prettier', 'typescript', 'plugin']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/trivago_prettier_sort_imports.jpg'
+
+As your TypeScript projects grow, it's easy to lose track of your imports. Especially if you're working in a team, it's important to have a consistent way of importing modules. Prettier itself cannot help you keep them organized out of the box.
+
+I tried several Prettier plugins I found on the web, but none of them really worked for me. But finally I found a solution that works for me and I want to share it with you.
+
+<Image
+  src={coverImage}
+  alt="A polished cartoon-style illustration showcasing a computer screen with a JavaScript code editor organizing imports into a neat list. Subtle arrows indicate sorting, set against a minimal workspace with a wooden desk, a muted coffee cup, and a green plant. The color palette is organic and subdued, focusing on the tranquility of coding."
+  caption="A polished cartoon-style illustration showcasing a computer screen in a minimal workspace with a wooden desk, a muted coffee cup, and a green plant with a JavaScript code editor organizing imports into a neat list."
+  lazy={false}
+/>
+
+## The Problem
+
+As TypeScript projects become larger and teams grow, managing imports can quickly become a daunting task. It's essential to maintain a clean and organized structure to facilitate easier code maintenance and readability. While Prettier is a fantastic tool for code formatting, it doesn't inherently solve the challenge of organizing imports.
+
+So as time goes by, your imports might end up looking like this:
+
+```ts
+# component.tsx
+import { useRef, useState } from 'react'
+import { format, parseISO } from 'date-fns'
+import MyComponent from './MyComponent'
+import { XYZ } from 'library'
+import { ABC as AliasABC } from 'another-library'
+import HelperUtil from '../utils/HelperUtil'
+import { useEffect } from 'react'
+import { Button, TextInput } from 'my-ui-library'
+import type { User, UserSettings } from '@/types'
+import { fetchUser, updateUser } from '@/services/userService'
+import { Toast } from '@/components/Toast'
+import { useUserContext } from '@/contexts/UserContext'
+import { Icon, Loader } from 'components'
+import { debounce } from 'lodash-es'
+import SomeLocalComponent from '../SomeLocalComponent'
+import AnotherUtil from '../../utils/AnotherUtil'
+import { Dialog } from '@/components/Dialog'
+import { logError, logInfo } from '@/utils/logger'
+
+```
+
+## The Solution
+
+After exploring various prettier plugins without success, I discovered a solution that effectively addresses this issue: the [`@trivago/prettier-plugin-sort-imports`](https://github.com/trivago/prettier-plugin-sort-imports) package. This plugin is a game-changer, offering a way to automatically sort import declarations in a consistent manner. By integrating this plugin into your development workflow, you can ensure that your imports are always neatly organized, following a specific order that you define.
+
+### How to Configure Order and Separation
+
+First, install the plugin using your favorite package manager.
+
+Then, configure your `.prettierrc` file to specify the order in which you want your imports to be sorted. This customization is a powerful feature of the plugin, allowing you to tailor the import sorting to your project's specific needs.
+
+```json
+# .prettierrc
+{
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "sortImports": true,
+  "importOrder": ["^@core/(.*)$", "^@server/(.*)$", "^[./]"],
+  "importOrderSeparation": true
+}
+```
+
+In the example above the imports are going to be sorted in the following order:
+
+1. All imports starting with `@core`
+2. All imports starting with `@server`
+3. All other imports
+
+I especially like the `importOrderSeparation` flag which separates the import groups with an empty line. This makes the imports even more readable.
+
+Then the imports will be sorted like this:
+
+```ts
+# sorted.tsx
+import { ModuleA, ModuleB } from '@core/utils'
+
+import { ServiceA, ServiceB } from '@server/services'
+
+import ComponentA from './MyComponentA'
+import ComponentB from '../MyComponentB'
+import { helperFunction, anotherHelperFunction } from './utils'
+import type { TypeA, TypeB } from './types'
+```
+
+For more detailed instructions and configuration options, refer to the [plugin's README](https://github.com/trivago/prettier-plugin-sort-imports/blob/main/README.md).
+
+## Usage with Astro
+
+While I was integrating the plugin into a quite huge Vue.js TypeScript SPA project without any issues, I also wanted to use it in my personal Astro projects. Unfortunately, I had to find out that it's not quite working so for. There is an [open issue](https://github.com/trivago/prettier-plugin-sort-imports/issues/210) for that. Let's hope this finds its way into the plugin soon.
+
+### Conclusion
+
+Keeping imports organized is crucial for maintaining clean code, especially in large TypeScript projects. The `@trivago/prettier-plugin-sort-imports` provides a robust solution for automating this process, ensuring consistency across your codebase. Embrace this plugin to enhance your coding standards and streamline your development process.
