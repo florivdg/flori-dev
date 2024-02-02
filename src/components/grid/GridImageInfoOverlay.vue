@@ -9,7 +9,7 @@
       leave-to-class="translate-x-[105%] scale-95"
     >
       <div
-        v-show="open"
+        v-show="showInfo"
         class="h-full overflow-hidden rounded-xl bg-slate-100/80 shadow-xl backdrop-blur-lg dark:bg-slate-800/80"
       >
         <div class="h-full overflow-y-auto px-6 pb-20 pt-6">
@@ -191,12 +191,17 @@
         </div>
       </div>
     </Transition>
+
+    <GridImageInfoButton v-model="showInfo" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed, watch } from 'vue'
+import { useMagicKeys, useLocalStorage } from '@vueuse/core'
 import type { CollectionEntry } from 'astro:content'
-import { computed } from 'vue'
+
+import GridImageInfoButton from './GridImageInfoButton.vue'
 
 /*
  * Props.
@@ -205,10 +210,20 @@ const props = defineProps<{
   entry: CollectionEntry<'grid'>
 }>()
 
-/*
- * v-model.
+/**
+ * Show info about the photograph.
  */
-const open = defineModel<boolean>()
+const showInfo = useLocalStorage('show-photograph-info', false, {
+  initOnMounted: true,
+})
+
+/**
+ * Toggle info on keypress.
+ */
+const { i } = useMagicKeys()
+watch(i, (i) => {
+  if (i) showInfo.value = !showInfo.value
+})
 
 /*
  * Computed.

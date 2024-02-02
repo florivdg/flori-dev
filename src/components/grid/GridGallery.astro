@@ -26,7 +26,6 @@ const images = (await getCollection('grid')).sort((a, b) => {
             densities={[1, 2, 3]}
             formats={['avif', 'webp']}
             class="aspect-[4/5] h-full w-full object-cover object-center"
-            quality="high"
             loading={i >= 3 ? 'lazy' : 'eager'}
           />
         </a>

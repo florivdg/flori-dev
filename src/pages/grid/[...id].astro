@@ -1,11 +1,10 @@
 ---
 import { getCollection } from 'astro:content'
-import { getImage } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
 import type { SEOData } from '../../types/SEO'
 import BasicLayout from '../../layouts/Basic.astro'
 import BoxedContent from '../../components/BoxedContent.astro'
-import Photograph from '../../components/Photograph.vue'
+import GridImage from '../../components/grid/GridImage.astro'
 
 export async function getStaticPaths() {
   const gridEntries = await getCollection('grid')
@@ -53,31 +52,11 @@ const seo: SEOData = {
     type: 'article',
   },
 }
-
-/**
- * Generate an optimized version of the image.
- */
-const optimizedImage = await getImage({
-  src: entry.data.image,
-  format: 'webp',
-  quality: 'high',
-  width: entry.data.image.width > entry.data.image.height ? 1800 : undefined,
-  height: entry.data.image.width > entry.data.image.height ? undefined : 1800,
-  densities: [1, 2],
-})
 ---
 
 <BasicLayout seo={seo}>
   <main>
-    <BoxedContent>
-      <Photograph
-        entry={entry}
-        optimizedImage={optimizedImage}
-        prevId={prev?.id}
-        nextId={next?.id}
-        client:load
-      />
-    </BoxedContent>
+    <GridImage entry={entry} prev={prev} next={next} />
   </main>
 
   <style>
