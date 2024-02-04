@@ -1,0 +1,54 @@
+---
+title: 'Automate My Grid: Python Meets EXIF and GPT-4 Vision'
+pubDate: 2024-02-05
+description: "Recently, I launched a new section on my website where I would like to showcase some of my favorite photos. I wanted to automate the process of extracting EXIF metadata and generating alt text, title, and captions for the images. So let's let AI do the heavy lifting."
+image:
+  {
+    src: '../../assets/reads/python_meets_camera_exif_data.jpg',
+    alt: "A vividly colored blue snake with orange accents is coiled around a black camera amidst a dense jungle setting. The leaves surrounding the scene are dark with light blue highlights. The snake's scales are detailed and it has a focused gaze directed towards the camera lens, which is reflecting a warm orange light.",
+  }
+tags: ['python', 'exif', 'gpt4vision', 'photography']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/python_meets_camera_exif_data.jpg'
+
+Recently, I launched [a new section](/grid/) on my website where I would like to showcase some of my favorite photos taken during my travels, family events, and other occasions.
+
+When posting these photos to Instagram, I found it quite cumbersome to manually extract the EXIF metadata. So I wanted to automate this process for my own website. I also needed not only a good alt text for the images, but also good titles and captions for the photos. So let's let AI do the heavy lifting.
+
+<Image
+  src={coverImage}
+  alt="A vividly colored blue snake with orange accents is coiled around a black camera amidst a dense jungle setting. The leaves surrounding the scene are dark with light blue highlights. The snake's scales are detailed and it has a focused gaze directed towards the camera lens, which is reflecting a warm orange light."
+  caption="Where Code Meets Camera: Python Extracts the Story Behind Every Shot as GPT-4 Vision Crafts the Narrative"
+  lazy={false}
+/>
+
+## Extracting EXIF Metadata
+
+### Why Extract EXIF Data?
+
+**EXIF** (Exchangeable Image File Format) is a standard that specifies the formats for images, audio, and additional tags used by digital cameras (including smartphones), scanners, and other systems that handle image files.
+
+I take photos with a Canon R6 Mark II, which stores a lot of metadata in the EXIF format. This includes the camera model itself, but also what lens I used, focal length, aperture, shutter speed, ISO, and so on. Since this data can be quite useful for photography enthusiasts and give you a better idea of *how* a picture was taken, I wanted to extract this information and display it on my website.
+
+### Python and Pillow to the Rescue
+
+Currently I am trying to do more and more Python programming, so I decided to use Python to extract the EXIF data from my photos. I used the [Pillow](https://pillow.readthedocs.io/en/stable/) library. It provides a number of very powerful features, including the ability to read and write EXIF data by tag ID.
+
+```python {11}
+# main.py
+
+# Extracting specific fields
+
+camera = str(exif_data.get(272))  # Tag for Camera
+lens_type = str(exif_ifd.get(42036))  # Tag for LensMake
+aperture = str(exif_ifd.get(33437))  # Tag for FNumber
+iso = str(exif_ifd.get(34855))  # Tag for ISOSpeedRatings
+focal_length = str(exif_ifd.get(37386))  # Tag for FocalLength
+exposure_time = exif_ifd.get(33434)  # Tag for ExposureTime
+shutter_speed = f"1/{str(1 / exposure_time)}"
+datetime_original = str(exif_ifd.get(36867))  # Tag for DateTimeOriginal
+```
+
+Note the highlighted line above. There I converted the `exposure_time` from a fractual digit to the more human-readable `shutter_speed` format (e.g "1/250 s").
