@@ -1,7 +1,7 @@
 ---
 title: 'Automate My Grid: Python Meets EXIF and GPT-4 Vision'
 pubDate: 2024-02-05
-description: "Recently, I launched a new section on my website where I would like to showcase some of my favorite photos. I wanted to automate the process of extracting EXIF metadata and generating alt text, title, and captions for the images. So let's let AI do the heavy lifting."
+description: "Recently, I launched a new section on my website where I would like to showcase some of my favorite photos. I wanted to automate the process of extracting EXIF metadata and generating alt text, title, and tage for the images. So let's let AI do the heavy lifting."
 image:
   {
     src: '../../assets/reads/python_meets_camera_exif_data.jpg',
@@ -15,7 +15,7 @@ import coverImage from '../../assets/reads/python_meets_camera_exif_data.jpg'
 
 Recently, I launched [a new section](/grid/) on my website where I would like to showcase some of my favorite photos taken during my travels, family events, and other occasions.
 
-When posting these photos to Instagram, I found it quite cumbersome to manually extract the EXIF metadata. So I wanted to automate this process for my own website. I also needed not only a good alt text for the images, but also good titles and captions for the photos. So let's let AI do the heavy lifting.
+When posting these photos to Instagram, I found it quite cumbersome to manually extract the EXIF metadata. So I wanted to automate this process for my own website. I also needed not only a good alt text for the images, but also good titles and tage for the photos. So let's let AI do the heavy lifting.
 
 <Image
   src={coverImage}
@@ -51,4 +51,46 @@ shutter_speed = f"1/{str(1 / exposure_time)}"
 datetime_original = str(exif_ifd.get(36867))  # Tag for DateTimeOriginal
 ```
 
-Note the highlighted line above. There I converted the `exposure_time` from a fractual digit to the more human-readable `shutter_speed` format (e.g "1/250 s").
+Note the highlighted line above. There I converted the `exposure_time` from a fractional number to the more camera-like and human-readable `shutter_speed` format (e.g "1/250").
+
+## Generating Alt Text, Title Suggestions, and Tags
+
+Just posting an image without any context is not very helpful - not only for vision impaired people. So I wanted to generate not only a good alt text for the images, but also get some title inspirations as well as tags for the photos.
+
+This is where [**GPT-4 Vision**](https://platform.openai.com/docs/guides/vision) comes into play. It is a relatively new AI model from OpenAI that extends GPT-4 with vision capabilities and therefore can "understand" images.
+
+### The Prompt
+
+My goal was to get an response from the OpenAI API in JSON format. Unfortunately at the time of writing GPT-4V did not support function calling to easily get back structured response data. And as mentioned before, I wanted to get the following information:
+
+* **Alt Text**: A textual description of the image, suitable for vision impaired people.
+* **Title Suggestions**: A list of five title suggestions for the image.
+* **Tags**: A list of five tags that describe the image best.
+
+So with a little bit of trial and error, this was my final prompt:
+
+```python
+# main.py
+
+prompt = ("Create an accurate and detailed description of this image that would also work as an alt text. Also "
+    "come up with 5 title suggestions for this image. At last suggest 5 tags that suit the image "
+    "description. These tags should be single words only. Identify the main subject or theme and make sure "
+    "to put the according tag first. Return the description, the title suggestions and "
+    "tags as JSON without any extra notes or information. Return a JSON string that can be parsed. Do not "
+    "use markdown code blocks. Use the following JSON format: \n\n\"\"\"{\"title_ideas\": [\"\", \"\", "
+    "\"\", \"\", \"\"],\"description\": \"\",\"tags\": [\"\", \"\", \"\", \"\", \"\"]}\"\"\"")
+
+```
+
+As you can see I needed to provide a JSON example of the expected output. This helped the best to get the desired response from the API with the fields of interest.  
+I also had to tell it explicitly to *not* return Markdown. Before it *sometimes* returned Markdown code blocks, sometimes plain JSON.
+
+## Astro ~~Content~~ Data Collections
+
+My website is powered by [Astro](https://astro.build) and the new [Grid](/grid/) section is created from an [Astro Content Collection](https://docs.astro.build/en/guides/content-collections/), but in data-only mode with plain JSON files.
+
+The JSON files are created by the Python script directly. I just check the AI generated texts, choose a title from the suggestions or write my own, and then update the final JSON schema.
+
+## Conclusion
+
+I am quite happy with the results. The Python script extracts the EXIF data and the AI generates the alt text, title suggestions, and tags. This way I can automate the process of adding new photos to my website and make them more accessible and informative. The whole process actually feels like fun and not like a chore.
