@@ -1,0 +1,99 @@
+---
+title: 'Automate My Grid: Python Meets EXIF and GPT-4 Vision'
+pubDate: 2024-02-05
+description: "Recently, I launched a new section on my website where I would like to showcase some of my favorite photos. I wanted to automate the process of extracting EXIF metadata and generating alt text, title, and tage for the images. So let's let AI do the heavy lifting."
+image:
+  {
+    src: '../../assets/reads/python_meets_camera_exif_data.jpg',
+    alt: "A vividly colored blue snake with orange accents is coiled around a black camera amidst a dense jungle setting. The leaves surrounding the scene are dark with light blue highlights. The snake's scales are detailed and it has a focused gaze directed towards the camera lens, which is reflecting a warm orange light.",
+  }
+tags: ['python', 'exif', 'gpt-4v', 'photography']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/python_meets_camera_exif_data.jpg'
+
+Recently, I launched a [new section](/grid/) on my website to showcase some of my favorite photos taken during my travels, family events, and other occasions.
+
+When posting these photos to Instagram, I found it quite cumbersome to manually extract the EXIF metadata. So, I wanted to automate this process for my own website. I aimed not only to generate good alt text for the images but also to come up with titles and tags for the photos. Let's let AI do the heavy lifting.
+
+<Image
+  src={coverImage}
+  alt="A vividly colored blue snake with orange accents is coiled around a black camera amidst a dense jungle setting. The leaves surrounding the scene are dark with light blue highlights. The snake's scales are detailed and it has a focused gaze directed towards the camera lens, which is reflecting a warm orange light."
+  caption="Where Code Meets Camera: Python Extracts the Story Behind Every Shot as GPT-4 Vision Crafts the Narrative"
+  lazy={false}
+/>
+
+## Extracting EXIF Metadata
+
+### Why Extract EXIF Data?
+
+**EXIF** (Exchangeable Image File Format) is a standard that specifies formats for images, audio, and additional tags used by digital cameras (including smartphones), scanners, and other systems handling image files.
+
+I take photos with a Canon R6 Mark II, which stores extensive metadata in the EXIF format. This includes the camera model, the lens used, focal length, aperture, shutter speed, ISO, and so on. Since this data can be quite useful for photography enthusiasts and offer insights into *how* a picture was taken, I wanted to extract this information and display it on my website.
+
+### Python and Pillow to the Rescue
+
+I decided to use Python to extract the EXIF data from my photos, utilizing the [Pillow](https://pillow.readthedocs.io/en/stable/) library. Pillow provides many powerful features, including the ability to read and write EXIF data by tag ID.
+
+```python {11}
+# main.py
+
+# Extracting specific fields
+
+camera = str(exif_data.get(272))  # Tag for Camera
+lens_type = str(exif_ifd.get(42036))  # Tag for LensMake
+aperture = str(exif_ifd.get(33437))  # Tag for FNumber
+iso = str(exif_ifd.get(34855))  # Tag for ISOSpeedRatings
+focal_length = str(exif_ifd.get(37386))  # Tag for FocalLength
+exposure_time = exif_ifd.get(33434)  # Tag for ExposureTime
+shutter_speed = f"1/{str(1 / exposure_time)}"
+datetime_original = str(exif_ifd.get(36867))  # Tag for DateTimeOriginal
+```
+
+Note the conversion of `exposure_time` to a more camera-like and human-readable `shutter_speed` format (e.g., "1/250").
+
+## Generating Alt Text, Title Suggestions, and Tags
+
+Just posting an image without any context is not very helpful, not only for visually impaired people. So, I wanted to generate not only good alt text for the images but also to get some title inspirations as well as tags for the photos.
+
+This is where [**GPT-4 Vision**](https://platform.openai.com/docs/guides/vision) comes into play. It is a relatively new AI model from OpenAI that extends GPT-4 with vision capabilities and therefore can "understand" images.
+
+### The Prompt
+
+My goal was to receive a response from the OpenAI API in JSON format. Unfortunately, at the time of writing, GPT-4V did not support function calling to easily get back structured response data. And as mentioned before, I wanted to get the following information:
+
+- **Alt Text**: A textual description of the image, suitable for visually impaired people.
+- **Title Suggestions**: A list of five title suggestions for the image.
+- **Tags**: A list of five tags that best describe the image.
+
+So, with a bit of trial and error, this was my final prompt:
+
+```python
+# main.py
+
+prompt = ("Create an accurate and detailed description of this image that would also work as an alt text. Also "
+    "come up with 5 title suggestions for this image. At last suggest 5 tags that suit the image "
+    "description. These tags should be single words only. Identify the main subject or theme and make sure "
+    "to put the according tag first. Return the description, the title suggestions and "
+    "tags as JSON without any extra notes or information. Return a JSON string that can be parsed. Do not "
+    "use markdown code blocks. Use the following JSON format: \n\n\"\"\"{\"title_ideas\": [\"\", \"\", "
+    "\"\", \"\", \"\"],\"description\": \"\",\"tags\": [\"\", \"\", \"\", \"\", \"\"]}\"\"\"")
+
+```
+
+As you can see, providing a JSON example of the expected output helped me get the desired response from the API with the fields of interest. I also had to explicitly request that it *not* return Markdown, as it sometimes returned Markdown code blocks and other times plain JSON.
+
+## Astro Content Data Collections
+
+My website is powered by [Astro](https://astro.build), and the new Grid section is created from an [Astro Content Collection](https://docs.astro.build/en/guides/content-collections/) in data-only mode with plain JSON files.
+
+The Python script directly creates the JSON files. I just check the AI-generated texts, choose a title from the suggestions or write my own, and then update the final JSON schema.
+
+## The Script on GitHub
+
+I have published the Python script on GitHub. You can find it [here](https://github.com/florivdg/exifExtractor). All you need is a Python environment and an OpenAI API key that is enabled for GPT-4 Vision.
+
+## Conclusion
+
+I am quite happy with the results. The Python script extracts the EXIF data, and the AI generates the alt text, title suggestions, and tags. This way, I can automate the process of adding new photos to my website, making them more accessible and informative. The whole process actually feels like fun and not like a chore.
