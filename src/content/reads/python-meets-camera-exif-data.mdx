@@ -7,15 +7,15 @@ image:
     src: '../../assets/reads/python_meets_camera_exif_data.jpg',
     alt: "A vividly colored blue snake with orange accents is coiled around a black camera amidst a dense jungle setting. The leaves surrounding the scene are dark with light blue highlights. The snake's scales are detailed and it has a focused gaze directed towards the camera lens, which is reflecting a warm orange light.",
   }
-tags: ['python', 'exif', 'gpt4vision', 'photography']
+tags: ['python', 'exif', 'gpt-4v', 'photography']
 ---
 
 import Image from '../../components/reads/Image.astro'
 import coverImage from '../../assets/reads/python_meets_camera_exif_data.jpg'
 
-Recently, I launched [a new section](/grid/) on my website where I would like to showcase some of my favorite photos taken during my travels, family events, and other occasions.
+Recently, I launched a [new section](/grid/) on my website to showcase some of my favorite photos taken during my travels, family events, and other occasions.
 
-When posting these photos to Instagram, I found it quite cumbersome to manually extract the EXIF metadata. So I wanted to automate this process for my own website. I also needed not only a good alt text for the images, but also good titles and tage for the photos. So let's let AI do the heavy lifting.
+When posting these photos to Instagram, I found it quite cumbersome to manually extract the EXIF metadata. So, I wanted to automate this process for my own website. I aimed not only to generate good alt text for the images but also to come up with titles and tags for the photos. Let's let AI do the heavy lifting.
 
 <Image
   src={coverImage}
@@ -28,13 +28,13 @@ When posting these photos to Instagram, I found it quite cumbersome to manually 
 
 ### Why Extract EXIF Data?
 
-**EXIF** (Exchangeable Image File Format) is a standard that specifies the formats for images, audio, and additional tags used by digital cameras (including smartphones), scanners, and other systems that handle image files.
+**EXIF** (Exchangeable Image File Format) is a standard that specifies formats for images, audio, and additional tags used by digital cameras (including smartphones), scanners, and other systems handling image files.
 
-I take photos with a Canon R6 Mark II, which stores a lot of metadata in the EXIF format. This includes the camera model itself, but also what lens I used, focal length, aperture, shutter speed, ISO, and so on. Since this data can be quite useful for photography enthusiasts and give you a better idea of *how* a picture was taken, I wanted to extract this information and display it on my website.
+I take photos with a Canon R6 Mark II, which stores extensive metadata in the EXIF format. This includes the camera model, the lens used, focal length, aperture, shutter speed, ISO, and so on. Since this data can be quite useful for photography enthusiasts and offer insights into *how* a picture was taken, I wanted to extract this information and display it on my website.
 
 ### Python and Pillow to the Rescue
 
-Currently I am trying to do more and more Python programming, so I decided to use Python to extract the EXIF data from my photos. I used the [Pillow](https://pillow.readthedocs.io/en/stable/) library. It provides a number of very powerful features, including the ability to read and write EXIF data by tag ID.
+I decided to use Python to extract the EXIF data from my photos, utilizing the [Pillow](https://pillow.readthedocs.io/en/stable/) library. Pillow provides many powerful features, including the ability to read and write EXIF data by tag ID.
 
 ```python {11}
 # main.py
@@ -51,23 +51,23 @@ shutter_speed = f"1/{str(1 / exposure_time)}"
 datetime_original = str(exif_ifd.get(36867))  # Tag for DateTimeOriginal
 ```
 
-Note the highlighted line above. There I converted the `exposure_time` from a fractional number to the more camera-like and human-readable `shutter_speed` format (e.g "1/250").
+Note the conversion of `exposure_time` to a more camera-like and human-readable `shutter_speed` format (e.g., "1/250").
 
 ## Generating Alt Text, Title Suggestions, and Tags
 
-Just posting an image without any context is not very helpful - not only for vision impaired people. So I wanted to generate not only a good alt text for the images, but also get some title inspirations as well as tags for the photos.
+Just posting an image without any context is not very helpful, not only for visually impaired people. So, I wanted to generate not only good alt text for the images but also to get some title inspirations as well as tags for the photos.
 
 This is where [**GPT-4 Vision**](https://platform.openai.com/docs/guides/vision) comes into play. It is a relatively new AI model from OpenAI that extends GPT-4 with vision capabilities and therefore can "understand" images.
 
 ### The Prompt
 
-My goal was to get an response from the OpenAI API in JSON format. Unfortunately at the time of writing GPT-4V did not support function calling to easily get back structured response data. And as mentioned before, I wanted to get the following information:
+My goal was to receive a response from the OpenAI API in JSON format. Unfortunately, at the time of writing, GPT-4V did not support function calling to easily get back structured response data. And as mentioned before, I wanted to get the following information:
 
-* **Alt Text**: A textual description of the image, suitable for vision impaired people.
-* **Title Suggestions**: A list of five title suggestions for the image.
-* **Tags**: A list of five tags that describe the image best.
+- **Alt Text**: A textual description of the image, suitable for visually impaired people.
+- **Title Suggestions**: A list of five title suggestions for the image.
+- **Tags**: A list of five tags that best describe the image.
 
-So with a little bit of trial and error, this was my final prompt:
+So, with a bit of trial and error, this was my final prompt:
 
 ```python
 # main.py
@@ -82,15 +82,14 @@ prompt = ("Create an accurate and detailed description of this image that would 
 
 ```
 
-As you can see I needed to provide a JSON example of the expected output. This helped the best to get the desired response from the API with the fields of interest.  
-I also had to tell it explicitly to *not* return Markdown. Before it *sometimes* returned Markdown code blocks, sometimes plain JSON.
+As you can see, providing a JSON example of the expected output helped me get the desired response from the API with the fields of interest. I also had to explicitly request that it *not* return Markdown, as it sometimes returned Markdown code blocks and other times plain JSON.
 
-## Astro ~~Content~~ Data Collections
+## Astro Content Data Collections
 
-My website is powered by [Astro](https://astro.build) and the new [Grid](/grid/) section is created from an [Astro Content Collection](https://docs.astro.build/en/guides/content-collections/), but in data-only mode with plain JSON files.
+My website is powered by [Astro](https://astro.build), and the new Grid section is created from an [Astro Content Collection](https://docs.astro.build/en/guides/content-collections/) in data-only mode with plain JSON files.
 
-The JSON files are created by the Python script directly. I just check the AI generated texts, choose a title from the suggestions or write my own, and then update the final JSON schema.
+The Python script directly creates the JSON files. I just check the AI-generated texts, choose a title from the suggestions or write my own, and then update the final JSON schema.
 
 ## Conclusion
 
-I am quite happy with the results. The Python script extracts the EXIF data and the AI generates the alt text, title suggestions, and tags. This way I can automate the process of adding new photos to my website and make them more accessible and informative. The whole process actually feels like fun and not like a chore.
+I am quite happy with the results. The Python script extracts the EXIF data, and the AI generates the alt text, title suggestions, and tags. This way, I can automate the process of adding new photos to my website, making them more accessible and informative. The whole process actually feels like fun and not like a chore.
