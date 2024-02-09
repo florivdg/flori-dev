@@ -22,7 +22,9 @@ export default defineConfig({
   integrations: [tailwind(), vue(), expressiveCode(), mdx(), sitemap()],
   output: 'static',
   adapter: vercel({
-    webAnalytics: true,
+    webAnalytics: {
+      enabled: true,
+    },
   }),
   vite: {
     define: {
