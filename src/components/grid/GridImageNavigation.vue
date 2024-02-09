@@ -3,7 +3,8 @@
     <nav>
       <ul class="flex gap-2">
         <li>
-          <a
+          <component
+            :is="prevLink ? 'a' : 'span'"
             :href="prevLink"
             title="Go to previous photo"
             class="image-grid-button"
@@ -25,10 +26,11 @@
             </svg>
 
             <span class="sr-only">Go to previous photo</span>
-          </a>
+          </component>
         </li>
         <li>
-          <a
+          <component
+            :is="nextLink ? 'a' : 'span'"
             :href="nextLink"
             title="Go to next photo"
             class="image-grid-button"
@@ -50,7 +52,7 @@
             </svg>
 
             <span class="sr-only">Go to next photo</span>
-          </a>
+          </component>
         </li>
       </ul>
     </nav>
