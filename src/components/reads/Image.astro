@@ -23,7 +23,10 @@ const lazy: boolean = userLazy ?? true
     densities={[1, 2, 3]}
     width={720}
     height={480}
-    class={skew ? '-rotate-1 -skew-x-3 rounded-lg shadow-lg' : undefined}
+    class:list={[
+      'h-auto w-full',
+      skew ? '-rotate-1 -skew-x-3 rounded-lg shadow-lg' : undefined,
+    ]}
     loading={lazy ? 'lazy' : 'eager'}
   />
   {caption ? <figcaption class="!mt-[2em]">{caption}</figcaption> : undefined}
