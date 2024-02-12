@@ -1,5 +1,5 @@
 ---
-title: 'Using Web Components to Keep My Age Up to Date'
+title: 'Using a Web Component to Keep My Age Up to Date'
 pubDate: 2024-02-12
 description: "Ok, I have to admit that I am indeed getting older and web components are no fountain of youth. My Astro site is pre-generated and not server-rendered, so I have to rely on JavaScript to keep my age up to date. To keep it simple and self-contained, I decided to create a web component."
 image:
@@ -32,3 +32,36 @@ They consist of custom elements, shadow DOM for style and markup encapsulation, 
 
 ## The \<my-age /> Web Component
 
+As I mentioned before, I use Astro to build my site. So I am actually using an Astro component as a wrapper around my custom web component called `<my-age />`. Here's the code for it:
+
+```html
+# MyAge.astro
+<my-age>36-year-old</my-age>
+
+<script>
+  // Define the behaviour for our new type of HTML element.
+  class MyAge extends HTMLElement {
+    constructor() {
+      super()
+
+      /// Calculate how old I am
+      const birthday = new Date('1986-10-09')
+      const today = new Date()
+      let age = today.getFullYear() - birthday.getFullYear()
+      const m = today.getMonth() - birthday.getMonth()
+      if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+        age--
+      }
+
+      this.textContent = `${age}-year-old`
+    }
+  }
+
+  // Tell the browser to use our MyAge class for <my-age> elements.
+  customElements.define('my-age', MyAge)
+</script>
+```
+
+Creating a custom web component is as simple as extending the `HTMLElement` class and defining the custom element with `customElements.define`. The `constructor` method is called when the element is created or upgraded. In this case, I calculate my age and set the text content of the element to my age.
+
+So `<my-age>...</my-age>` becomes a fully functional HTML tag on its own, just like `<div>...</div>` or `<p>...</p>`. When the browser encounters `<my-age>...</my-age>`, it will create an instance of the `MyAge` class and call its `constructor` method.
