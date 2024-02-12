@@ -1,0 +1,73 @@
+---
+title: 'Using a Web Component to Keep My Age Up to Date'
+pubDate: 2024-02-12
+description: "Ok, I have to admit that I am indeed getting older and web components are no fountain of youth. My Astro site is pre-generated and not server-rendered, so I have to rely on JavaScript to keep my age up to date. To keep it simple and self-contained, I decided to create a web component."
+image:
+  {
+    src: '../../assets/reads/html-web-component-in-a-self-contained-box.jpg',
+    alt: 'A glowing, futuristic tech cube with a microchip at its core, surrounded by a geometric patterned background suggesting connectivity and advanced technology',
+  }
+tags: ['Web Components', 'JavaScript', 'HTML']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/html-web-component-in-a-self-contained-box.jpg'
+
+Ok, I have to admit that I am indeed getting older and web components are no fountain of youth. But they can help keep my age up to date on my website.
+
+So, how do I add dynamic data to a static site? There are several places on my site where I list my age. My Astro site is pre-generated and not server-rendered, so I have to rely on JavaScript to keep my age up to date. To keep it simple and self-contained, I decided to create a web component `<my-age />` that I could use in my Astro pages. Here's how I did it.
+
+<Image
+  src={coverImage}
+  alt="A glowing, futuristic tech cube with a microchip at its core, surrounded by a geometric patterned background suggesting connectivity and advanced technology"
+  caption="Encapsulating Blocks of the Web: Self-containing Functionality with Web Components"
+  lazy={false}
+/>
+
+## What are Web Components?
+
+Web Components are technologies that enable developers to create reusable custom elements with encapsulated functionality for web applications.
+
+They consist of custom elements, shadow DOM for style and markup encapsulation, and HTML templates for reusing markup. Web Components streamline web development by promoting code reuse and maintainability. They allow for the creation of custom HTML tags that encapsulate their own HTML, CSS, and JavaScript.
+
+## The \<my-age /> Web Component
+
+As I mentioned before, I use Astro to build my site. So I am actually using an Astro component as a wrapper around my custom web component called `<my-age />`. Here's the code for it:
+
+```html
+# MyAge.astro
+<my-age>36-year-old</my-age>
+
+<script>
+  // Define the behaviour for our new type of HTML element.
+  class MyAge extends HTMLElement {
+    constructor() {
+      super()
+
+      /// Calculate how old I am
+      const birthday = new Date('1986-10-09')
+      const today = new Date()
+      let age = today.getFullYear() - birthday.getFullYear()
+      const m = today.getMonth() - birthday.getMonth()
+      if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+        age--
+      }
+
+      this.textContent = `${age}-year-old`
+    }
+  }
+
+  // Tell the browser to use our MyAge class for <my-age> elements.
+  customElements.define('my-age', MyAge)
+</script>
+```
+
+Creating a custom web component is as simple as extending the `HTMLElement` class and defining the custom element with `customElements.define`. The `constructor` method is called when the element is created or upgraded. In this case, I calculate my age and set the text content of the element to my age.
+
+So `<my-age>...</my-age>` becomes a fully functional HTML tag on its own, just like `<div>...</div>` or `<p>...</p>`. When the browser encounters `<my-age>...</my-age>`, it will create an instance of the `MyAge` class and call its `constructor` method.
+
+## Conclusion
+
+Web components are a great way to encapsulate functionality and keep your code modular and maintainable. They are great for displaying my current age on my Astro site, which is pre-generated and not server-rendered. I can use them to add dynamic data to my static site without having to rely on server logic.
+
+And yes, I know that this method relies heavily on users having JavaScript enabled and the correct date and time set on their devices. But I think that's a fair trade-off for the simplicity and self-contained nature of the solution.
