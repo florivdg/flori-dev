@@ -65,3 +65,9 @@ As I mentioned before, I use Astro to build my site. So I am actually using an A
 Creating a custom web component is as simple as extending the `HTMLElement` class and defining the custom element with `customElements.define`. The `constructor` method is called when the element is created or upgraded. In this case, I calculate my age and set the text content of the element to my age.
 
 So `<my-age>...</my-age>` becomes a fully functional HTML tag on its own, just like `<div>...</div>` or `<p>...</p>`. When the browser encounters `<my-age>...</my-age>`, it will create an instance of the `MyAge` class and call its `constructor` method.
+
+## Conclusion
+
+Web components are a great way to encapsulate functionality and keep your code modular and maintainable. They are great for displaying my current age on my Astro site, which is pre-generated and not server-rendered. I can use them to add dynamic data to my static site without having to rely on server logic.
+
+And yes, I know that this method relies heavily on users having JavaScript enabled and the correct date and time set on their devices. But I think that's a fair trade-off for the simplicity and self-contained nature of the solution.
