@@ -1,0 +1,34 @@
+---
+title: 'Using Web Components to Keep My Age Up to Date'
+pubDate: 2024-02-12
+description: "Ok, I have to admit that I am indeed getting older and web components are no fountain of youth. My Astro site is pre-generated and not server-rendered, so I have to rely on JavaScript to keep my age up to date. To keep it simple and self-contained, I decided to create a web component."
+image:
+  {
+    src: '../../assets/reads/html-web-component-in-a-self-contained-box.jpg',
+    alt: 'A glowing, futuristic tech cube with a microchip at its core, surrounded by a geometric patterned background suggesting connectivity and advanced technology',
+  }
+tags: ['Web Components', 'JavaScript', 'HTML']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/html-web-component-in-a-self-contained-box.jpg'
+
+Ok, I have to admit that I am indeed getting older and web components are no fountain of youth. But they can help keep my age up to date on my website.
+
+So, how do I add dynamic data to a static site? There are several places on my site where I list my age. My Astro site is pre-generated and not server-rendered, so I have to rely on JavaScript to keep my age up to date. To keep it simple and self-contained, I decided to create a web component `<my-age />` that I could use in my Astro pages. Here's how I did it.
+
+<Image
+  src={coverImage}
+  alt="A glowing, futuristic tech cube with a microchip at its core, surrounded by a geometric patterned background suggesting connectivity and advanced technology"
+  caption="Encapsulating Blocks of the Web: Simplifying Design with Web Components"
+  lazy={false}
+/>
+
+## What are Web Components?
+
+Web Components are technologies that enable developers to create reusable custom elements with encapsulated functionality for web applications.
+
+They consist of custom elements, shadow DOM for style and markup encapsulation, and HTML templates for reusing markup. Web Components streamline web development by promoting code reuse and maintainability. They allow for the creation of custom HTML tags that encapsulate their own HTML, CSS, and JavaScript.
+
+## The \<my-age /> Web Component
+
