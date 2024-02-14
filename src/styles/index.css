@@ -8,6 +8,17 @@
   font-stretch: 75% 125%;
 }
 
+@font-face {
+  font-family: 'Monaspace Neon';
+  src:
+    url('/fonts/Monaspace-Neon.woff2') format('woff2 support variations'),
+    url('/fonts/Monaspace-Neon.woff2') format('woff2-variations');
+  font-display: swap;
+  font-weight: 200 800;
+  font-stretch: 100% 125%;
+  font-style: oblique -11deg 0deg;
+}
+
 .highlight {
   @apply inline-block -rotate-1 -skew-x-3 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-1.5 text-white;
 }

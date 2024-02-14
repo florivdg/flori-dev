@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Mona Sans', 'sans-serif'],
+        mono: ['Monaspace Neon', 'monospace'],
       },
       typography: ({ theme }) => ({
         flori: {
