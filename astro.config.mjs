@@ -27,6 +27,7 @@ export default defineConfig({
         uiFontFamily: 'Mona Sans, sans-serif',
         uiFontWeight: '600',
         codeFontFamily: 'Monaspace Neon, monospace',
+        codeFontWeight: '450',
       },
     }),
     mdx(),
