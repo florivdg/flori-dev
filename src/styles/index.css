@@ -1,3 +1,13 @@
+@font-face {
+  font-family: 'Mona Sans';
+  src:
+    url('/fonts/Mona-Sans.woff2') format('woff2 supports variations'),
+    url('/fonts/Mona-Sans.woff2') format('woff2-variations');
+  font-display: swap;
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+}
+
 .highlight {
   @apply inline-block -rotate-1 -skew-x-3 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-1.5 text-white;
 }
