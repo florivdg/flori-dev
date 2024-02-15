@@ -3,6 +3,10 @@ module.exports = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Mona Sans', 'sans-serif'],
+        mono: ['Monaspace Neon', 'monospace'],
+      },
       typography: ({ theme }) => ({
         flori: {
           css: {

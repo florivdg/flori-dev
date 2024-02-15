@@ -19,7 +19,20 @@ import expressiveCode from 'astro-expressive-code'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://flori.dev',
-  integrations: [tailwind(), vue(), expressiveCode(), mdx(), sitemap()],
+  integrations: [
+    tailwind(),
+    vue(),
+    expressiveCode({
+      styleOverrides: {
+        uiFontFamily: 'Mona Sans, sans-serif',
+        uiFontWeight: '600',
+        codeFontFamily: 'Monaspace Neon, monospace',
+        codeFontWeight: '450',
+      },
+    }),
+    mdx(),
+    sitemap(),
+  ],
   output: 'static',
   adapter: vercel({
     webAnalytics: {
