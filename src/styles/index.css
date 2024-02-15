@@ -6,6 +6,7 @@
   font-display: swap;
   font-weight: 200 900;
   font-stretch: 75% 125%;
+  font-style: oblique -11deg 0deg;
 }
 
 @font-face {
@@ -21,6 +22,11 @@
 
 .highlight {
   @apply inline-block -rotate-1 -skew-x-3 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-1.5 text-white;
+}
+
+.slanted {
+  font-variation-settings: 'slnt' -8;
+  font-synthesis: none;
 }
 
 .link {
