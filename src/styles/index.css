@@ -24,7 +24,8 @@
   @apply inline-block -rotate-1 -skew-x-3 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-1.5 text-white;
 }
 
-.slanted {
+.slanted,
+.prose em {
   font-variation-settings: 'slnt' -8;
   font-synthesis: none;
 }
