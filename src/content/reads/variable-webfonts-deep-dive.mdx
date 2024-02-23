@@ -1,25 +1,52 @@
 ---
-title: 'Variable Web Fonts, A Deep Dive'
-pubDate: 2024-02-18
+title: 'Variable Web Fonts: Where to Start?'
+pubDate: 2024-02-24
 description: ""
 image:
   {
     src: '../../assets/reads/giant_3d_letters_CSS_in_a_city_crowded_with_techy_people.jpg',
-    alt: '',
+    alt: "Digital artwork of an urban street scene with a vivid, stylized sky in hues of blue, pink, and orange. The central building features a large neon sign with the letters 'CSS' in bright pink, suggesting a tech-centric theme. People are shown walking on the streets, giving the image a bustling city atmosphere.",
   }
-tags: ['CSS']
+tags: ['CSS', 'Fonts']
 ---
 
 import Image from '../../components/reads/Image.astro'
 import coverImage from '../../assets/reads/giant_3d_letters_CSS_in_a_city_crowded_with_techy_people.jpg'
 
-Intro
+It all started with me wanting to use a new font on my website. While the good old system fonts that come as the default Tailwind CSS families are great, I wanted something more unique.
 
+After looking around for a while, I stumbled upon [GitHub's Mona Sans](https://github.com/mona-sans) and really liked it. It was open source, free to use, and looked great. I currently use their [Monaspace Font](https://monaspace.githubnext.com) in my IDEs, so I thought the two together would be a great match for my site.
+
+Also, they are both variable glyph fonts. So now I had a great opportunity to learn more about variable fonts and how to use them on the web. Something I have wanted to do for a long time...
 <Image
   src={coverImage}
-  alt=""
-  caption=""
+  alt="Digital artwork of an urban street scene with a vivid, stylized sky in hues of blue, pink, and orange. The central building features a large neon sign with the letters 'CSS' in bright pink, suggesting a tech-centric theme. People are shown walking on the streets, giving the image a bustling city atmosphere."
+  caption="The Future of Web Typography: Exploring the Dynamic World of Variable Fonts in CSS."
   lazy={false}
 />
 
-Content
+## What are Variable Fonts?
+
+Variable fonts utilize a single font file to encapsulate a range of type variations through the use of axes such as width, weight, and slant.
+
+The **width axis** allows for adjustment from condensed to expanded characters, affecting the horizontal stretch without altering the font size. The **weight axis** controls the thickness of the strokes, enabling transitions from light to bold. The **slant axis** modifies the angle of the letters, offering variations from upright to italic.
+
+These axes can be finely adjusted via CSS, giving developers precise control over typography without the need for multiple font files, streamlining web typography with a focus on technical efficiency and flexibility.
+
+So instead of having to choose between `font-weight: 400;` and `font-weight: 500;` you can now simply use `font-weight: 450;` and get the exact weight if that fits your design better. This also allows for smoother transitions between different character styles.
+
+## Setup with `@font-face`
+
+gg
+
+## Accessing Font Variations
+
+gg
+
+## Performance Optimization
+
+gg
+
+## Conclusion
+
+gg
