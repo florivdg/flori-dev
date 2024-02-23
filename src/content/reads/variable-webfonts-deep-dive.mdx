@@ -1,5 +1,5 @@
 ---
-title: 'Variable Web Fonts: Where to Start?'
+title: 'Variable Web Fonts: Where to Start and How to Optimize?'
 pubDate: 2024-02-24
 description: ""
 image:
@@ -12,12 +12,14 @@ tags: ['CSS', 'Fonts']
 
 import Image from '../../components/reads/Image.astro'
 import coverImage from '../../assets/reads/giant_3d_letters_CSS_in_a_city_crowded_with_techy_people.jpg'
+import VariableFontExample from '../../components/reads/demos/VariableFont.vue'
 
 It all started with me wanting to use a new font on my website. While the good old system fonts that come as the default Tailwind CSS families are great, I wanted something more unique.
 
 After looking around for a while, I stumbled upon [GitHub's Mona Sans](https://github.com/mona-sans) and really liked it. It was open source, free to use, and looked great. I currently use their [Monaspace Font](https://monaspace.githubnext.com) in my IDEs, so I thought the two together would be a great match for my site.
 
 Also, they are both variable glyph fonts. So now I had a great opportunity to learn more about variable fonts and how to use them on the web. Something I have wanted to do for a long time...
+
 <Image
   src={coverImage}
   alt="Digital artwork of an urban street scene with a vivid, stylized sky in hues of blue, pink, and orange. The central building features a large neon sign with the letters 'CSS' in bright pink, suggesting a tech-centric theme. People are shown walking on the streets, giving the image a bustling city atmosphere."
@@ -27,23 +29,59 @@ Also, they are both variable glyph fonts. So now I had a great opportunity to le
 
 ## What are Variable Fonts?
 
-Variable fonts utilize a single font file to encapsulate a range of type variations through the use of axes such as width, weight, and slant.
+Variable fonts use a single font file to encapsulate a range of font variations through the use of axes such as width, weight, and slant.
 
-The **width axis** allows for adjustment from condensed to expanded characters, affecting the horizontal stretch without altering the font size. The **weight axis** controls the thickness of the strokes, enabling transitions from light to bold. The **slant axis** modifies the angle of the letters, offering variations from upright to italic.
+The **width axis** allows adjustment from condensed to expanded characters, affecting horizontal stretch without changing the font size. The **weight axis** controls the thickness of the strokes, allowing transitions from light to bold. The **slant axis** changes the angle of the letters, allowing variations from upright to italic.
 
-These axes can be finely adjusted via CSS, giving developers precise control over typography without the need for multiple font files, streamlining web typography with a focus on technical efficiency and flexibility.
+These axes can be fine-tuned via CSS, giving developers precise control over typography without the need for multiple font files, streamlining web typography with a focus on technical efficiency and - *what I love the most* - flexibility.
 
-So instead of having to choose between `font-weight: 400;` and `font-weight: 500;` you can now simply use `font-weight: 450;` and get the exact weight if that fits your design better. This also allows for smoother transitions between different character styles.
+For example, instead of having to choose between `font-weight: 400;` and `font-weight: 500;`, you can now simply use `font-weight: 444;` and get the exact weight if that better suits your design. This also allows for smoother transitions between different character styles.
 
 ## Setup with `@font-face`
 
-gg
+As with "legacy" web fonts, variable fonts are loaded using the `@font-face` rule, too:
+
+```css {6-8}
+/* style.css */
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/Mona-Sans.woff2') format('woff2');
+  font-display: swap;
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+  font-style: oblique -11deg 0deg;
+}
+```
+
+In the code example above, I have highlighted the `font-weight` and `font-stretch` properties because they are the most important when working with variable fonts. These properties define the range of font variations available to the browser.
+
+In our example, Mona Sans has a weight range from `200` to `900` and a stretch range from `75%` to `125%`.
+
+The same is true for the `font-style` property. It defines the range of the slant axis of the font. In our example, the range is from `-11deg` to `0deg`. The `oblique` value tells the browser to use the slant axis instead of an italic version of the font.
 
 ## Accessing Font Variations
 
-gg
+As with any other font, you now set the desired font family and style in your CSS:
+
+```css
+/* style.css */
+.variable-font {
+  font-family: 'Mona Sans', sans-serif;
+  font-weight: 888;
+  font-stretch: 90%;
+  font-size: 6rem;
+}
+```
+
+And this is what it looks like:
+
+<VariableFontExample client:load />
 
 ## Performance Optimization
+
+gg
+
+### What Not to Do
 
 gg
 
