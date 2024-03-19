@@ -1,0 +1,17 @@
+{
+  "id": "2R9A2805",
+  "title": "A Bee's Haven",
+  "image": "./2R9A2805.jpg",
+  "alt": "A close-up photo capturing the delicate pink blossoms of a cherry tree. A bee is perched on one of the clusters of flowers, collecting nectar. The background features a soft, blurred effect, enhancing the intricate details of the blossoms and the bee in focus.",
+  "location": "",
+  "date": "2024-03-17",
+  "tags": ["nature", "cherryblossom", "bee", "spring", "flora"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "125",
+    "focal_length": "200.0",
+    "shutter_speed": "1/1000"
+  }
+}
