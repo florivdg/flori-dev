@@ -9,6 +9,9 @@ import { consola } from 'consola'
  */
 const GRID_DIR = join(__dirname, '../src/content/grid')
 
+/**
+ * Represents the metadata of an image in the Exif format.
+ */
 interface ExifMetadata {
   FileName: string
   ExposureTime: string
