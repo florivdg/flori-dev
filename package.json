@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "grid:prepare": "bun run ./scripts/grid-vision.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "2.2.1",
@@ -29,6 +30,8 @@
     "@tailwindcss/typography": "^0.5.10",
     "@types/bun": "^1.0.10",
     "consola": "^3.2.3",
+    "destr": "^2.0.3",
+    "openai": "^4.29.2",
     "postcss-nesting": "^12.1.0",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
