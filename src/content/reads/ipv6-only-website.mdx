@@ -1,0 +1,78 @@
+---
+title: 'Can you do IPv6-only websites?'
+pubDate: 2024-04-16
+description: ""
+image:
+  {
+    src: '../../assets/reads/the-road-to-ipv6.jpg',
+    alt: '',
+  }
+tags: ['IPv6', 'Hetzner']
+---
+
+import Image from '../../components/reads/Image.astro'
+import coverImage from '../../assets/reads/the-road-to-ipv6.jpg'
+
+The other day I saw this offer at Hetzner: ARM based virtual cloud server - IPv6 only. For 3.29 € per month! That's 50 cents cheaper than with the IPv4 address included. The Swabian in me thought: That's cheap! But can you run IPv6-only websites?
+
+**tldr;** Yes, of course. But there are a few things to consider.
+
+<Image
+  src={coverImage}
+  alt=""
+  caption=""
+  lazy={false}
+/>
+
+## Why are IPv6 Addresses Cheaper?
+
+The IPv4 protocol address space is running out. The last blocks were assigned in 2011. Since then, prices for IPv4 addresses have been rising, and it is only natural that hosting providers like Hetzner charge extra for them. On the other hand, IPv6 addresses have a much larger address space and are therefore much more affordable.
+
+## Reachability Considerations
+
+If you are using an IPv6-only server, you need to consider the obvious issue here: it is only reachable via IPv6. This means that you must have an IPv6 connection to access it. Most providers offer IPv6 connectivity. However, if accessibility is important to you, keep in mind that this may not be the case for everyone.
+
+Current operating systems and browsers also support IPv6. So you only need to consider compatibility if you are targeting specific user groups.
+
+#### Workaround: Proxying
+
+There seem to be solutions for proxying IPv4 to IPv6. But I haven't tried them, and I don't really see the point. If you really need to support IPv4, you should probably just use both, IPv4 and IPv6.
+
+## How to Setup?
+
+For me, as someone who has never really had to deal with IPv6, it was quite a learning curve.
+
+### SSH
+
+At first, I couldn't connect to my server via SSH because I couldn't understand the public IPv6 address notation that my provider was displaying in the dashboard. Instead of a single IP address, an entire subnet was displayed.
+
+With the help of my good old friend ChatGPT I was able to figure out that I needed to connect to the first IP address of the subnet with the `::1` at the end as a shorthand to represent that address. It seems to me that there are so many IPv6 addresses that they give you an entire subnet dedicated to your virtual server.
+
+### `ping`
+
+I also found out that you have to use the `ping6` tool to ping an IPv6 address. The good old `ping` tool only works with IPv4.
+
+### DNS
+
+For a little side project I am working on, I reserved a domain name. All I had to do was set up an `AAAA` record (instead of an `A` record for IPv4 addresses) pointing to the Hetzner IPv6-only server, set up a Caddy web server and go. It's that simple.
+
+```zsh {1} title="dig"
+dig quadranto.cloud AAAA
+
+;; ANSWER SECTION:
+quadranto.cloud.	60	IN	AAAA	2a01:4f8:1c1e:da1a::1
+```
+
+By the way, there are great videos on the **Syntax.fm YouTube channel** about [self-hosting](https://www.youtube.com/watch?v=Q1Y_g0wMwww) and [setting up a Caddy server](https://www.youtube.com/watch?v=mLznVlBAtcg), which I used quite a bit when setting up my server.
+
+### `curl`
+
+`curl` can handle IPv6 without any additional configuration. However, you must make sure to use the square brackets to wrap the IPv6 address. When using `zsh`, make sure to use quotes around the address to prevent the shell from interpreting the square brackets.
+
+```zsh title="curl"
+curl -I "http://[2a01:4f8:1c1e:da1a::1]"
+```
+
+## Conclusion
+
+Yes, you can run IPv6-only websites. But you have to consider the reachability and compatibility issues. If you are targeting a broad audience, you should probably use both, IPv4 and IPv6. But if you are just playing around or want to learn more about IPv6, an IPv6-only server is a great way to get started. And it's cheap!
