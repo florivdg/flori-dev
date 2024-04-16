@@ -1,11 +1,11 @@
 ---
 title: 'Can you do IPv6-only websites?'
 pubDate: 2024-04-16
-description: ""
+description: "The other day I saw this offer at Hetzner: ARM based virtual cloud server - IPv6 only. For 3.29 € per month! That's 50 cents cheaper than with the IPv4 address included. The Swabian in me thought: That's cheap! But can you run IPv6-only websites? tldr; Yes, of course. But there are a few things to consider."
 image:
   {
     src: '../../assets/reads/the-road-to-ipv6.jpg',
-    alt: '',
+    alt: 'A road split between two contrasting landscapes: an old, industrial area labeled "IPv4" and a modern, futuristic city marked "IPv6," visually representing the evolution from IPv4 to IPv6-only web servers.',
   }
 tags: ['IPv6', 'Hetzner']
 ---
@@ -19,8 +19,8 @@ The other day I saw this offer at Hetzner: ARM based virtual cloud server - IPv6
 
 <Image
   src={coverImage}
-  alt=""
-  caption=""
+  alt='A road split between two contrasting landscapes: an old, industrial area labeled "IPv4" and a modern, futuristic city marked "IPv6", visually representing the evolution from IPv4 to IPv6-only web servers.'
+  caption="From Past to Future: The Road from IPv4 Decay to IPv6 Innovation in Web Servers."
   lazy={false}
 />
 
@@ -33,6 +33,8 @@ The IPv4 protocol address space is running out. The last blocks were assigned in
 If you are using an IPv6-only server, you need to consider the obvious issue here: it is only reachable via IPv6. This means that you must have an IPv6 connection to access it. Most providers offer IPv6 connectivity. However, if accessibility is important to you, keep in mind that this may not be the case for everyone.
 
 Current operating systems and browsers also support IPv6. So you only need to consider compatibility if you are targeting specific user groups.
+
+But keep in mind that in addition to provider and device support, you need to run a local IPv6 network. For example, I cannot access my IPv6-only server over our company's VPN because it is only an IPv4 network.
 
 #### Workaround: Proxying
 
