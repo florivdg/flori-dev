@@ -7,10 +7,11 @@ image:
     src: '../../assets/reads/running_bun_with_docker.jpg',
     alt: 'A bread bun with a cute, happy face inside a large, teal Docker container. The container is situated on a dock with a serene marina in the background, under a full moon with the Golden Gate Bridge illuminated in the distance. Seagulls are flying in the sky, adding to the calm and picturesque nighttime scene.',
   }
-tags: ['Docker', 'Bun']
+tags: ['Docker', 'Bun', 'Alpine']
 ---
 
 import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/running_bun_with_docker.jpg'
 
 I find myself coming back to Bun more and more lately for running scripts and side projects. It's fast, has great DX, and is a joy to work with. For a recent project I wanted to deploy a Bun app inside a Docker container. Here's what I learned.
@@ -18,8 +19,30 @@ I find myself coming back to Bun more and more lately for running scripts and si
 <Image
   src={coverImage}
   alt='A bread bun with a cute, happy face inside a large, teal Docker container. The container is situated on a dock with a serene marina in the background, under a full moon with the Golden Gate Bridge illuminated in the distance. Seagulls are flying in the sky, adding to the calm and picturesque nighttime scene.'
-  caption="Dockerize Bun for efficient JavaScript environments"
+  caption="Containerize Bun for efficient JavaScript environments"
   lazy={false}
 />
 
-gg
+## Running Bun in Alpine Linux
+
+When building production Docker images, you often want to use a minimal base image to keep the image size small. Alpine Linux is a popular choice for this because it's lightweight and secure.
+
+Like many Docker repositories, [oven/bun](https://hub.docker.com/r/oven/bun/) also provides an image based on Alpine. So you don't have to create your own docker file from scratch and can use the official bun docker image as a base image for your own Dockerfile.
+
+```dockerfile title="Dockerfile"
+FROM bun:1-alpine
+```
+
+<Note>**🔥 Hot Tip:** Use a fixed version tag like `1.1.10-alpine` instead of `latest` to ensure reproducibility and avoid unexpected changes in your production environment. Then use tools like [Dependabot](https://github.com/dependabot) to keep your images up to date.</Note>
+
+## The Dockerfile
+
+You will probably want to have a build stage in your Dockerfile to create a production build of your Bun application. While bundle size is not as critical on the server as it is in the browser, you still want to get performance optimizations, environment-specific behavior (like logging or error handling), and also take advantage of tree-shaking and minification.  
+Have you ever pushed a bloated Docker image over Wi-Fi to Docker Hub? It's not fun. 🐌
+
+### Multi-stage Dockerfile
+
+```dockerfile title="Dockerfile"
+# Build stage
+FROM bun:1-alpine as build
+```
