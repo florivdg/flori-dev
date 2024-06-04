@@ -1,6 +1,6 @@
 ---
 title: "Running Bun with Docker"
-pubDate: 2024-05-30
+pubDate: 2024-06-04
 description: "I find myself coming back to Bun more and more lately for running scripts and side projects. It's fast, has great DX, and is a joy to work with. For a recent project I wanted to deploy a Bun app inside a Docker container. Here's what I learned."
 image:
   {
@@ -80,3 +80,17 @@ ENTRYPOINT [ "bun", "run", "./dist/index.js" ]
 ```
 
 <Note>**🔥 Hot Tip:** If your build step needs packages that aren't available in Alpine, you can use another distro like Ubuntu to build it and then deploy it with Alpine.</Note>
+
+## Bun and Shebangs
+
+As the [docs](https://bun.sh/docs/cli/bunx#shebangs) say, `bun` and `bunx` both respect shebangs. This means that scripts that use `#!/usr/bin/env node`, for example, will run in Node and not in Bun.
+
+This is something you might not notice when you're working in development, since you probably have Node installed on your local machine. But the official Bun Docker image doesn't come with Node installed.
+
+You might be wondering why this is a problem. While Bun claims to be Node-compatible, there are still some edge cases and differences in behavior. For example, I noticed issues when working with earlier versions of [Drizzle Kit](https://orm.drizzle.team/kit-docs/overview) and some events not firing when using `AbortController` in Astro running in Bun.
+
+<Note>**🔥 Hot Tip:** Use the `--bun` CLI flag to make scripts always run in Bun: `bun --bun run index.ts`</Note>
+
+## Conclusion
+
+By leveraging multi-stage builds and a minimal base image like Alpine Linux, you can keep your Docker images small and efficient for production environments. Be mindful of Bun's handling of shebangs to avoid compatibility issues, and consider using the `--bun` flag to ensure scripts run correctly.
