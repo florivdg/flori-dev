@@ -1,0 +1,96 @@
+---
+title: "Running Bun with Docker"
+pubDate: 2024-06-04
+description: "I find myself coming back to Bun more and more lately for running scripts and side projects. It's fast, has great DX, and is a joy to work with. For a recent project I wanted to deploy a Bun app inside a Docker container. Here's what I learned."
+image:
+  {
+    src: '../../assets/reads/running_bun_with_docker.jpg',
+    alt: 'A bread bun with a cute, happy face inside a large, teal Docker container. The container is situated on a dock with a serene marina in the background, under a full moon with the Golden Gate Bridge illuminated in the distance. Seagulls are flying in the sky, adding to the calm and picturesque nighttime scene.',
+  }
+tags: ['Docker', 'Bun', 'Alpine']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/running_bun_with_docker.jpg'
+
+I find myself coming back to Bun more and more lately for running scripts and side projects. It's fast, has great DX, and is a joy to work with. For a recent project I wanted to deploy a Bun app inside a Docker container. Here's what I learned.
+
+<Image
+  src={coverImage}
+  alt='A bread bun with a cute, happy face inside a large, teal Docker container. The container is situated on a dock with a serene marina in the background, under a full moon with the Golden Gate Bridge illuminated in the distance. Seagulls are flying in the sky, adding to the calm and picturesque nighttime scene.'
+  caption="Containerize Bun for efficient JavaScript environments"
+  lazy={false}
+/>
+
+## Running Bun in Alpine Linux
+
+When building production Docker images, you often want to use a minimal base image to keep the image size small. Alpine Linux is a popular choice for this because it's lightweight and secure.
+
+Like many Docker repositories, [oven/bun](https://hub.docker.com/r/oven/bun/) also provides an image based on Alpine. So you don't have to create your own docker file from scratch and can use the official bun docker image as a base image for your own Dockerfile.
+
+```dockerfile title="Dockerfile" {1}
+FROM bun:1-alpine
+
+...
+```
+
+<Note>**🔥 Hot Tip:** Use a fixed version tag like `1.1.10-alpine` instead of `latest` to ensure reproducibility and avoid unexpected changes in your production environment. Then use tools like [Dependabot](https://github.com/dependabot) to keep your images up to date.</Note>
+
+## The Dockerfile
+
+You will probably want to have a build stage in your Dockerfile to create a production build of your Bun application. While bundle size is not as critical on the server as it is in the browser, you still want to get performance optimizations, environment-specific behavior (like logging or error handling), and also take advantage of tree-shaking and minification.  
+Have you ever pushed a bloated Docker image over Wi-Fi to Docker Hub? It's not fun. 🐌
+
+### Multi-stage Dockerfile
+
+In order to keep you image size small, you can leverage multi-stage builds in Docker. This allows you to use multiple `FROM` statements in your Dockerfile. Each `FROM` instruction can use a different base, and you can copy artifacts from one stage to another.
+
+In the end you will only have the production build of your application as well as the runtime dependencies in your final image. This not only keeps the image size small but also makes it more secure by limiting the attack surface.
+
+```dockerfile title="Dockerfile" {2, 13, 23}
+# Build stage
+FROM oven/bun:1 as builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN bun install --frozen-lockfile
+
+# Build the app
+RUN bun run build
+
+FROM oven/bun:1-alpine
+
+WORKDIR /app
+
+COPY package.json bun.lockb ./
+
+# Only install production dependencies
+RUN bun install --frozen-lockfile --production
+
+# Copy the production build from the previous stage
+COPY --from=builder /app/dist ./dist
+
+USER bun
+
+ENTRYPOINT [ "bun", "run", "./dist/index.js" ]
+
+```
+
+<Note>**🔥 Hot Tip:** If your build step needs packages that aren't available in Alpine, you can use another distro like Ubuntu to build it and then deploy it with Alpine.</Note>
+
+## Bun and Shebangs
+
+As the [docs](https://bun.sh/docs/cli/bunx#shebangs) say, `bun` and `bunx` both respect shebangs. This means that scripts that use `#!/usr/bin/env node`, for example, will run in Node and not in Bun.
+
+This is something you might not notice when you're working in development, since you probably have Node installed on your local machine. But the official Bun Docker image doesn't come with Node installed.
+
+You might be wondering why this is a problem. While Bun claims to be Node-compatible, there are still some edge cases and differences in behavior. For example, I noticed issues when working with earlier versions of [Drizzle Kit](https://orm.drizzle.team/kit-docs/overview) and some events not firing when using `AbortController` in Astro running in Bun.
+
+<Note>**🔥 Hot Tip:** Use the `--bun` CLI flag to make scripts always run in Bun: `bun --bun run index.ts`</Note>
+
+## Conclusion
+
+By leveraging multi-stage builds and a minimal base image like Alpine Linux, you can keep your Docker images small and efficient for production environments. Be mindful of Bun's handling of shebangs to avoid compatibility issues, and consider using the `--bun` flag to ensure scripts run correctly.
