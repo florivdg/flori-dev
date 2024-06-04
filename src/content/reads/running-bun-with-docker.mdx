@@ -29,8 +29,10 @@ When building production Docker images, you often want to use a minimal base ima
 
 Like many Docker repositories, [oven/bun](https://hub.docker.com/r/oven/bun/) also provides an image based on Alpine. So you don't have to create your own docker file from scratch and can use the official bun docker image as a base image for your own Dockerfile.
 
-```dockerfile title="Dockerfile"
+```dockerfile title="Dockerfile" {1}
 FROM bun:1-alpine
+
+...
 ```
 
 <Note>**🔥 Hot Tip:** Use a fixed version tag like `1.1.10-alpine` instead of `latest` to ensure reproducibility and avoid unexpected changes in your production environment. Then use tools like [Dependabot](https://github.com/dependabot) to keep your images up to date.</Note>
@@ -42,7 +44,39 @@ Have you ever pushed a bloated Docker image over Wi-Fi to Docker Hub? It's not f
 
 ### Multi-stage Dockerfile
 
-```dockerfile title="Dockerfile"
+In order to keep you image size small, you can leverage multi-stage builds in Docker. This allows you to use multiple `FROM` statements in your Dockerfile. Each `FROM` instruction can use a different base, and you can copy artifacts from one stage to another.
+
+In the end you will only have the production build of your application as well as the runtime dependencies in your final image. This not only keeps the image size small but also makes it more secure by limiting the attack surface.
+
+```dockerfile title="Dockerfile" {2, 13, 23}
 # Build stage
-FROM bun:1-alpine as build
+FROM oven/bun:1 as builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN bun install --frozen-lockfile
+
+# Build the app
+RUN bun run build
+
+FROM oven/bun:1-alpine
+
+WORKDIR /app
+
+COPY package.json bun.lockb ./
+
+# Only install production dependencies
+RUN bun install --frozen-lockfile --production
+
+# Copy the production build from the previous stage
+COPY --from=builder /app/dist ./dist
+
+USER bun
+
+ENTRYPOINT [ "bun", "run", "./dist/index.js" ]
+
 ```
+
+<Note>**🔥 Hot Tip:** If your build step needs packages that aren't available in Alpine, you can use another distro like Ubuntu to build it and then deploy it with Alpine.</Note>
