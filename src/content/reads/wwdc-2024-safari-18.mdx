@@ -1,0 +1,74 @@
+---
+title: "Safari 18: View Transitions, Style Queries, and Animating Display"
+pubDate: 2024-06-12
+description: "On Monday at WWDC 2024, Apple announced Apple Intelligence, their - I think - really promising approach to personal AI. The reception seems to be really positive, as AAPL stock is skyrocketing. But, have you seen that you can now transition between `display` values in CSS?"
+image:
+  {
+    src: '../../assets/reads/wwdc_2024_safari_18.jpg',
+    alt: 'A laptop screen with the letters "CSS" displayed prominently. The screen blends into a colorful safari landscape featuring various animals like elephants, giraffes, zebras, and lions. The background includes an expansive, sunlit savannah with acacia trees, birds in the sky, and lush plants in the foreground, symbolizing the beauty and richness of new CSS features in Safari 18.',
+  }
+tags: ['Safari', 'CSS', 'WWDC']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/wwdc_2024_safari_18.jpg'
+
+On Monday at WWDC 2024, Apple announced Apple Intelligence, their - I think - really promising approach to personal AI built right into the iPhone and Mac. The reception seems to be really positive, as AAPL stock is skyrocketing (at least by Apple standards).
+
+But, have you seen that you can now transition between `display` values in CSS? 🤯 Let's take a look!
+
+<Image
+  src={coverImage}
+  alt='A laptop screen with the letters "CSS" displayed prominently. The screen blends into a colorful safari landscape featuring various animals like elephants, giraffes, zebras, and lions. The background includes an expansive, sunlit savannah with acacia trees, birds in the sky, and lush plants in the foreground, symbolizing the beauty and richness of new CSS features in Safari 18.'
+  caption="Exploring the vibrant new CSS features in Safari 18"
+  lazy={false}
+/>
+
+## Safari Has Been Crushing It Lately
+
+Over the past few years, Safari has made great strides in implementing new features. Keeping up with the latest web standards and pushing the boundaries of what's possible with plain JavaScript and CSS. Things like CSS nesting, the `:has()` selector, or CSS Grid Level 3 (also known as "masonry" layout) are all in Safari - and often the WebKit team is the first to implement these features.
+
+So when something ends up in Chrome and Safari, it's usually a good sign that it's real and ready for production. And because Safari runs on iOS devices used by millions of people, and because a significant portion of those devices run the latest version of Safari, it's a great thing for the web.
+
+While I don't have any hard proof of this, I still think Jen Simmons joining Apple was a great move for the web. At least what I can say is that Safari has moved closer to the web platform and standards since she joined.
+
+## View Transitions 🎉
+
+This is my favorite new CSS feature to land in Chrome for quite some time now. But when it was *not* part of [Interop 2024] (https://wpt.fyi/interop-2024), I was a bit disappointed. But know it landed in Safari 18 and is already available in the Safari Technical Preview. Yeah! 🎉
+
+While this is technically Level 1 of View Transitions (transitioning within a SPA), it's a great start. Support for Level 2 (transitioning between different pages in MPAs - or as we used to call them: websites) has actually shipped in Chrome 126 this week. Awesome!
+
+If you want to learn more about it, check out the news from Google I/O 2024 at [developer.chrome.com](https://developer.chrome.com/blog/view-transitions-update-io24).
+
+## Style Queries
+
+The ability to check if a particular style is applied to an element is a great feature. Style queries are based on the [containment spec](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment) and allow you to query the value of CSS ~~custom properties~~ variables.
+
+See this example from the original [webkit.org blog post](https://webkit.org/blog/15443/news-from-wwdc24-webkit-in-safari-18-beta/):
+
+```css
+@container style(--background: black) {
+  h2, h3, p {
+    color: white;
+  }
+}
+```
+
+This will apply the `color: white` to all `h2`, `h3`, and `p` elements if the custom property `--background` is set to black. This is a great feature for let's say theming and really custom dark mode support.
+
+This can only be surpassed by [inline conditionals](https://github.com/w3c/csswg-drafts/issues/10064). But I guess we will have to wait a little longer for that.
+
+## Honorable Mentions
+
+Animating display values, `backdrop-filter` without vendor prefixes, the `safe` keyword in flexbox are all great additions to CSS in Safari 18.
+
+The new `<input type=checkbox switch>` could also be a great thing, but I'm not sure if it's a great approach since it's an Apple/WebKit-only thing for now. So for now everyone still has to create their own custom switches.
+
+Check out the blog post on [webkit.org](https://webkit.org/blog/15443/news-from-wwdc24-webkit-in-safari-18-beta/) for more details on what's coming in Safari 18.
+
+## What's Missing?
+
+While the [Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) is already available in Safari 17, it's missing the [Anchoring Positioning API](https://developer.chrome.com/blog/anchor-positioning-api), which is already available in Chromium-based browsers.
+
+But still, I feel like you cannot keep up with the great and actually useful things to keep up with. As a web developer, it's a great time to be alive. 😎
