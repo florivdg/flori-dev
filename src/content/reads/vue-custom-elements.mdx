@@ -1,6 +1,6 @@
 ---
 title: "Creating Custom Elements with Vue.js"
-pubDate: 2024-07-25
+pubDate: 2024-07-24
 description: ""
 image:
   {
@@ -14,7 +14,7 @@ import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/vue_custom_elements.jpg'
 
-g
+An embeddable **AI-powered chatbot frontend** for various clients and a variety of use cases, such as websites, intranets, and future applications. This is my current assignment at work and I am using **Vue.js** to build this chatbot. The chatbot will be a [**Custom Element**](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) that can be embedded in any website. This article is a step-by-step guide to creating web components with Vue.js.
 
 <Image
   src={coverImage}
@@ -23,6 +23,188 @@ g
   lazy={false}
 />
 
-## gg
+## Custom Elements in Vue.js using Vite
 
-g
+Creating Custom Elements, also known as web components, with Vue.js is a straightforward process. The [Vue.js documentation](https://vuejs.org/guide/extras/web-components) provides a detailed guide to creating them.
+
+### Step by Step Guide
+
+This guide assumes you are using **Vite as your build tool**. If you are using Vue CLI or Vue from a CDN in-browser, the Vue.js docs have you covered.
+
+#### Step 1: Set Compiler Options
+
+First make sure that Vue does **not try to resolve a non-native tag** as a Vue component. This can be done by setting the `isCustomElement` option in the Vue plugin configuration:
+
+```ts {14}
+# vite.config.ts 
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    vue({
+      customElement: true,
+      template: {
+        compilerOptions: {
+          // treat all html tags starting with
+          // `custom-` as custom elements
+          isCustomElement: (tag) => tag.startsWith('custom-'),
+        },
+      },
+    }),
+  ],
+})
+```
+
+<Note>**🔥 Hot Tip:** Use `customElement: true` to resolve all **Single File Components** of the project as Custom Elements. Otherwise you need to include `.ce` in the filename, e.g. `CustomElement.ce.vue`.</Note>
+
+#### Step 2: Define the Custom Element
+
+Instead of mounting your Vue app to an element in the DOM, you will define a Custom Element as the entry point. This way Vue knows where to render the application:
+
+```ts
+# main.ts
+import { defineCustomElement } from 'vue'
+import App from '@/App.vue'
+
+// Convert the SFC to a custom element constructor
+const CustomElementConstructor = defineCustomElement(App)
+
+// Register the custom element
+customElements.define('my-web-component', CustomElementConstructor)
+```
+
+Now you can use the Custom Element in your HTML:
+
+```html {10}
+# index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Vue.js Custom Element</title>
+</head>
+<body>
+  <my-web-component custom-attribute="value"></my-web-component>
+  <script src="/dist/main.js"></script>
+</body>
+</html>
+```
+
+As you can see, **passing attributes** to the Vue app is as simple as adding them to the Custom Element tag.
+
+Basically, that's it! If it weren't for CSS and nested Vue components. This is what actually caused me some headaches. But let's have a look...
+
+## Can I use Tailwind?
+
+Yes and no. The problem with Custom Elements and the [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM) is that CSS needs to be inlined in the component. This is because the Shadow DOM encapsulates the styles and prevents them from leaking out. This is a good thing, but it also means that **global styles applied via a stylesheet** of the parent page, such as those provided by Tailwind CSS, **will not work**.
+
+### Possible Solutions
+
+You could use something like [Twind](https://twind.dev/usage-guides/web-components.html) as a tailwind-in-js solution. This way the styles live in JavaScript by leveraging `new CSSStyleSheet()` and therefore will get bundled within the Custom Element's JavaScript itself.
+
+But since I am not a big fan of having my styles in JavaScript, **I decided to go with vanilla CSS**. Especially since I am using Single File Components and wanted either use utility classes or scoped styles.
+
+## Vanilla CSS and Nested Components
+
+One might assume that you write your Vue application, add some CSS inside your `<style>` tags, and you're good to go. Well, as long as you only use **a single top-level Vue component**, this works exactly as expected. But as soon as you have nested components, the styles of the child components will not be bundled into the final Custom Element.
+
+In fact, there has been an open [GitHub issue](https://github.com/vuejs/core/issues/4662) for this problem for years.
+
+There are some community solutions for better handling CSS in nested components when building a Custom Element, but for our project I needed something more robust and future-proof. So I decided to go with a **single CSS file instead**. You know, like in the good old days. 😎
+
+### The Solution
+
+Like I said before having a global stylesheet linked in the parent page won't work. But you can still **import a CSS file** in your top-level Vue component. This way the styles will be bundled into the Custom Element's final JavaScript file.
+
+```vue {11-12}
+# App.vue
+<template>
+  <child-component />
+</template>
+
+<script setup lang="ts">
+import ChildComponent from '@/components/ChildComponent.vue'
+</script>
+
+<style>
+@import 'modern-normalize/modern-normalize.css';
+@import '@/style.css';
+</style>
+```
+
+<Note>**🔥 Hot Tip:** Of course you can also import scripts from external packages, too. They will also get bundled as inline styles within your Custom Element.</Note>
+
+The imported styles as well as the styles defined in the `<style>` tag of the top-level component will be bundled into the Custom Element. You can check this by inspecting `App.style`:
+
+```ts {4}
+# main.ts
+import App from '@/App.vue'
+
+console.log(App.style)
+```
+
+## Use your Custom Elements along Import Maps
+
+If you serve an audience that uses modern browsers, you can use [Import Maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) and native [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) to load your Custom Elements.
+
+### External Vue Dependency
+
+In your Vite configuration, mark **Vue as an external dependency** so that you can load it **from a CDN** or your own server as a standalone script. This allows you to use the **same instance of Vue** for all of your Custom Elements, and also makes it **easier to roll out updates** to your scripts. On the other hand, Vue updates can also be rolled out independently of your Custom Elements.
+
+```ts {16-19}
+# vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import { resolve } from 'node:path'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/main.ts'),
+      name: 'MyWebComponent',
+      formats: ['es'],
+      fileName: (format) => `my-web-component.${format}.js`,
+    },
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        globals: {
+          vue: 'Vue',
+        },
+      },
+    },
+  },
+})
+```
+
+### Use an Import Map
+
+Import maps in JavaScript allow developers to control the behavior of module imports, providing a way to **map module specifiers to specific files or URLs**, thus simplifying dependency management and improving modularity. In our example, we map `vue` to a CDN URL:
+
+```html {3-9}
+# index.html
+<my-web-component></my-web-component>
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js"
+    }
+  }
+</script>
+<script type="module" src="./my-web-component.es.js"></script>
+```
+
+This way our final script can use imports from `vue` like this:
+
+```js
+# my-web-component.es.js
+import { ref, watch, computed } from 'vue';
+```
+
+## Conclusion
+
+Creating Custom Elements with Vue.js is a powerful way to build embeddable components that can be used in any website. The process is straightforward and well documented, but there are some caveats to be aware of, such as **CSS encapsulation** and **nested components**. Take advantage of modern browser features such as **Import Maps** and native ES modules for greater control over modularity and dependency management.
