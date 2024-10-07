@@ -1,0 +1,17 @@
+{
+  "id": "2R9A1132",
+  "title": "Yachts at Dock",
+  "image": "./2R9A1132.jpg",
+  "alt": "A bustling marina filled with several luxury yachts docked at the water's edge. In the background, a modern building stands tall, prominently displaying an advertisement for Louis Vuitton, while palm leaves frame the scene, adding a tropical touch. The sky is partially cloudy, casting a soft light over the water, creating a tranquil yet vibrant atmosphere. An airplane can faintly be seen in the sky, hinting at travel and movement in the busy harbor.",
+  "location": "",
+  "date": "2024-08-22",
+  "tags": ["harbor", "yachts", "waterfront", "marina", "luxury"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "5",
+    "iso": "100",
+    "focal_length": "79.0",
+    "shutter_speed": "1/1600"
+  }
+}

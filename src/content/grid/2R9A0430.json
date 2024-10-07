@@ -1,0 +1,17 @@
+{
+  "id": "2R9A0430",
+  "title": "Summer Strolls",
+  "image": "./2R9A0430.jpg",
+  "alt": "A vibrant city square filled with people enjoying a sunny day. Families and tourists walk along the cobblestone pavement, admiring the charming architecture of the surrounding buildings. The structures exhibit a mix of styles, with balconies adorned with colorful flags and greenery on rooftops, set against a clear, blue sky. Shops line the street, enhancing the lively atmosphere as pedestrians engage in leisurely activities.",
+  "location": "",
+  "date": "2024-08-20",
+  "tags": ["urban", "architecture", "people", "summer", "travel"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "2.8",
+    "iso": "100",
+    "focal_length": "35.0",
+    "shutter_speed": "1/2500"
+  }
+}

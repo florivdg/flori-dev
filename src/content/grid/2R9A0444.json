@@ -1,0 +1,17 @@
+{
+  "id": "2R9A0444",
+  "title": "Palm in the City",
+  "image": "./2R9A0444.jpg",
+  "alt": "The scene captures a sunlit urban setting where a tall palm tree rises alongside a textured stone building. The palm's shadow stretches across the wall, creating a beautiful contrast against the warm stone. Windows adorned with decorative frames are visible in the upper part of the wall, while a street lamp and a banner hint at the area's cultural significance. The clear blue sky overhead completes the tranquil atmosphere.",
+  "location": "",
+  "date": "2024-08-20",
+  "tags": ["palm", "architecture", "shadow", "urban", "landscape"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "2.8",
+    "iso": "100",
+    "focal_length": "35.0",
+    "shutter_speed": "1/2000"
+  }
+}
