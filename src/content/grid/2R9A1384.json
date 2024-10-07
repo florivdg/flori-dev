@@ -1,0 +1,17 @@
+{
+  "id": "2R9A1384",
+  "title": "Story",
+  "image": "./2R9A1384.jpg",
+  "alt": "A woman, dressed in a red top and black skirt with a backpack, walks hand-in-hand with a young child down a cobblestone alleyway. The entrance to a cozy bookstore is visible ahead, with bright, marquee-style letters spelling \"STORY\" illuminated above it. A chalkboard menu stands to the side, decorated artistically, while the interior of the bookstore is glimpsed, filled with colorful books and a welcoming ambiance. The scene captures a warm, inviting moment between the two as they approach the shop.",
+  "location": "Barcelona, Spain",
+  "date": "2024-08-22",
+  "tags": ["store", "bookstore", "alley", "child", "parent"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "1600",
+    "focal_length": "86.0",
+    "shutter_speed": "1/400"
+  }
+}

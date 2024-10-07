@@ -1,0 +1,17 @@
+{
+  "id": "2R9A0774",
+  "title": "Bright Heights",
+  "image": "./2R9A0774.jpg",
+  "alt": "A colorful Ferris wheel stands against a clear blue sky, featuring bright cabins in various shades including yellow, green, blue, purple, red, and white. The structure is intricately designed with a white frame, and a large star shape at the base, creating an inviting atmosphere for visitors.",
+  "location": "Tibidabo, Barcelona, Spain",
+  "date": "2024-08-21",
+  "tags": ["Ferris", "wheel", "amusement", "fun", "colorful"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "7.1",
+    "iso": "100",
+    "focal_length": "70.0",
+    "shutter_speed": "1/640"
+  }
+}
