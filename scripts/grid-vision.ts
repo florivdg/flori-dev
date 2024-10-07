@@ -158,13 +158,13 @@ Create an accurate and detailed description of this image that would also work a
           ],
         },
       ],
-      model: 'gpt-4-vision-preview',
+      model: 'gpt-4o',
       max_tokens: 2048,
     })
 
     const jsonString = completion.choices[0]?.message?.content
     if (!jsonString) {
-      throw new Error('Empty message content from GPT-4 Vision API.')
+      throw new Error('Empty message content from AI.')
     }
 
     return destr<VisionAIResult>(jsonString)
