@@ -32,7 +32,7 @@ export interface ExifMetadata {
 }
 
 /**
- * Represents the result of the GPT-4 Vision API analysis.
+ * Represents the result of the AI analysis.
  */
 export interface VisionAIResult {
   title_ideas: string[]
@@ -121,7 +121,7 @@ async function base64EncodeImage(imagePath: string): Promise<string> {
 }
 
 /**
- * Generates image description, title suggestions and tags using the GPT-4 Vision API.
+ * Generates image description, title suggestions and tags using AI.
  *
  * @param metadata - The metadata of the image.
  * @returns A Promise that resolves to a VisionAIResult object containing the generated image description, title suggestions, and tags.
@@ -130,7 +130,7 @@ async function generateImageDescriptionTitleSuggestionsAndTags(
   metadata: ExifMetadata,
 ): Promise<VisionAIResult> {
   consola.info(
-    'Generating image description, title suggestions and tags with GPT-4 Vision API...',
+    'Generating image description, title suggestions and tags with AI...',
   )
 
   try {
@@ -158,7 +158,7 @@ Create an accurate and detailed description of this image that would also work a
           ],
         },
       ],
-      model: 'gpt-4o',
+      model: 'gpt-4o-mini',
       max_tokens: 2048,
     })
 
