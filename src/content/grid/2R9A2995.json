@@ -1,0 +1,17 @@
+{
+  "id": "2R9A2995",
+  "title": "Sunrise at the Docks",
+  "image": "./2R9A2995.jpg",
+  "alt": "A tranquil harbor scene with calm waters reflecting soft morning light. In the foreground, a small boat glides across the water, while larger ships are docked along the shore. Cargo cranes loom in the distance, silhouetted against a hazy skyline, creating an industrial backdrop.",
+  "location": "Hamburg, Altona, Germany",
+  "date": "2024-10-15",
+  "tags": ["harbor", "water", "city", "morning", "industrial"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "100",
+    "focal_length": "70.0",
+    "shutter_speed": "1/3200"
+  }
+}
