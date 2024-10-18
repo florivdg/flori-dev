@@ -5,6 +5,8 @@ import { join } from 'path'
 import { consola } from 'consola'
 import { destr } from 'destr'
 import OpenAI from 'openai'
+import { zodResponseFormat } from 'openai/helpers/zod'
+import { z } from 'zod'
 
 /**
  * Define the directory where the images are located.
@@ -121,6 +123,15 @@ async function base64EncodeImage(imagePath: string): Promise<string> {
 }
 
 /**
+ * The structure of the response from the AI.
+ */
+const VisionResponse = z.object({
+  title_ideas: z.array(z.string()),
+  description: z.string(),
+  tags: z.array(z.string()),
+})
+
+/**
  * Generates image description, title suggestions and tags using AI.
  *
  * @param metadata - The metadata of the image.
@@ -138,7 +149,7 @@ async function generateImageDescriptionTitleSuggestionsAndTags(
     const encodedImage = await base64EncodeImage(metadata.SourceFile)
 
     const prompt = `
-Create an accurate and detailed description of this image that would also work as an alt text. The alt text should not contain words like image, photograph, illustration or such. Describe the scene as it is. Also come up with 5 title suggestions for this image. At last suggest 5 tags that suit the image description. These tags should be single words only. Identify the main subject or theme and make sure to put the according tag first. Return the description, the title suggestions and tags as JSON without any extra notes or information. Return a JSON string that can be parsed. Do not use markdown code blocks. Use the following JSON format: \n\n\"\"\"{\"title_ideas\": [\"\", \"\", \"\", \"\", \"\"],\"description\": \"\",\"tags\": [\"\", \"\",\"\", \"\", \"\"]}\"\"\"`
+Create an accurate and detailed description of this image that would also work as an alt text. The alt text should not contain words like image, photograph, illustration or such. Describe the scene as it is. Also come up with 5 title suggestions for this image. At last suggest 5 tags that suit the image description. These tags should be single words only. Identify the main subject or theme and make sure to put the according tag first. Return the description, the title suggestions and tags. Use the vision response schema only.`
 
     const completion = await openai.chat.completions.create({
       messages: [
@@ -160,6 +171,7 @@ Create an accurate and detailed description of this image that would also work a
       ],
       model: 'gpt-4o-mini',
       max_tokens: 2048,
+      response_format: zodResponseFormat(VisionResponse, 'visionResponse'),
     })
 
     const jsonString = completion.choices[0]?.message?.content
