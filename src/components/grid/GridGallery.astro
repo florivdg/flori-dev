@@ -23,9 +23,9 @@ const images = (await getCollection('grid')).sort((a, b) => {
             alt={entry.data.alt}
             width="700"
             height="875"
-            densities={[1, 2, 3]}
-            formats={['webp']}
-            quality="high"
+            densities={[1, 2]}
+            formats={['avif', 'webp']}
+            quality={'mid'}
             class="aspect-[4/5] h-full w-full object-cover object-center"
             loading={i >= 3 ? 'lazy' : 'eager'}
           />
