@@ -5,7 +5,7 @@ description: ""
 image:
   {
     src: '../../assets/reads/chatbot-pulls-plug-offline-rag-with-ollama.jpg',
-    alt: 'A cute robot with glowing eyes and neon lights plugs itself into a futuristic power socket.',
+    alt: 'A cute, glowing robot sitting in front of a large cloud icon with an “X” symbol inside it. The robot has a simple design, featuring a round head, antennae, and a friendly smile. It is connected to various devices through neon-lit wires. The overall color scheme is a mix of neon blues and purples, creating a futuristic, digital environment with cloud computing elements.',
   }
 tags: ["RAG", "Bun", "libSQL", "LangChain", "Ollama"]
 ---
@@ -13,11 +13,11 @@ tags: ["RAG", "Bun", "libSQL", "LangChain", "Ollama"]
 import Image from '../../components/reads/Image.astro'
 import coverImage from '../../assets/reads/chatbot-pulls-plug-offline-rag-with-ollama.jpg'
 
-g
+When Meta released its Llama 3.2 model, I wondered what a simple, personal and offline-only RAG (retrieval augmented generation) chatbot might look like. A command-line tool that would import a single PDF at a time and allow me to chat with its contents was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, LangChain.js and Ollama. Here's how it went.
 
 <Image
   src={coverImage}
-  alt='A cute robot with glowing eyes and neon lights plugs itself into a futuristic power socket.'
+  alt='A cute, glowing robot sitting in front of a large cloud icon with an “X” symbol inside it. The robot has a simple design, featuring a round head, antennae, and a friendly smile. It is connected to various devices through neon-lit wires. The overall color scheme is a mix of neon blues and purples, creating a futuristic, digital environment with cloud computing elements.'
   caption="Pulling the Plug on Cloud Dependency: How libSQL, LangChain, and Ollama Empower Offline Retrieval-Augmented Generation."
   lazy={false}
 />
