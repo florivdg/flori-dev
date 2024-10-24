@@ -1,7 +1,7 @@
 ---
 title: "Offline RAG with Bun, libSQL, LangChain.js, and Ollama"
-pubDate: 2024-10-21
-description: ""
+pubDate: 2024-10-25
+description: "How might a simple, personal and offline-only RAG chatbot look like? A command-line tool that would import a single PDF at a time and allow me to chat with its contents was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, LangChain.js and Ollama."
 image:
   {
     src: '../../assets/reads/chatbot-pulls-plug-offline-rag-with-ollama.jpg',
@@ -25,6 +25,16 @@ When Meta released its Llama 3.2 model, I wondered what a simple, personal and o
 ## The Building Blocks
 
 * **Bun**: The new JS kid on the block. TypeScript-first, *blazingly fast* 😜, and has a `package.json`. Definitely my go-to JS runtime for side projects.
-* **libSQL**: A fork of SQLite that has a vector type and vector queries built-in. Battle-tested on Turso but also a perfect local-first, file-based database for AI powered apps.
+* **libSQL**: A fork of SQLite that has a vector type and vector queries built-in. Battle-tested on [Turso](https://turso.tech) but also a perfect local-first, file-based database for AI powered apps.
 * **LangChain.js**: The JavaScript port of the popular LangChain python library. Brings everything seamlessly together: Document loading, chunking, embeddings, vector stores, and retrieval.
 * **Ollama**: The best way to run open source AI models locally on your computer. You're up and running with one simple command.
+
+## But then, LangChain Problems
+
+After I started implementing loading a PDF, chunking it and creating the embeddings for the chunks, I immediately ran into problems with LangChain. Namely the `@langchain/community` package from which I imported the `LibSQLVectorStore`.
+
+It threw an error when trying to insert documents into the database. At first I thought there was something wrong with my chunking and embedding functions, but soon I realized there was an actual bug in the `@langchain/community` package. I filed an [issue on GitHub](https://github.com/langchain-ai/langchainjs/issues/7040) and a [PR with a proposed fix](https://github.com/langchain-ai/langchainjs/pull/7041).
+
+Turns out the `LibSQLVectorStore` implementation wasn't quite finished, but somehow made it into a release. Mainter [@jacoblee93](https://github.com/jacoblee93) helped fix a few more issues and also wrote some integration tests.
+
+Now back to work... 🤓
