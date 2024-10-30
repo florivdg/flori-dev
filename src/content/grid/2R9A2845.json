@@ -1,0 +1,17 @@
+{
+  "id": "2R9A2845",
+  "title": "Quiet Moments in the Zoo",
+  "image": "./2R9A2845.jpg",
+  "alt": "An orangutan rests comfortably on a wooden structure at the zoo, surrounded by ropes and natural wooden elements. Its thick, reddish-brown fur creates a striking contrast against its gray face, which bears an expression of calm contemplation. In the background, another orangutan can be seen, partially in view, also perched on the wooden frames, contributing to the serene atmosphere of this enclosure.",
+  "location": "Zoo Leipzig, Germany",
+  "date": "2024-10-03",
+  "tags": ["orangutan", "zoo", "nature", "contemplation"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "1600",
+    "focal_length": "153.0",
+    "shutter_speed": "1/640"
+  }
+}
