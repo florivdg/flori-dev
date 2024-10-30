@@ -1,0 +1,17 @@
+{
+  "id": "2R9A2486",
+  "title": "On the Lookout",
+  "image": "./2R9A2486.jpg",
+  "alt": "A meerkat stands upright atop a textured mound, its fur gently illuminated by soft light. The animal has a curious expression, gazing to the side while poised in a vigilant stance. The background features blurred greenery, creating a serene, natural setting that emphasizes the meerkat's alert demeanor.",
+  "location": "Zoo Leipzig, Germany",
+  "date": "2024-10-03",
+  "tags": ["meerkat", "nature", "animal", "wildlife", "zoo"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "500",
+    "focal_length": "200.0",
+    "shutter_speed": "1/640"
+  }
+}

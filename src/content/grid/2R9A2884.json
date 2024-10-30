@@ -1,0 +1,17 @@
+{
+  "id": "2R9A2884",
+  "title": "Baby Giant",
+  "image": "./2R9A2884.jpg",
+  "alt": "A lone white elephant walks gracefully in a muted space characterized by a dark brick wall and rough textured surfaces. The ground is partially covered in sandy earth, and the elephant's skin reflects soft light, showcasing its unique features. The overall atmosphere is calm yet somewhat somber, enhancing the majestic aura of the animal.",
+  "location": "Zoo Leipzig, Germany",
+  "date": "2024-10-03",
+  "tags": ["elephant", "nature", "wildlife", "zoo", "animals"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "5000",
+    "focal_length": "182.0",
+    "shutter_speed": "1/640"
+  }
+}

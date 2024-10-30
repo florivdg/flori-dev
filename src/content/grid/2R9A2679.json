@@ -1,0 +1,17 @@
+{
+  "id": "2R9A2679",
+  "title": "Resting Majesty",
+  "image": "./2R9A2679.jpg",
+  "alt": "A relaxed gorilla reclines on a large rock, its body stretched out comfortably. The scene captures the gorilla's expressive face, showing a gentle gaze directed upwards. The background features dark, blurred natural elements, primarily in shadow, contrasting with the soft grey fur of the gorilla and the rough texture of the stone beneath it. Rays of soft light illuminate parts of the gorilla, creating a serene, contemplative atmosphere.",
+  "location": "Zoo Leipzig, Germany",
+  "date": "2024-10-03",
+  "tags": ["gorilla", "zoo", "nature", "relaxation", "animal"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "4000",
+    "focal_length": "200.0",
+    "shutter_speed": "1/640"
+  }
+}
