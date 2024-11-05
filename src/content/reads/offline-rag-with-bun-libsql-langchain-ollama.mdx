@@ -11,6 +11,7 @@ tags: ["RAG", "Bun", "libSQL", "LangChain", "Ollama"]
 ---
 
 import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/chatbot-pulls-plug-offline-rag-with-ollama.jpg'
 
 When Meta released its Llama 3.2 model, I wondered what a simple, personal and offline-only RAG (retrieval augmented generation) chatbot might look like. A command-line tool that would import a single PDF at a time and allow me to chat with its contents was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, LangChain.js and Ollama. Here's how it went.
@@ -38,3 +39,21 @@ It threw an error when trying to insert documents into the database. At first I 
 Turns out the `LibSQLVectorStore` implementation wasn't quite finished, but somehow made it into a release. Mainter [@jacoblee93](https://github.com/jacoblee93) helped fix a few more issues and also wrote some integration tests.
 
 Now back to work... 🤓
+
+## Creating Embeddings Locally
+
+Back in April Ollama [announced support for embeddings](https://ollama.com/blog/embedding-models). That's great because now with Ollama we are able to run the complete retrieval chain including embedding documents and user queries as well as the LLM for chatting locally on our own computer. No need to rely on OpenAI and the like anymore.
+
+### Choosing the Embeddings Model
+
+You can find every supported embeddings model in the [Ollama library](https://ollama.com/search?c=embedding). Since I wanted to get started quickly I simply chose `nomic-embed-text` since it had the most downloads and looked like a good fit for my use case.
+
+<Note>**🔥 Hot Tip:** Check out Hugging Face's [MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard) for comparing open source embeddings models and finding the right one for your needs.</Note>
+
+## How to Store Vectors Locally?
+
+Generating embeddings is quite a time consuming task. So I wanted to store them locally to avoid having to recompute them every time I start the chatbot. But you also need to be able to query them efficiently.
+
+By now there are a million proprierty as well as open source databases that support vectors. But I wanted to keep it simple and local. That's why I chose [libSQL](https://github.com/tursodatabase/libsql). It's a fork of SQLite that has a vector type, vector indices and vector queries built-in. Perfect for my offline RAG chatbot.
+
+<Note>**🔥 Hot Tip:** Have a look into [`pgvector`](https://github.com/pgvector/pgvector), a great extension that brings full support for vectors to Postgres. Also checkout [Supabase](https://supabase.com/) for a cloud solution based on Postgres and `pgvector`.</Note>
