@@ -57,3 +57,27 @@ Generating embeddings is quite a time consuming task. So I wanted to store them 
 By now there are a million proprierty as well as open source databases that support vectors. But I wanted to keep it simple and local. That's why I chose [libSQL](https://github.com/tursodatabase/libsql). It's a fork of SQLite that has a vector type, vector indices and vector queries built-in. Perfect for my offline RAG chatbot.
 
 <Note>**🔥 Hot Tip:** Have a look into [`pgvector`](https://github.com/pgvector/pgvector), a great extension that brings full support for vectors to Postgres. Also checkout [Supabase](https://supabase.com/) for a cloud solution based on Postgres and `pgvector`.</Note>
+
+### Help, my Database is Huge!
+
+While testing, I used the Brexit Withdrawal Agreement as it is quite long and therefore looked like a good choice to do some retrieval tests. It took me quite a while to realize that with this one document alone, the libSQL file was already more than 500MB in size. 🤯
+
+The PDF of the Brexit agreement is 181 pages, but that's still too much. If I were to use this chatbot with multiple documents, the database file would quickly grow to several gigabytes. That's not really what I had in mind for a simple, personal, offline-only chatbot.
+
+Fortunately, I found this article about [*The space complexity of vector indexes in LibSQL*](https://turso.tech/blog/the-space-complexity-of-vector-indexes-in-libsql) on the Turso blog.
+
+#### Compression and Limiting To The Rescue
+
+The main problem was not the vectors themselves, but the vector index. By limiting the number of neighbors and compressing them, the database file size was significantly reduced. Here's the updated SQL command:
+
+```sql {5}
+# db.sql 
+CREATE INDEX IF NOT EXISTS
+  idx_vecs_embeddings ON vecs(
+    libsql_vector_idx(
+      embeddings, 'compress_neighbors=float8', 'max_neighbors=20'
+    )
+  );
+```
+
+As the Turso article explains, setting the compression to `float8` and the maximum number of neighbors to `20` would still give good results. I can also confirm that I haven't noticed any difference in the quality of the retrieval results so far. But the file size dropped from over 500 MB to under 80 MB. 🎉
