@@ -60,7 +60,7 @@ By now there are a million proprierty as well as open source databases that supp
 
 ### Help, my Database is Huge!
 
-While testing, I used the Brexit Withdrawal Agreement as it is quite long and therefore looked like a good choice to do some retrieval tests. It took me quite a while to realize that with this one document alone, the libSQL file was already more than 500MB in size. 🤯
+While testing, I used the Brexit Withdrawal Agreement as it is quite long and therefore looked like a good choice to do some retrieval tests. It took me quite a while to realize that with this one document alone, the libSQL file was already more than 500 MB in size. 🤯
 
 The PDF of the Brexit agreement is 181 pages, but that's still too much. If I were to use this chatbot with multiple documents, the database file would quickly grow to several gigabytes. That's not really what I had in mind for a simple, personal, offline-only chatbot.
 
@@ -81,3 +81,49 @@ CREATE INDEX IF NOT EXISTS
 ```
 
 As the Turso article explains, setting the compression to `float8` and the maximum number of neighbors to `20` would still give good results. I can also confirm that I haven't noticed any difference in the quality of the retrieval results so far. But the file size dropped from over 500 MB to under 80 MB. 🎉
+
+## Bringing It All Together
+
+With the libSQL implementation in LangChain fixed, the embeddings model chosen and the database file size reduced, I was finally able to chat with the Brexit Withdrawal Agreement. 🎉
+
+Now, how does it all come together? Enter: LangChain.js.
+
+### Loading and Chunking Documents
+
+LangChain.js takes care of loading the document. All you need is `pdf-parse` installed as a peer dependency and a path to a PDF file:
+
+```typescript
+# loader.ts
+import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf'
+
+export async function load(path: string) {
+  const loader = new PDFLoader(path)
+  return await loader.load()
+}
+```
+
+By default this returns one `Document` object for each page of the PDF file. Since the context windows of LLMs grow constantly, this may be good enough for your use case.
+
+<Note>**☝️ Good To Know:** The Llama 3.2 1B and 3B models support a context length of **128K** tokens.</Note>
+
+Chunking can still greatly improve retrieval results. For example, when creating embeddings for smaller parts of the document, the vectors are more likely to represent the embedded content more accurately than for an entire page.
+
+For simplicity I decided to split the documents with a `RecursiveCharacterTextSplitter`. It basically splits the text into chunks of a given number of tokens each, but tries to keep sentences together.
+
+```typescript {7-9}
+# splitter.ts
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
+import type { Document } from 'langchain/document'
+
+const CHUNK_SIZE = 250
+
+const splitter = new RecursiveCharacterTextSplitter({
+  chunkSize: CHUNK_SIZE,
+})
+
+export async function split(docs: Document[]) {
+  return await splitter.splitDocuments(docs)
+}
+```
+
+<Note>**🔥 Hot Tip:** Try semantic chunking to make retrieval even more accurate by keeping related content together.</Note>
