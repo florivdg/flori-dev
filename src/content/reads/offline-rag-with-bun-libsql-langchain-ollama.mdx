@@ -127,3 +127,65 @@ export async function split(docs: Document[]) {
 ```
 
 <Note>**🔥 Hot Tip:** Try semantic chunking to make retrieval even more accurate by keeping related content together.</Note>
+
+### The Vector Store
+
+The `LibSQLVectorStore` is the heart of the retrieval process. It stores the embeddings of the document chunks and allows for efficient retrieval of the most similar chunks to a given query, which than can be used to let the Llama model generate a response.
+
+In order to create the vector store, you need to provide a database client as well as an embeddings model. The vector store will then be responsible for storing the embeddings in the database and also retrieving them later.
+
+```typescript {5}
+# vectorstore.ts
+const embeddings = new OllamaEmbeddings({ model: 'nomic-embed-text' })
+
+const libsqlClient = createClient({
+  url: 'file:vector-store.db',
+})
+
+export const vectorStore = new LibSQLVectorStore(embeddings, {
+  db: libsqlClient,
+  table: 'vecs',
+  column: 'embeddings',
+})
+```
+
+In the highlighted line above you can see that we provide `file:vector-store.db` as the URL for the database. This tells libSQL to create a local database file in the current directory.
+
+#### Creating Tables and Indices
+
+Before you can start storing vectors in the database, you need to create tables and indices.
+
+Make sure that your database schema matches the one you provided to the `LibSQLVectorStore` constructor as `table` and `column`.
+
+```sql {6}
+# db.sql
+CREATE TABLE IF NOT EXISTS vecs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    content TEXT, 
+    metadata TEXT, 
+    embeddings F32_BLOB(768)
+);
+```
+
+<Note>The `F32_BLOB(768)` type matches the vector size of the `nomic-embed-text` model. If you choose a different model, be sure to adjust the size accordingly.</Note>
+
+#### Keeping Track of Files
+
+We also have a `files` table that stores the paths of the documents. This is useful to check if a document has already been processed and to avoid re-embedding it. The file ID is stored in the `metadata` column of the `vecs` table for seamless filtering with the built-in retriever of the `LibSQLVectorStore`.
+
+```typescript {11}
+# vectorstore.ts
+// Insert the file into the database and get the ID
+const { rows } = await libsqlClient.execute({
+  sql: `INSERT INTO files (filename, path)
+        VALUES (?, ?) RETURNING id;`,
+  args: [fileName, filePath],
+})
+
+// Add the file ID to the metadata of each document chunk
+const docsWithMetadata = docs.map((doc) =>
+  ({ ...doc, metadata: { file_id: rows[0].id } }))
+
+// Store the documents with metadata in the vector store
+await vectorStore.addDocuments(docsWithMetadata)
+```
