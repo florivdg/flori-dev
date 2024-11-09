@@ -26,7 +26,7 @@ When Meta released its **Llama 3.2 model**, I wondered what a simple, personal a
 ## Building Blocks
 
 * [**Bun**](https://bun.sh): The new JS kid on the block. TypeScript-first, *blazingly fast* 😜, and has a `package.json`. Definitely my go-to JS runtime for side projects.
-* [**libSQL**](https://github.com/tursodatabase/libsql): A fork of SQLite that has a vector type and vector queries built-in. Battle-tested on [Turso](https://turso.tech) but also a perfect local-first, file-based database for AI powered apps.
+* [**libSQL**](https://github.com/tursodatabase/libsql): A fork of SQLite that has a vector type and vector queries built-in. Battle-tested on [Turso](https://turso.tech) but also a perfect local-first, file-based database for personal AI powered apps.
 * [**LangChain.js**](https://js.langchain.com): The JavaScript port of the popular LangChain python library. Brings everything seamlessly together: Document loading, chunking, embeddings, vector stores, and retrieval.
 * [**Ollama**](https://ollama.com): The best way to run open source AI models locally on your computer. You're up and running with one simple command.
 
@@ -106,7 +106,7 @@ By default this returns one `Document` object for each page of the PDF file. Sin
 
 <Note>**☝️ Good To Know:** The Llama 3.2 1B and 3B models support a context length of **128K** tokens.</Note>
 
-Chunking can still greatly improve retrieval results. For example, when creating embeddings for smaller parts of the document, the vectors are **more likely to represent the embedded content** more accurately than for an entire page.
+Chunking can **significantly improve retrieval** results. Creating embeddings for smaller parts of a document often leads to vectors that **represent the embedded content more accurately** than embeddings for an entire page.
 
 For simplicity I decided to split the documents with a `RecursiveCharacterTextSplitter`. It basically splits the text into chunks of a given number of tokens each, but tries to keep sentences together.
 
@@ -196,7 +196,7 @@ Now that we have the document chunks stored in the database, we can start chatti
 
 ### Making the Retriever Aware of the Chat History
 
-In order to allow **follow-up questions**, we might need to re-phrase the current user's question to include the context of the previous conversation. Image the following conversation:
+In order to allow **follow-up questions**, we might need to re-phrase the current user's question to include the context of the previous conversation. Image the following chat history:
 
 ```plaintext
 🧑‍💻: What does RAG stand for in AI?
@@ -304,10 +304,10 @@ The **full code** is available on my [GitHub](https://github.com/florivdg/bun-do
 
 Powered by Bun, this could easily become a **web-based chatbot**. However, to run Llama effectively, a powerful server would be necessary.
 
-Offloading the AI part to the client would be a viable option. But then all your **users must run Ollama locally**. You could also mess around with **WebGPU** and run the Llama model in the browser. There are [demos out there](https://huggingface.co/spaces/cfahlgren1/webllm-playground) that show it's possible. But that's a whole different story.
+Offloading the AI part to the client would be a viable option. But then all your **users must run Ollama locally**. You could also mess around with **WebGPU** and run the Llama model in the browser. There are [demos out there](https://huggingface.co/spaces/cfahlgren1/webllm-playground) that show it's possible. But that's a whole different story and browser support is still limited.
 
-For me, the best option to grow this into something more useful would be to create a **desktop app** with Tauri. This way you could bundle everything together and have a nice, offline-first chatbot that you can use on your computer with a nice UI.
+To me, the best way to grow this into something more useful would be to create a **desktop app** with **Tauri**. That way you could bundle everything together and have a nice offline-first chatbot that you can use on your computer with a nice UI.
 
 ## Conclusion
 
-Building an offline RAG chatbot with Bun, libSQL, LangChain.js, and Ollama was a **fun and challenging** project. It's great to be able to run the complete retrieval chain locally on your own computer. No need to rely on cloud services anymore. And with Llama 3.2, the quality of the generated responses **is actually quite good**. 🥳
+Building an offline RAG chatbot with Bun, libSQL, LangChain.js, and Ollama has been a **fun and challenging** project. It's great to be able to run the whole retrieval chain locally on your own machine. No need to rely on cloud services anymore. And with Llama 3.2, the quality of the generated responses is **actually quite good**. 🥳
