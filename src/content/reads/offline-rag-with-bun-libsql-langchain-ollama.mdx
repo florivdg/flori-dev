@@ -1,20 +1,20 @@
 ---
 title: "Offline RAG with Bun, libSQL, LangChain.js, and Ollama"
 pubDate: 2024-11-09
-description: "How might a simple, personal and offline-only RAG chatbot look like? A command-line tool that would import a single PDF at a time and allow me to chat with its contents was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, LangChain.js and Ollama."
+description: "How a simple, personal, offline-only RAG chatbot could look? A command-line tool that would import a single PDF at a time and allow me to chat with its contents was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, LangChain.js and Ollama."
 image:
   {
     src: '../../assets/reads/chatbot-pulls-plug-offline-rag-with-ollama.jpg',
     alt: 'A cute, glowing robot sitting in front of a large cloud icon with an “X” symbol inside it. The robot has a simple design, featuring a round head, antennae, and a friendly smile. It is connected to various devices through neon-lit wires. The overall color scheme is a mix of neon blues and purples, creating a futuristic, digital environment with cloud computing elements.',
   }
-tags: ["RAG", "Bun", "libSQL", "LangChain", "Ollama"]
+tags: ["RAG", "Bun", "libSQL", "LangChain", "Ollama", "TypeScript", "AI"]
 ---
 
 import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/chatbot-pulls-plug-offline-rag-with-ollama.jpg'
 
-When Meta released its Llama 3.2 model, I wondered what a simple, personal and offline-only RAG (retrieval augmented generation) chatbot might look like. A command-line tool that would import a single PDF at a time and allow me to chat with its contents was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, LangChain.js and Ollama. Here's how it went.
+When Meta released its **Llama 3.2 model**, I wondered what a simple, personal and offline-only RAG (retrieval augmented generation) chatbot might look like. A command-line tool that would import a single **PDF** at a time and allow me to **chat with its contents** was the goal. Being comfortable writing TypeScript, I decided to give it a go using Bun, libSQL, **LangChain.js** and Ollama. Here's how it went.
 
 <Image
   src={coverImage}
@@ -23,26 +23,26 @@ When Meta released its Llama 3.2 model, I wondered what a simple, personal and o
   lazy={false}
 />
 
-## The Building Blocks
+## Building Blocks
 
-* **Bun**: The new JS kid on the block. TypeScript-first, *blazingly fast* 😜, and has a `package.json`. Definitely my go-to JS runtime for side projects.
-* **libSQL**: A fork of SQLite that has a vector type and vector queries built-in. Battle-tested on [Turso](https://turso.tech) but also a perfect local-first, file-based database for AI powered apps.
-* **LangChain.js**: The JavaScript port of the popular LangChain python library. Brings everything seamlessly together: Document loading, chunking, embeddings, vector stores, and retrieval.
-* **Ollama**: The best way to run open source AI models locally on your computer. You're up and running with one simple command.
+* [**Bun**](https://bun.sh): The new JS kid on the block. TypeScript-first, *blazingly fast* 😜, and has a `package.json`. Definitely my go-to JS runtime for side projects.
+* [**libSQL**](https://github.com/tursodatabase/libsql): A fork of SQLite that has a vector type and vector queries built-in. Battle-tested on [Turso](https://turso.tech) but also a perfect local-first, file-based database for AI powered apps.
+* [**LangChain.js**](https://js.langchain.com): The JavaScript port of the popular LangChain python library. Brings everything seamlessly together: Document loading, chunking, embeddings, vector stores, and retrieval.
+* [**Ollama**](https://ollama.com): The best way to run open source AI models locally on your computer. You're up and running with one simple command.
 
-## But then, LangChain Problems
+## Addressing LangChain Issues
 
 After I started implementing loading a PDF, chunking it and creating the embeddings for the chunks, I immediately ran into problems with LangChain. Namely the `@langchain/community` package from which I imported the `LibSQLVectorStore`.
 
-It threw an error when trying to insert documents into the database. At first I thought there was something wrong with my chunking and embedding functions, but soon I realized there was an actual bug in the `@langchain/community` package. I filed an [issue on GitHub](https://github.com/langchain-ai/langchainjs/issues/7040) and a [PR with a proposed fix](https://github.com/langchain-ai/langchainjs/pull/7041).
+It threw an error while inserting documents into the database. At first I thought there was something wrong with my chunking and embedding functions, but soon I realized there was an actual bug in the `@langchain/community` package. I filed an [issue on GitHub](https://github.com/langchain-ai/langchainjs/issues/7040) and a [PR with a proposed fix](https://github.com/langchain-ai/langchainjs/pull/7041).
 
 Turns out the `LibSQLVectorStore` implementation wasn't quite finished, but somehow made it into a release. Mainter [@jacoblee93](https://github.com/jacoblee93) helped fix a few more issues and also wrote some integration tests.
 
 Now back to work... 🤓
 
-## Creating Embeddings Locally
+## Creating Local Embeddings
 
-Back in April Ollama [announced support for embeddings](https://ollama.com/blog/embedding-models). That's great because now with Ollama we are able to run the complete retrieval chain including embedding documents and user queries as well as the LLM for chatting locally on our own computer. No need to rely on OpenAI and the like anymore.
+Back in April Ollama [announced support for embeddings](https://ollama.com/blog/embedding-models). That's great because now with Ollama we are able to run the complete retrieval chain including embedding documents and user queries as well as the LLM for chatting **locally on our own computer**. No need to rely on OpenAI and the like anymore.
 
 ### Choosing the Embeddings Model
 
@@ -52,23 +52,23 @@ You can find every supported embeddings model in the [Ollama library](https://ol
 
 ## How to Store Vectors Locally?
 
-Generating embeddings is quite a time consuming task. So I wanted to store them locally to avoid having to recompute them every time I start the chatbot. But you also need to be able to query them efficiently.
+Generating embeddings is quite a time consuming task. So I wanted to store them locally **to avoid having to recompute** them every time I start the chatbot. But you also need to be able to query them efficiently.
 
-By now there are a million proprierty as well as open source databases that support vectors. But I wanted to keep it simple and local. That's why I chose [libSQL](https://github.com/tursodatabase/libsql). It's a fork of SQLite that has a vector type, vector indices and vector queries built-in. Perfect for my offline RAG chatbot.
+By now there are a million proprierty as well as open source databases that support vectors. But I wanted to keep it **simple and local**. That's why I chose [libSQL](https://github.com/tursodatabase/libsql). It's a fork of SQLite that has a vector type, vector indices and vector queries built-in. Perfect for my offline RAG chatbot.
 
 <Note>**🔥 Hot Tip:** Have a look into [`pgvector`](https://github.com/pgvector/pgvector), a great extension that brings full support for vectors to Postgres. Also checkout [Supabase](https://supabase.com/) for a cloud solution based on Postgres and `pgvector`.</Note>
 
-### Help, my Database is Huge!
+### Help, My Database is Huge!
 
-While testing, I used the Brexit Withdrawal Agreement as it is quite long and therefore looked like a good choice to do some retrieval tests. It took me quite a while to realize that with this one document alone, the libSQL file was already more than 500 MB in size. 🤯
+While testing, I used the [Brexit withdrawal agreement](https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:12020W/TXT&from=EN.pdf) as it is quite long and therefore looked like a good choice to do some retrieval tests. It took me quite a while to realize that with this one document alone, the libSQL file was already **more than 500 MB in size**. 🤯
 
-The PDF of the Brexit agreement is 181 pages, but that's still too much. If I were to use this chatbot with multiple documents, the database file would quickly grow to several gigabytes. That's not really what I had in mind for a simple, personal, offline-only chatbot.
+The PDF of the Brexit agreement is 181 pages, but that's still too much. If I used this chatbot with multiple documents, the database file would quickly reach several gigabytes. That's not really what I had in mind for a simple, personal, offline-only chatbot.
 
 Fortunately, I found this article about [*The space complexity of vector indexes in LibSQL*](https://turso.tech/blog/the-space-complexity-of-vector-indexes-in-libsql) on the Turso blog.
 
-#### Compression and Limiting To The Rescue
+#### Compression and Limiting
 
-The main problem was not the vectors themselves, but the vector index. By limiting the number of neighbors and compressing them, the database file size was significantly reduced. Here's the updated SQL command:
+The main problem wasn’t the vectors themselves but rather the vector index. By **limiting the number of neighbors and compressing them**, the database file size was significantly reduced. Here's the updated SQL command:
 
 ```sql {5}
 # db.sql 
@@ -84,13 +84,13 @@ As the Turso article explains, setting the compression to `float8` and the maxim
 
 ## Bringing It All Together
 
-With the libSQL implementation in LangChain fixed, the embeddings model chosen and the database file size reduced, I was finally able to chat with the Brexit Withdrawal Agreement. 🎉
+With the libSQL implementation in LangChain fixed, the embeddings model chosen and the database file size reduced, I was finally able to chat with the Brexit withdrawal agreement. 🎉
 
-Now, how does it all come together? Enter: LangChain.js.
+Now, how does it all come together? Enter: **LangChain.js**.
 
 ### Loading and Chunking Documents
 
-LangChain.js takes care of loading the document. All you need is `pdf-parse` installed as a peer dependency and a path to a PDF file:
+LangChain.js handles document loading. You just need `pdf-parse` as a peer dependency and a path to a PDF file.
 
 ```typescript
 # loader.ts
@@ -106,7 +106,7 @@ By default this returns one `Document` object for each page of the PDF file. Sin
 
 <Note>**☝️ Good To Know:** The Llama 3.2 1B and 3B models support a context length of **128K** tokens.</Note>
 
-Chunking can still greatly improve retrieval results. For example, when creating embeddings for smaller parts of the document, the vectors are more likely to represent the embedded content more accurately than for an entire page.
+Chunking can still greatly improve retrieval results. For example, when creating embeddings for smaller parts of the document, the vectors are **more likely to represent the embedded content** more accurately than for an entire page.
 
 For simplicity I decided to split the documents with a `RecursiveCharacterTextSplitter`. It basically splits the text into chunks of a given number of tokens each, but tries to keep sentences together.
 
@@ -130,9 +130,9 @@ export async function split(docs: Document[]) {
 
 ### The Vector Store
 
-The `LibSQLVectorStore` is the heart of the retrieval process. It stores the embeddings of the document chunks and allows for efficient retrieval of the most similar chunks to a given query, which than can be used to let the Llama model generate a response.
+The `LibSQLVectorStore` is the heart of the retrieval process. It **stores the embeddings** of the document chunks and allows for efficient **retrieval of the most similar chunks** to a given query, which than can be used to let the Llama model generate a response.
 
-In order to create the vector store, you need to provide a database client as well as an embeddings model. The vector store will then be responsible for storing the embeddings in the database and also retrieving them later.
+In order to create the vector store, you need to provide a **database client** as well as an **embeddings model**. The vector store will then be responsible for storing the embeddings in the database and also retrieving them later.
 
 ```typescript {5}
 # vectorstore.ts
@@ -149,11 +149,11 @@ export const vectorStore = new LibSQLVectorStore(embeddings, {
 })
 ```
 
-In the highlighted line above you can see that we provide `file:vector-store.db` as the URL for the database. This tells libSQL to create a local database file in the current directory.
+In the highlighted line above you can see that we provide `file:vector-store.db` as the URL for the database. This tells libSQL to create a **local database file** in the current directory.
 
 #### Creating Tables and Indices
 
-Before you can start storing vectors in the database, you need to create tables and indices.
+Before you can start storing vectors in the database, you need to **create tables and indices**.
 
 Make sure that your database schema matches the one you provided to the `LibSQLVectorStore` constructor as `table` and `column`.
 
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS vecs (
 
 #### Keeping Track of Files
 
-We also have a `files` table that stores the paths of the documents. This is useful to check if a document has already been processed and to avoid re-embedding it. The file ID is stored in the `metadata` column of the `vecs` table for seamless filtering with the built-in retriever of the `LibSQLVectorStore`.
+The `files` table also stores the document paths. This is useful to check if a document has already been processed and to avoid re-embedding it. The file ID is stored in the `metadata` column of the `vecs` table for seamless **filtering with the built-in retriever** of the `LibSQLVectorStore`.
 
 ```typescript {11}
 # vectorstore.ts
@@ -192,11 +192,11 @@ await vectorStore.addDocuments(docsWithMetadata)
 
 ## Let's Chat
 
-Now that we have the document chunks stored in the database, we can start chatting with the Llama model. With LangChain.js, this is as easy as using the vector store as a base for a history-ware retriever, stuffing matching documents into the LLM's system prompt, and generating a response.
+Now that we have the document chunks stored in the database, we can start chatting with the Llama model. With LangChain.js, this is as easy as using the vector store as a base for a **history-ware retriever**, **stuffing matching documents** into the LLM's system prompt, and **generating a response**.
 
 ### Making the Retriever Aware of the Chat History
 
-In order to allow follow-up questions, we might need to re-phrase the current user's question to include the context of the previous conversation. Image the following conversation:
+In order to allow **follow-up questions**, we might need to re-phrase the current user's question to include the context of the previous conversation. Image the following conversation:
 
 ```plaintext
 🧑‍💻: What does RAG stand for in AI?
@@ -206,7 +206,7 @@ In order to allow follow-up questions, we might need to re-phrase the current us
 🧑‍💻: How does it work?
 ```
 
-If we use `How does it work?` for similarity search in libSQL, we will not get the results that we need from our vector store. Instead, we need to re-phrase the question to include the context of the previous conversation:
+If we use `How does it work?` for similarity search in libSQL, we will not get the results that we need from our vector store. Instead, we need to re-phrase the question to **include the context** of the previous conversation:
 
 ```plaintext
 🧑‍💻: How does Retrieval-Augmented Generation work?
@@ -242,9 +242,9 @@ const historyAwareRetriever = await createHistoryAwareRetriever({
 })
 ```
 
-### Generating a Response
+### Response Generation
 
-This is where the magic happens. The final step has two parts: First, we retrieve the most similar document chunks to the user's question. Then we feed these chunks into the Llama model to generate an answer.
+This is where the magic happens. The final step has two parts: First, we retrieve the **most similar document chunks** to the user's question. Then we feed these chunks into the Llama model to **generate an answer**.
 
 For the first part, we use the `createStuffDocumentsChain` helper method from LangChain.js. For the second part, we use the `createRetrievalChain` helper to bring it all together.
 
@@ -276,9 +276,9 @@ const ragChain = await createRetrievalChain({
 })
 ```
 
-#### Streaming the Response
+#### Streaming Responses
 
-You could now simply call `invoke()` on the final chain and wait for the full answer. But for a better user experience, you might want to stream the response in chunks as they are generated by the model:
+You could now simply call `invoke()` on the final chain and wait for the full answer. But for a better user experience, you might want to **stream the response** in chunks as they are generated by the model:
 
 ```ts
 # chat.ts
@@ -296,18 +296,18 @@ for await (const chunk of await stream) {
 }
 ```
 
-## Full Code Example on GitHub
+## Code Example on GitHub
 
-You can find the full code on my [GitHub](https://github.com/florivdg/bun-docs-chat).
+The **full code** is available on my [GitHub](https://github.com/florivdg/bun-docs-chat).
 
 ## Where To Go From Here?
 
-Since this is all powered by Bun, you could easily turn this into a web-based chatbot. But for running Llama performantly you would need a quite powerful server.
+Powered by Bun, this could easily become a **web-based chatbot**. However, to run Llama effectively, a powerful server would be necessary.
 
-Offloading the AI part to the client would be a viable option. But then all your users must run Ollama locally. You could also mess around with WebGPU and run the Llama model in the browser. There are [demos out there](https://huggingface.co/spaces/cfahlgren1/webllm-playground) that show it's possible. But that's a whole different story.
+Offloading the AI part to the client would be a viable option. But then all your **users must run Ollama locally**. You could also mess around with **WebGPU** and run the Llama model in the browser. There are [demos out there](https://huggingface.co/spaces/cfahlgren1/webllm-playground) that show it's possible. But that's a whole different story.
 
-For me, the best option to grow this into something more useful would be to create a desktop app with Tauri. This way you could bundle everything together and have a nice, offline-first chatbot that you can use on your computer with a nice UI.
+For me, the best option to grow this into something more useful would be to create a **desktop app** with Tauri. This way you could bundle everything together and have a nice, offline-first chatbot that you can use on your computer with a nice UI.
 
 ## Conclusion
 
-Building an offline RAG chatbot with Bun, libSQL, LangChain.js, and Ollama was a fun and challenging project. It's great to be able to run the complete retrieval chain locally on your own computer. No need to rely on cloud services anymore. And with Llama 3.2, the quality of the generated responses is actually quite good.
+Building an offline RAG chatbot with Bun, libSQL, LangChain.js, and Ollama was a **fun and challenging** project. It's great to be able to run the complete retrieval chain locally on your own computer. No need to rely on cloud services anymore. And with Llama 3.2, the quality of the generated responses **is actually quite good**. 🥳
