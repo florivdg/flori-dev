@@ -8,7 +8,7 @@ import vue from '@astrojs/vue'
 import mdx from '@astrojs/mdx'
 
 // https://astro.build/config
-import vercel from '@astrojs/vercel/static'
+import vercel from '@astrojs/vercel'
 
 // https://astro.build/config
 import sitemap from '@astrojs/sitemap'

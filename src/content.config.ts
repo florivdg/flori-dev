@@ -1,9 +1,11 @@
 import { z, defineCollection } from 'astro:content'
+import { glob } from 'astro/loaders'
 
 /**
  * Define a content collection for my reads.
  */
 const readsCollection = defineCollection({
+  loader: glob({ pattern: '**\/[^_]*.{md,mdx}', base: './src/content/reads' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -13,9 +15,7 @@ const readsCollection = defineCollection({
       tags: z.array(z.string()),
       image: z
         .object({
-          src: image().refine((img) => img.width >= 3000, {
-            message: 'Cover image must be at least 3000 pixels wide!',
-          }),
+          src: image(),
           alt: z.string(),
         })
         .optional(),
@@ -26,14 +26,12 @@ const readsCollection = defineCollection({
  * Define a content collection for photos.
  */
 const gridCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**\/[^_]*.json', base: './src/content/grid' }),
   schema: ({ image }) =>
     z.object({
       id: z.string(),
       title: z.string(),
-      image: image().refine((img) => img.width >= 3000, {
-        message: 'Photos must be at least 3000 pixels wide!',
-      }),
+      image: image(),
       alt: z.string(),
       location: z.string().optional(),
       date: z.string().transform((str) => new Date(str)),
