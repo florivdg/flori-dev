@@ -1,0 +1,17 @@
+{
+  "id": "2R9A5893",
+  "title": "Snow Mountain",
+  "image": "./2R9A5893.jpg",
+  "alt": "A panoramic view of a dense forest with tall evergreen trees in the foreground, leading up to a gently sloping hill covered in a fresh blanket of snow. The hill, capped with frost, contrasts beautifully against a clear blue sky, where a few wispy clouds float. Sunlight illuminates the scene, highlighting the glistening white on the trees and creating a serene atmosphere.",
+  "location": "Fichtelsee, Bavaria, Germany",
+  "date": "2025-01-12",
+  "tags": ["forest", "snow", "winter", "nature", "landscape"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "6.3",
+    "iso": "100",
+    "focal_length": "200.0",
+    "shutter_speed": "1/800"
+  }
+}
