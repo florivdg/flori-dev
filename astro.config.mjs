@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config'
 import tailwindcss from '@tailwindcss/vite'
+import remarkExternalLinks from './src/plugins/remarkExternalLinks'
 
 // https://astro.build/config
 import vue from '@astrojs/vue'
@@ -49,5 +50,10 @@ export default defineConfig({
       ),
     },
     plugins: [tailwindcss()],
+  },
+  markdown: {
+    remarkPlugins: [
+      [remarkExternalLinks, { target: '_blank', rel: 'noopener noreferrer' }],
+    ],
   },
 })
