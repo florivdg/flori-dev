@@ -1,0 +1,127 @@
+---
+title: "Deploying a Static Astro Site with GitLab CI to a VPS"
+pubDate: 2025-02-10
+description: "Discover how to deploy your Astro static site using GitLab CI with a focus on secure SSH configurations for rsync deployments—and why you should avoid the `--delete` option on Apache."
+image:
+  {
+    src: '../../assets/reads/astro-static-site-gitlab-ci-vps.jpg',
+    alt: 'Three astronauts in brightly colored spacesuits walk across a cosmic, rainbow-like path against a vivid space backdrop filled with stars and nebulae, blending hues of blue, green, orange, and pink in a surreal, otherworldly environment.',
+  }
+tags: ["Astro", "GitLab CI", "SSH", "rsync", "Deployment"]
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/astro-static-site-gitlab-ci-vps.jpg'
+
+Deploying a static site can be straightforward—until you realize that the true backbone of a smooth deployment is a secure SSH setup. While Astro makes building your site a breeze (and Bun keeps your dependency management fun), the real art lies in configuring GitLab CI to deploy your site safely using **rsync over SSH**.
+
+## Quick Overview of the Astro Build Process
+
+Astro’s ability to generate blazing-fast static sites is one of its biggest draws. With a clean build process, Astro outputs all your static files (typically into a `dist` directory) that are ready to be deployed. In this setup, **Bun** is used for managing dependencies and executing the build, ensuring you get a production-ready site every time.
+
+<Image
+  src={coverImage}
+  alt='Three astronauts in brightly colored spacesuits walk across a cosmic, rainbow-like path against a vivid space backdrop filled with stars and nebulae, blending hues of blue, green, orange, and pink in a surreal, otherworldly environment.'
+  caption="Navigate the cosmos of Astro site deployment with GitLab CI and secure SSH setups."
+  lazy={false}
+/>
+
+## Deep Dive into GitLab CI Deployment with SSH and rsync
+
+### GitLab CI Pipeline Structure
+
+Our pipeline is split into two main stages:
+- **Build:** Generates the static files for your Astro site.
+- **Deploy:** Transfers these files securely to your server using rsync over SSH.
+
+Below is a snippet of our **GitLab CI YAML configuration** that outlines these stages:
+
+```yaml wrap
+# .gitlab-ci.yml
+image: node:lts
+
+stages:
+  - build
+  - deploy
+
+variables:
+  # Customize these variables for your project
+  BUILD_DIR: 'dist' # Replace with your Astro app's output directory if different
+
+build:
+  stage: build
+  before_script:
+    - npm install -g bun
+  script:
+    - bun install
+    - bun run build
+  artifacts:
+    paths:
+      - $BUILD_DIR
+
+deploy:
+  stage: deploy
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - apt-get update && apt-get install -y rsync
+  script:
+    - rsync -avz -e "ssh -p $SSH_PORT" $BUILD_DIR/ $SSH_USER@$SSH_HOST:$DEPLOY_DIR
+  only:
+    - main # Deploy only from the main branch
+
+```
+
+### Setting Up SSH in the Deploy Stage
+
+The deploy stage is where security really comes into play. Here's how we secure our deployment:
+
+- **Starting the ssh-agent:**  
+  The ssh-agent is initiated to manage our SSH keys securely within the CI environment.
+  
+- **Securely Adding the SSH Key:**  
+  We pull the private key from an environment variable (`SSH_PRIVATE_KEY`) and use `tr` to fix any potential issues with line endings. This ensures our key is correctly formatted for use.
+
+- **Configuring the SSH Environment:**  
+  By creating the `~/.ssh` directory with proper permissions and populating the `known_hosts` file using `ssh-keyscan`, we make sure that the remote server is trusted before any file transfer occurs.
+
+- **Security Best Practices:**  
+  Keeping our SSH keys and host data secure is paramount. This setup not only protects your deployment process but also helps prevent unauthorized access.
+
+<Note>**☝️ Good To Know:** You of course can use this technique to also deploy static sites from GitHub Actions.</Note>
+
+### Leveraging rsync Over SSH for Deployment
+
+With SSH securely configured, rsync becomes a powerful tool to transfer your static files. The command:
+
+```shell wrap
+# .gitlab-ci.yml
+rsync -avz -e "ssh -p $SSH_PORT" $BUILD_DIR/ $SSH_USER@$SSH_HOST:$DEPLOY_DIR
+```
+
+- **Uses environment variables** to ensure that sensitive details (like the server address and port) aren’t hardcoded.
+- **Transfers files securely** over the established SSH connection.
+- **Keeps the deployment process efficient** and reliable.
+
+### Caution: Avoiding the `--delete` Option with Apache
+
+While rsync’s `--delete` option is handy for mirroring directories by removing files not present in the source, it can be dangerous—especially when your server runs Apache. Apache might have extra files (like logs, `.htaccess` files, or other dynamic content) that are essential for proper operation. Accidentally deleting these can cause major issues.
+
+<Note>**☝️ Good To Know:** When deploying to Apache, steer clear of the `--delete` option unless you are absolutely sure of what you're mirroring and have backups in place.</Note>
+
+Always test your rsync commands in a staging environment before pushing to production. A cautious approach ensures that you don’t inadvertently remove critical files that keep your web server running smoothly.
+
+## Conclusion
+
+In this guide, we’ve seen that while Astro and Bun make building your site enjoyable, the real challenge lies in deploying it securely. By setting up GitLab CI with a robust SSH configuration and using rsync for file transfers, you can deploy your static site with confidence. Remember, a secure SSH setup is the backbone of your deployment process—especially when using sensitive commands like rsync. And if your server runs Apache, think twice before using the `--delete` option.
+
+Deploy confidently, and happy coding! 🧑‍💻
+
+### Additional Resources
+
+- [GitLab CI/CD Documentation](https://docs.gitlab.com/ee/ci/jobs/ssh_keys.html)
