@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/typography';
+
+@config '../../tailwind.config.cjs';
+
+@theme {
+  --font-sans: 'Mona Sans', 'sans-serif';
+  --font-mono: 'Monaspace Neon', 'monospace';
+
+  --breakpoint-xs: 425px;
+}
