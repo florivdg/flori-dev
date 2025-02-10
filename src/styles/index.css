@@ -1,3 +1,5 @@
+@import './tailwind.css';
+
 @font-face {
   font-family: 'Mona Sans';
   src:
@@ -41,15 +43,9 @@
 
     ::before {
       content: '';
-      @apply absolute -left-3 top-2.5 inline-block h-2 w-1.5 -rotate-1 -skew-x-6 rounded-[1px] bg-gradient-to-tr from-slate-400 to-slate-500 leading-none;
+      @apply absolute top-2.5 -left-3 inline-block h-2 w-1.5 -rotate-1 -skew-x-6 rounded-[1px] bg-gradient-to-tr from-slate-400 to-slate-500 leading-none;
     }
   }
-}
-
-/* Apply a fix for crappy borders in Safari */
-:where(.bg-clip-text) {
-  clip-path: inset(1px);
-  padding: 1px;
 }
 
 .prose-flori :where(h1, h2, h3, h4, h5, h6) {

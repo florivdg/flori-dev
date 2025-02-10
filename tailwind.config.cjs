@@ -1,12 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Mona Sans', 'sans-serif'],
-        mono: ['Monaspace Neon', 'monospace'],
-      },
       typography: ({ theme }) => ({
         flori: {
           css: {
@@ -20,13 +15,6 @@ module.exports = {
           },
         },
       }),
-      screens: {
-        xs: '425px',
-      },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/container-queries'),
-  ],
 }

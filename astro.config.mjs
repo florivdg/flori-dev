@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config'
-import tailwind from '@astrojs/tailwind'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://astro.build/config
 import vue from '@astrojs/vue'
@@ -20,7 +20,6 @@ import expressiveCode from 'astro-expressive-code'
 export default defineConfig({
   site: 'https://flori.dev',
   integrations: [
-    tailwind(),
     vue(),
     expressiveCode({
       styleOverrides: {
@@ -49,5 +48,6 @@ export default defineConfig({
         process.env.VERCEL_URL,
       ),
     },
+    plugins: [tailwindcss()],
   },
 })
