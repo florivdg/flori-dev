@@ -1,0 +1,228 @@
+---
+title: 'Self-Hosting Supabase with Docker and Traefik as a Reverse Proxy'
+pubDate: 2025-02-14
+description: 'A comprehensive guide to self-hosting Supabase on a Hetzner Cloud VPS using Docker and Traefik as a reverse proxy for streamlined SSL management and secure routing.'
+image:
+  {
+    src: '../../assets/reads/supabase-self-host-docker-traefik-reverse-proxy.jpg',
+    alt: '',
+  }
+tags: ['Supabase', 'Traefik', 'Reverse Proxy', 'VPS']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/supabase-self-host-docker-traefik-reverse-proxy.jpg'
+
+Self-hosting **Supabase** is challenging enough on its own, but when it comes to **running it behind a reverse proxy**, things can get even trickier. In this guide, I’ll walk you through setting up Supabase with Docker and **Traefik** as a reverse proxy on a Hetzner Cloud VPS. (If you’re curious, I previously shared a [guide using Caddy](/reads/supabase-self-host-docker-caddy-reverse-proxy)—but this time we’re taking a deep dive with Traefik.)
+
+<Image src={coverImage} alt="" caption="" lazy={false} />
+
+## The Approach
+
+The main idea here is to run the Supabase stack behind Traefik. By doing so, we have a single entry point for all our services, and Traefik takes care of SSL certificate management and traffic routing. Here’s an overview of the setup:
+
+1. **VPS**: A Hetzner Cloud VPS running Ubuntu with Docker CE installed.
+2. **Supabase**: Our backend as a service, deployed via a Docker Compose stack.
+3. **Traefik**: The reverse proxy running in its own Docker Compose stack, managing routing, SSL via Let’s Encrypt, and even a dashboard for monitoring.
+4. **File Providers**: The routers, services and middlewares associated with Supabase will be configured within a file provider for Traefik in order to keep the original stack untouched.
+5. **Firewall**: We’ll secure our server by only allowing HTTP and HTTPS traffic through Traefik, effectively preventing direct access to the internal Supabase services.
+
+## Hetzner Cloud VPS
+
+For this experiment, I set up a **Hetzner Cloud VPS** with Docker CE pre-installed on Ubuntu. Before diving into the installation, make sure to update your system:
+
+```shell
+sudo apt update && sudo apt upgrade
+```
+
+<Note>
+  **🚨 Remember:** Make sure you follow best practices for locking down your
+  VPS—such as **disabling password login** for the `root` user, enabling
+  **automatic updates**, and so on.
+</Note>
+
+## Supabase Setup
+
+Start by cloning the Supabase repository and following the [official setup instructions](https://supabase.com/docs/guides/self-hosting/docker). **Important:** When you first set up the stack, hold off on starting it immediately—this prevents issues where the Postgres password gets set and you need to remove volumes and start all over again. Once you’ve secured your configuration, launch the stack:
+
+```shell
+docker compose up -d
+```
+
+After this, your Supabase instance should be accessible at `<vps-ip>:8000`.
+
+## Traefik Setup
+
+Next, let’s deploy Traefik to serve as our reverse proxy. We’ll run Traefik in its own Docker Compose stack. Create the file `/srv/traefik/docker-compose.yaml` with the following content:
+
+```yaml {11-12, 25,28, 36-37}
+# /srv/traefik/docker-compose.yaml
+services:
+  traefik:
+    image: traefik:v3.3
+    restart: always
+    command:
+      - '--api.dashboard=true' # Enable the dashboard (for testing; secure this in production)
+      - '--api.insecure=true' # Insecure dashboard mode – remove for production!
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.file.directory=/providers' # Load file provider from /providers
+      - '--providers.file.watch=true' # Automatically reload config changes
+      - '--entrypoints.web.address=:80'
+      - '--entrypoints.websecure.address=:443'
+      - '--certificatesResolvers.le.acme.email=mail@example.com'
+      - '--certificatesResolvers.le.acme.storage=/acme/acme.json'
+      - '--certificatesResolvers.le.acme.httpChallenge.entryPoint=web'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080' # Traefik dashboard available on port 8080
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - acme-data:/acme # Persist ACME data (acme.json stored in /acme)
+      - './providers:/providers'
+    networks:
+      - default
+      - supabase_default
+
+volumes:
+  acme-data:
+
+networks:
+  default:
+    name: traefik_default
+  supabase_default:
+    external: true
+```
+
+### What’s Happening Here?
+
+- **File Provider:** We’re mounting a local `providers` folder at `/providers` for additional routing configurations.
+- **Docker Provider:** Traefik will automatically detect containers, but only those with explicit labels will be exposed.
+- **Networks:** Traefik joins both its own network and the external `supabase_default` network so it can communicate with Supabase.
+
+## Configuring Supabase Routing via Traefik’s File Provider
+
+To avoid modifying the original Supabase stack, we can set up routing for Supabase through Traefik’s file provider. Create a file at `/srv/traefik/providers/supabase.yaml` with the following configuration:
+
+```yaml {15}
+# /srv/traefik/providers/supabase.yaml
+http:
+  routers:
+    supabase:
+      rule: 'Host(`supabase.flori.cloud`)'
+      entryPoints:
+        - websecure
+      service: supabase
+      tls:
+        certResolver: le # Use the Let's Encrypt resolver defined in Traefik's command
+  services:
+    supabase:
+      loadBalancer:
+        servers:
+          - url: 'http://kong:8000'
+```
+
+This file creates an HTTP router for `supabase.flori.cloud` that directs traffic to the kong container (which serves as the Supabase entry point) on port `8000`. Thanks to Traefik’s integration with Let’s Encrypt, your SSL certificates are handled automatically.
+
+### Optional: Basic Auth via Traefik Middleware
+
+If you need to secure Supabase Studio (or other endpoints) further via Traefik, you can integrate middlewares such as basic auth. For example, you might configure two routers—one that protects the Studio dashboard with basic auth and another that handles general routing. An example configuration could look like this:
+
+```yaml {5, 9-10, 13, 16, 22}
+# /srv/traefik/providers/supabase.yaml
+http:
+  routers:
+    supabase-studio:
+      rule: 'Host(`supabase.flori.cloud`) && Path(`/`)'
+      entryPoints:
+        - websecure
+      service: supabase
+      middlewares:
+        - basic-auth
+      tls:
+        certResolver: le
+      priority: 1000 # Higher priority for the Studio route
+
+    supabase-kong:
+      rule: 'Host(`supabase.flori.cloud`) && PathPrefix(`/`)'
+      entryPoints:
+        - websecure
+      service: supabase
+      tls:
+        certResolver: le
+      priority: 1
+
+  services:
+    supabase:
+      loadBalancer:
+        servers:
+          - url: 'http://kong:8000'
+
+  middlewares:
+    basic-auth:
+      basicAuth:
+        users:
+          - 'user1:<hash>'
+          - 'user2:<hash>'
+```
+
+Note that this is totally optional since Kong already has its own basic auth middleware in place. However this approach allows you to enforce a shared middleware for basic auth on certain routes and other services while leaving others open as needed.
+
+<Note>
+  **☝️ Remember:** Disable the basic auth middleware within the Kong
+  configuration (`volumes/api/kong.yaml`) in order to let Traefik take over
+  basic auth.
+</Note>
+
+## Final Folder Structure
+
+To keep everything organized, you might structure your directories like this:
+
+```txt
+/srv
+├── supabase
+│   ├── docker
+│   │   ├── volumes
+│   │   │   ├── api
+│   │   │   │   └── kong.yml
+│   │   ├── .env
+│   │   └── docker-compose.yml
+├── traefik
+│   ├── providers
+│   │   └── supabase.yaml
+│   └── docker-compose.yaml
+└── other-service
+    └── docker-compose.yaml
+```
+
+## Firewall
+
+Remember, while Traefik handles incoming traffic on ports `80` and `443`, the Supabase services remain accessible on their native ports. To secure your setup, configure your firewall (or use Hetzner Cloud’s firewall profiles) to only allow HTTP and HTTPS traffic to your VPS. This ensures that external traffic is forced through Traefik, reducing the risk of direct attacks on your internal services.
+
+<Note>
+  **☝️ Note:** You may also want to keep port `5432` accessible from your
+  network if you want to use `supabase-cli` for database migrations and
+  therefore need to connect directly to Postgres.
+</Note>
+
+## Comparing with the Previous Caddy Setup
+
+Compared to my previous guide using Caddy ([Self-Hosting Supabase with Docker and Caddy as a Reverse Proxy](/reads/supabase-self-host-docker-caddy-reverse-proxy)), the Traefik setup offers:
+
+- A dynamic dashboard for real-time monitoring.
+- Simplified configuration via file providers.
+- Improved middleware support for access controls.
+- The flexible use of Docker labels for routing with Traefik.
+
+## Conclusion
+
+Self-hosting Supabase with Docker and Traefik as a reverse proxy is a robust approach that consolidates your entry points, streamlines SSL management via Let’s Encrypt, and simplifies service discovery through shared Docker networks. By following these steps—and with a little extra configuration for enhanced security—you can enjoy a flexible and powerful setup on your Hetzner Cloud VPS.
+
+Happy hosting! 🧑‍💻🥳
+
+### Additional Resources
+
+- [Supabase Self-Hosting Guide](https://supabase.com/docs/guides/self-hosting/docker)
+- [Traefik File Provider Documentation](https://doc.traefik.io/traefik/providers/file/)
