@@ -1,20 +1,22 @@
 ---
-title: 'Building your Astro SSR App with Bun using GitHub Actions'
-pubDate: 2025-02-17
-description: ''
+title: 'Dockerizing Multi-Platform Astro SSR Apps using GitHub Actions'
+pubDate: 2025-03-01
+description: 'Learn how to build your own Astro SSR app deployment using Bun, Docker, and GitHub Actions — creating simple automated builds and container deployments with support for multiple platforms.'
 image:
   {
     src: '../../assets/reads/astro-ssr-docker-image-github-actions.jpg',
     alt: 'Rocket launching into a star-filled night sky with three astronauts in spacesuits watching from the ground, surrounded by colorful clouds and a large planet in the background.',
   }
-tags: ['Astro', 'GitHub Actions', 'Docker', 'CI/CD']
+tags: ['Astro', 'SSR', 'Bun', 'GitHub Actions', 'Docker']
 ---
 
 import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/astro-ssr-docker-image-github-actions.jpg'
 
-g
+Astro provides a fantastic developer experience for building sites and applications with server-side rendering (SSR). For a [side project](https://github.com/florivdg/quadranto-cloud) I chose **Astro** and **Vue.js** to get started quickly. When I started this project, I was building my Docker images manually and pushing new versions to Docker Hub by hand. But it was definitely time for a change. **Enter GitHub Actions.**
+
+In this guide, you'll learn how I use GitHub Actions to **build, package, and push** my Bun-powered Astro SSR application to the GitHub Container Registry (ghcr.io). Let's dive in.
 
 <Image
   src={coverImage}
@@ -23,4 +25,171 @@ g
   lazy={false}
 />
 
-gg
+## Quick Recap: Why Astro SSR and Bun?
+
+Astro's server-side rendering (SSR) capabilities allow your applications to handle **dynamic content, authentication, and database interactions** beyond the typical static page generation (yes, you can build things other than blogs with Astro 😜). Combined with Bun - a blazingly fast JavaScript runtime and package manager - I was off to a great start.
+
+While it got me up and running quickly, building, tagging and pushing new versions by hand started to get really annoying. When it's time to deploy, we want efficiency, minimal downtime, and easy scalability. That's where Docker and GitHub Actions come in.
+
+## Diving Into GitHub Actions for Docker-Based Deployment
+
+GitHub Actions allows us to automate deployment processes in a simple, declarative workflow. Here's how we'll set this up for an Astro SSR app built with Bun:
+
+### Overview of our GitHub Actions Workflow
+
+We'll create a GitHub Action **workflow** that triggers when we push a new **release tag** (like `v1.0.0`). Our workflow does the following:
+
+- Checks out the latest code.
+- Builds a Docker image optimized for Astro SSR with Bun.
+- Publishes the image to GitHub Container Registry (ghcr.io) tagged with the version and `latest`.
+
+Below is our **full GitHub Action YAML** configuration:
+
+```yaml wrap
+# .github/workflows/docker-publish.yml
+name: Docker Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Extract tag name
+        id: extract_tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker-container
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/${{ github.repository }}/astro-ssr-app:${{ steps.extract_tag.outputs.tag }}
+            ghcr.io/${{ github.repository }}/astro-ssr-app:latest
+          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=Organize your projects with the Eisenhower matrix.
+```
+
+## Understanding the Key Steps
+
+Let's break down what's happening in the workflow **step-by-step.**
+
+### Checkout Code
+
+```yaml
+- name: Checkout code
+  uses: actions/checkout@v3
+```
+
+We begin by **pulling in the latest code** of your Astro application from GitHub. This ensures all Docker build steps have access to a fresh snapshot of your repository.
+
+### Extracting the Version Tag
+
+```yaml wrap
+- name: Extract tag name
+  id: extract_tag
+  run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+```
+
+This step automatically **extracts the version number from the pushed tag**, simplifying versioning for your Docker images.
+
+### Logging into GitHub Container Registry (ghcr.io)
+
+```yaml wrap
+- name: Log in to GitHub Container Registry
+  uses: docker/login-action@v2
+  with:
+    registry: ghcr.io
+    username: ${{ github.actor }}
+    password: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Securely **authenticate with GitHub Container Registry** to prepare for pushing your Docker images.
+
+<Note>
+  **☝️ Good To Know:** Your `GITHUB_TOKEN` secret is provided automatically by
+  GitHub Actions—no additional setup is needed!
+</Note>
+
+### Docker Buildx and QEMU for Multi-Platform Support
+
+```yaml wrap
+- name: Set up QEMU
+  uses: docker/setup-qemu-action@v2
+
+- name: Set up Docker Buildx
+  uses: docker/setup-buildx-action@v2
+  with:
+    driver: docker-container
+```
+
+These steps enable building Docker images for multiple architectures (like `amd64` or `arm64`). This ensures the Docker image **runs on multiple platforms** like ARM-based web servers as well as traditional x86 servers or - if needed - macOS or Windows machines.
+
+### Building and Pushing the Image
+
+```yaml wrap
+- name: Build and Push Docker image
+  uses: docker/build-push-action@v4
+  with:
+    context: .
+    push: true
+    platforms: linux/amd64,linux/arm64
+    tags: |
+      ghcr.io/${{ github.repository }}/astro-ssr-app:${{ steps.extract_tag.outputs.tag }}
+      ghcr.io/${{ github.repository }}/astro-ssr-app:latest
+    outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=Organize your projects with the Eisenhower matrix.
+```
+
+This tells Docker to **build and push** your image, **tagging it** with both the specific version and the `latest` tag. The `annotation-index` contains **descriptive metadata** that makes your image more discoverable and maintainable.
+
+<Note>
+  **☝️ Attention:** Make sure to set `permissions: packages: write` in order to
+  allow the workflow to write to the underlying Docker registry!
+</Note>
+
+## Deploying your Image
+
+With your Docker images securely published to GitHub Container Registry, deploying the image to your hosting provider or infrastructure (such as your own VPS) becomes straightforward.
+
+For example, simply pull your newly built image:
+
+```bash
+docker pull ghcr.io/your-github-username/astro-ssr-app:latest
+```
+
+## Wrap-Up and Considerations
+
+Deploying your Astro SSR applications should be as much fun as building them - and using GitHub Actions alongside Docker and Bun makes that a reality. This powerful automated workflow lets you iterate quickly, build multi-architecture images reliably, and ensure each release is smooth and secure.
+
+### Additional Resources
+
+- [GitHub Actions Official Documentation](https://docs.github.com/actions)
+- [Astro Documentation - SSR](https://docs.astro.build/en/guides/server-side-rendering/)
+- [Bun Official Site](https://bun.sh)
