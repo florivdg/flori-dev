@@ -10,7 +10,9 @@
           class="bar"
           :style="{
             width: computedWidth(count) + '%',
-            backgroundColor: browserColors[browser] || defaultColor,
+            backgroundColor:
+              browserColors[browser as keyof typeof validBrowserBundleIds] ||
+              defaultColor,
           }"
         ></div>
       </div>
@@ -20,12 +22,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useDefaultBrowserStats } from '../composables/use-default-browser-stats'
+import {
+  useDefaultBrowserStats,
+  validBrowserBundleIds,
+} from '../composables/use-default-browser-stats'
 
 /**
  * Get the default browser stats.
  */
-const { stats, loading, fetchStats, error } = useDefaultBrowserStats()
+const { stats, loading, fetchStats, limit, error } = useDefaultBrowserStats()
 
 /* Compute the overall browser distribution */
 const browserData = computed(() => stats.value?.browserDistribution)
@@ -38,13 +43,13 @@ const maxCount = computed(() => {
 })
 
 /* A mapping from browser key to a color for the chart */
-const browserColors: Record<string, string> = {
-  'com.apple.Safari': '#FF5733',
-  'com.google.Chrome': '#4285F4',
-  'org.mozilla.firefox': '#FF9500',
-  'com.apple.SafariTechnologyPreview': '#9B59B6',
-  'company.thebrowser.Browser': '#27AE60',
-  'com.microsoft.edgemac': '#00A4EF',
+const browserColors: Record<keyof typeof validBrowserBundleIds, string> = {
+  'com.apple.Safari': '#00aef0',
+  'com.google.Chrome': '#fcbd22',
+  'org.mozilla.firefox': '#ff3b44',
+  'com.apple.SafariTechnologyPreview': '#622888',
+  'company.thebrowser.Browser': '#0035fe',
+  'com.microsoft.edgemac': '#4ad78b',
 }
 const defaultColor = '#CCCCCC'
 

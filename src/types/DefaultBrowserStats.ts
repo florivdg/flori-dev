@@ -3,13 +3,14 @@ export interface DefaultBrowserStats {
   days: number | 'all'
   browserDistribution: Distribution
   machineDistribution: Distribution
-  machineBrowserDistribution: PerMachineDistribution
+  machineBrowserDistribution: GroupedDistribution
+  timeSeriesDistribution: GroupedDistribution
 }
 
 export interface Distribution {
   [key: string]: number
 }
 
-export interface PerMachineDistribution {
+export interface GroupedDistribution {
   [key: string]: Distribution
 }

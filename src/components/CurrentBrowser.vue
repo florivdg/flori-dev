@@ -74,6 +74,7 @@
 import { ref, watch } from 'vue'
 import { useEventSource } from '@vueuse/core'
 import DefaultBrowserStats from './DefaultBrowserStats.vue'
+import { validBrowserBundleIds } from '../composables/use-default-browser-stats'
 
 const { status, data } = useEventSource(
   'https://van-der-hub.flori.dev/browser/live',
@@ -90,20 +91,6 @@ const browser = ref<string | null>(null)
 watch(data, (data) => {
   if (data) browser.value = data
 })
-
-/**
- * List of valid browser bundle ids for that exist icons.
- */
-const validBrowserBundleIds = {
-  'com.apple.Safari': 'Safari',
-  'com.apple.SafariTechnologyPreview': 'Safari Technology Preview',
-  'com.brave.Browser': 'Brave',
-  'com.google.Chrome.canary': 'Chrome Canary',
-  'com.google.Chrome': 'Chrome',
-  'com.microsoft.edgemac': 'Edge',
-  'org.mozilla.firefox': 'Firefox',
-  'company.thebrowser.Browser': 'Arc',
-}
 
 /**
  * Check if the received browser data is valid.
