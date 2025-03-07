@@ -1,0 +1,128 @@
+---
+title: 'Claude Code: Hands-On with Coding Agents'
+pubDate: 2025-03-07
+description: "Coding agents are popping up all over the place. While I don't have access to GitHub Copilot Agents yet, I had to try Claude Code on three different projects. The results were amazing. So let's take a look."
+image:
+  {
+    src: '../../assets/reads/coding-agents-like-claude-code.jpg',
+    alt: 'A man in a hat and headphones types on a laptop at night in Paris, with a glowing pink Eiffel Tower in the background. The scene has a cyberpunk aesthetic.',
+  }
+tags: ['AI', 'Claude', 'Agents', 'Software Development', 'Vue.js']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/coding-agents-like-claude-code.jpg'
+
+Cursor and Windsurf did it. GitHub Copilot is doing it. And out from the blue, Anthropic is doing it too. Coding agents are the new hotness in software development. Last week [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) dropped and I had to try it on three different projects. The results were stunning. 🤯 So let's have a look.
+
+<Image
+  src={coverImage}
+  alt="A man in a hat and headphones types on a laptop at night in Paris, with a glowing pink Eiffel Tower in the background. The scene has a cyberpunk aesthetic."
+  caption="Let the Agent Do the Work: Hands-On with Claude Code"
+  lazy={false}
+/>
+
+## Case A: Migrating Node.js and Express to Bun and Hono
+
+This week I was reviewing some merge requests for a 5+ year old Node.js/Express project that uses Puppeteer under the hood to convert HTML to PDFs. This internal tool is now maintained by our apprentices, and recently some new features have been added, but the codebase and general approach have not been maintained, as it would be uneconomical to rewrite the whole thing.
+
+When Claude Code dropped, I thought it would be a good opportunity to try it out. I had three tasks in mind:
+
+1. Migrate the application to use Hono instead of Express to modernize the codebase and make it easier to maintain. And also make it runtime agnostic.
+2. Replace most of the dependencies with Hono's built-in features and/or web standard APIs.
+3. Replace `better-sqlite3` with Bun's built-in SQLite support. This should be easy since they both share the same public API (could have done this by hand 😜).
+
+<Note>
+  **🔥 Hot Tip:** Be specific! When it comes to AI tools, you are in charge.
+  Tell the agent exactly **what to do** and **how to do it**.
+</Note>
+
+### tldr; It Worked! 🎉
+
+Claude Code was able to complete all three tasks with a few minor hiccups. **The migration took about 20 minutes and cost about $1 USD** in API calls.
+It did some code refactoring and checked the build process as well as the TypeScript types by running `tsc` and checking the outcome. It kept fixing type errors until everything built successfully.
+
+As a later step, I had it **refactor the database code** since there were multiple db calls in different places. The result was a single file that handled all the database-related stuff. It even decided to extract some constants and configurations into already existing files that existed for that very purpose. **This was nothing I told it to do**, but it made perfect sense. It really made me realize how good AI has become.
+
+## Case B: Improving Unit Test Coverage for Vue.js Components
+
+For an existing Vue.js UI library that we use for various projects at my day job, I wanted to **increase test coverage**. There were already unit tests covering the main functionality, but the coverage could be improved. Enter Claude Code. 🕵️‍♂️
+
+My goals here were:
+
+1. Use Vitest's built-in coverage report to validate the result.
+2. Improve coverage for all existing Vue.js components and Vue.js composables.
+
+First, I configured Vitest's coverage configuration to report on files that had no tests at all (this was previously turned off):
+
+```json {8} wrap
+# vitest.config.ts
+test: {
+    environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      include: ['src/index.ts', 'src/components/**/*', 'src/composables/**/*'],
+      extension: ['.ts', '.vue'],
+      all: true, // this defaults to true, but was turned off
+    },
+  },
+```
+
+Again, be specific and tell the agent what to do and how to do it. I asked Claude Code to improve the test coverage for all Vue.js components and composables. I told it to **use Vitest and** `@vue/test-utils` and check back with the coverage report. How to run coverage was already in the `package.json` file, so it was pretty easy for it to figure out how to run the tests.
+
+### A Good Starting Point 🤩
+
+I actually could not remember how long it took because I was doing other work while it was running in the background. But it did it! 🎉
+
+Coverage was **improved to more than 90%** for the whole UI library (from about 60% before) and tests were added for all missing components and composables.
+
+The overall costs were again about $1 USD. But the project only has about ten components and composables, so it was not that much work for the agent. But still, I was impressed.
+
+### But... "Empty" Tests 🥸
+
+There were some tests that just checked if the component was rendered or if a certain function was defined. Typically, these are not the tests you want to have in your codebase, as they give you a **false sense of security and add no real value**.
+
+I added some _real_ checks to these "empty" tests, or let Copilot do it for me - with some additional information about what was going on and needed to be checked. The scope was now much more limited, and I was able to get some real tests out of it.
+
+Overall the results were pretty good. I think this mostly was due to the fact that were **already some tests in place**. The agent was able to build on top of that and improve the coverage. So, I wondered if it would be able to do the same for a project that had no tests at all... 🤔
+
+## Case C: Adding Unit Tests to a Project with No Tests at All
+
+For a project that actually uses the Vue.js UI library mentioned above, I wanted to add unit tests for all components and composables. This application had no tests at all. First, I set up Vitest and `@vue/test-utils` and added the coverage configuration to the `vitest.config.ts` file. I also added a script to the `package.json` file to run the tests. The code coverage was 0%, so let's see how Claude Code does with it.
+
+The goals for this run were:
+
+1. Add unit tests for all Vue.js components.
+2. Add unit tests for all Vue.js composables.
+3. Use Vitest and `@vue/test-utils`.
+
+I did not mention the coverage report this time because I wanted to see how it would approach the task first.
+
+### Things Started to Fall Apart... 😬
+
+This time it **took several runs** to get things done. It even **hung at one point** and I had to restart the agent.
+
+The first pass went pretty well. After about 30 minutes it was done and the tests were all passing. But at first glance, there wasn't much coverage. I immediately saw that about **half of the components were missing tests.**
+
+It actually took three runs, adding up to about 45 minutes of work. The cost was about $5 USD. At that point, the test coverage was about 75%.
+
+What surprised me was that a `README.md` file was added to the `__tests__` folder it created about how the tests worked and how they needed to be structured. This **helped with multiple agent runs**, but is also **great for future developers. 👍**
+
+Overall, the tests were OK, but not great. It mocked a lot of functionality that it could have imported from the codebase itself. Again, it covered the main functionality, but by no means all the edge cases and things to consider. But as a starting point, it was pretty good to have something to work with.
+
+## Best Practices for Coding Agents
+
+Here is what I learned from my experiments with Claude Code:
+
+1. **Be specific!** 🤓 Tell the agent exactly what to do and how to do it. The more specific you are, the better the results will be.
+2. **Tell it how to control the outcome!** 🔎 If it can somehow check the outcome, this will improve the results. For example, tell it to check the build process, run `tsc` for checking types, or let it check the coverage report when writing tests.
+3. **Split tasks into smaller chunks.** 📦 This will help the agent to focus on one thing at a time which improves the results.
+4. **Following best practices gives you better results.** 🧑‍💻 If you have a clean codebase, and follow established best practices, the agent will be able to work with it much better.
+5. **Use the agent as a starting point.** 🚀 The results are not perfect, but they are a good starting point. You can then build on top of that and improve the results.
+
+## Conclusion
+
+Coding agents are the new hotness in software development. They can help you with many tasks, **but they are not perfect. **We are only a few years into it and the results are already pretty good. I am excited to see where this goes in the future.
+
+**Using prompts to implement new features or refactor existing code will be the new normal.** I am sure of it. And I look forward to it. 🤖🚀💪
