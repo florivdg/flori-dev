@@ -1,0 +1,150 @@
+---
+title: 'How to Manage Multiple Git Identities and Commit Signing'
+pubDate: 2025-04-23
+description: 'Learn how to effectively manage separate Git identities for work and personal projects, and simplify commit signing using SSH keys.'
+image:
+  {
+    src: '../../assets/reads/git-signing-and-multiple-identities.jpg',
+    alt: 'A hand signing a digital document with a checkmark symbol, alongside two golden keys symbolizing digital security or encryption, set against a starry night background with colorful light trails.',
+  }
+tags: ['Git', 'SSH', 'Signing', 'GitLab', 'GitHub']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/git-signing-and-multiple-identities.jpg'
+
+Working with multiple Git identities—especially when balancing personal and professional repositories—can be cumbersome if not handled properly. Fortunately, Git provides straightforward ways to maintain distinct identities and securely sign commits using SSH.
+
+## Organizing Your Project Directories
+
+First things first: organize your repositories clearly. Create separate directories to distinguish between your work-related and personal projects:
+
+- `~/Work` for professional projects.
+- `~/Projects` for personal endeavors.
+
+Ensure you also update paths in VS Code and shell aliases to reflect these directories.
+
+<Image
+  src={coverImage}
+  alt="A hand signing a digital document with a checkmark symbol, alongside two golden keys symbolizing digital security or encryption, set against a starry night background with colorful light trails."
+  caption="Streamline your Git identities and commit signatures with ease using SSH."
+  lazy={false}
+/>
+
+## Configuring Conditional Git Identities
+
+Git supports conditional configurations, allowing automatic switching between identities based on the directory context.
+
+### Step 1: Create a Work-Specific Git Config
+
+Make a separate config file (`~/.gitconfig-work`) dedicated to work-related repositories:
+
+```ini
+[user]
+  name  = Your Work Name
+  email = you@company.example.com
+```
+
+### Step 2: Conditionally Include the Work Config
+
+Edit your main `~/.gitconfig` to include your work-specific configuration conditionally:
+
+```ini
+[user]
+  name  = Your Personal Name
+  email = you@personal.example.com
+
+[includeIf "gitdir:~/Work/"]
+  path = ~/.gitconfig-work
+```
+
+With this setup, Git automatically applies your work identity whenever you operate within the `~/Work` directory, and defaults to your personal identity elsewhere.
+
+## Commit Signing with SSH Keys
+
+Why SSH instead of GPG? Simplicity and convenience. Using SSH keys for commit signing streamlines the process significantly.
+
+### Generate a Dedicated SSH Signing Key
+
+Create an SSH key specifically for signing your commits:
+
+```shell wrap
+ssh-keygen -t ed25519 -f ~/.ssh/git_commit_signing -C "commit-signing@yourdomain"
+```
+
+### Configure Git to Sign Commits
+
+Edit your global Git configuration to enable commit signing with the newly generated SSH key:
+
+```ini
+[commit]
+  gpgSign = true
+[user]
+  signingKey = ~/.ssh/git_commit_signing
+[gpg]
+  format = ssh
+```
+
+This single signing key simplifies your commit signing workflow across both personal and professional repositories.
+
+## Adding Your Signing Key to GitHub and GitLab
+
+To ensure your commits show as "Verified" on GitHub and GitLab:
+
+1. Copy your public SSH signing key:
+
+```shell
+cat ~/.ssh/git_commit_signing.pub
+```
+
+2. Add this key to your GitHub and GitLab account settings under "SSH Keys" or "Signing Keys."
+
+<Note>
+  **☝️ Good To Know:** You can use separate keys for SSH authentication
+  (push/pull) and commit signing to enhance security.
+</Note>
+
+## Locally Verify Your Signed Commits (Optional)
+
+To verify your commits locally:
+
+### Step 1: Create an Allowed-Signers File
+
+Define the allowed signers in `~/.config/git/allowed_signers`:
+
+```text wrap
+you@company.example.com ssh-ed25519 AAAAC3...
+you@personal.example.com ssh-ed25519 AAAAC3...
+```
+
+### Step 2: Configure Git to Recognize the Allowed Signers File
+
+Add the following to your global Git config:
+
+```ini
+[gpg "ssh"]
+  allowedSignersFile = ~/.config/git/allowed_signers
+```
+
+### Step 3: Verify Commits
+
+Use this command to confirm commit verification:
+
+```shell
+git log --show-signature
+```
+
+Your commits should now display clearly as signed and verified.
+
+## Conclusion
+
+By leveraging conditional Git configurations and SSH for signing, you simplify identity management and enhance security. Whether collaborating professionally or working on personal projects, this method ensures clear distinctions between your identities and keeps your commits trustworthy.
+
+Happy coding! 🚀
+
+### Additional Resources
+
+- [Git Documentation: Conditional Includes](https://git-scm.com/docs/git-config#_conditional_includes)
+- [GitHub Docs: Signing commits with SSH keys](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits)
+- [GitLab Docs: Add an SSH Key](https://docs.gitlab.com/ee/user/ssh.html)
