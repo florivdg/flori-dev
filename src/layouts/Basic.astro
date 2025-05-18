@@ -49,7 +49,18 @@ const { seo } = Astro.props
     <script
       defer
       data-domain="flori.dev"
-      src="https://plausible.flori.cloud/js/script.js"></script>
+      src="https://plausible.flori.cloud/js/script.file-downloads.outbound-links.js"
+    ></script>
+    <script>
+      //@ts-ignore
+      window.plausible =
+        //@ts-ignore
+        window.plausible ||
+        function () {
+          //@ts-ignore
+          ;(window.plausible.q = window.plausible.q || []).push(arguments)
+        }
+    </script>
   </head>
   <body class="bg-zinc-50 text-slate-600 dark:bg-gray-900 dark:text-slate-200">
     <div class="fixed inset-0 flex justify-center">
