@@ -1,7 +1,7 @@
 ---
 title: 'Vue.js Client-Side Routing in Astro SSR Apps'
 pubDate: 2025-05-26
-description: ''
+description: 'Learn how to integrate Vue Router within Astro’s island architecture for smooth client-side navigation in specific sections of your application.'
 image:
   {
     src: '../../assets/reads/astro-vue-router.jpg',
@@ -14,7 +14,9 @@ import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/astro-vue-router.jpg'
 
-g
+Astro’s unique approach of "islands architecture" makes building performant web applications straightforward. But sometimes, you need deeper client-side interactions. That’s exactly where Vue Router steps in.
+
+In this guide, you'll discover how to seamlessly integrate Vue Router within your Astro SSR project to build interactive, client-side routed sections.
 
 <Image
   src={coverImage}
@@ -23,4 +25,196 @@ g
   lazy={false}
 />
 
-gg
+## Quick Recap: Why Astro SSR with Vue?
+
+Astro excels in delivering static content rapidly, but what if you need dynamic, stateful interactions? Combining Astro SSR with Vue.js and Vue Router bridges the gap—offering an exceptional developer experience, high performance, and dynamic client-side navigation precisely where you need it.
+
+## Project Setup & Configuration
+
+### Installing Dependencies
+
+Begin by adding essential dependencies to your Astro project:
+
+```bash
+bun add vue vue-router @astrojs/vue
+```
+
+### Astro Configuration
+
+Next, configure Astro with a custom app entrypoint to use Vue:
+
+```javascript wrap
+import { defineConfig } from 'astro/config'
+import vue from '@astrojs/vue'
+
+export default defineConfig({
+  integrations: [vue({ appEntrypoint: '/src/pages/_app' })],
+  output: 'server',
+})
+```
+
+This configuration ensures Vue Router is globally available across all Vue islands.
+
+## Configuring Vue Router
+
+### Client Router Setup
+
+Initialize Vue Router in `_clientRouter.ts` with SSR compatibility:
+
+```typescript wrap
+import { createRouter, createWebHistory, type Router } from 'vue-router'
+
+let clientRouter: Router | null = null
+
+if (!import.meta.env.SSR) {
+  clientRouter = createRouter({
+    history: createWebHistory(),
+    routes: [
+      {
+        path: '/portfolio/projects',
+        redirect: '/portfolio/projects/web',
+        children: [
+          {
+            path: 'web',
+            component: () => import('../components/views/ProjectsWeb.vue'),
+          },
+          {
+            path: 'mobile',
+            component: () => import('../components/views/ProjectsMobile.vue'),
+          },
+        ],
+      },
+      {
+        path: '/portfolio/about',
+        redirect: '/portfolio/about/bio',
+        children: [
+          {
+            path: 'bio',
+            component: () => import('../components/views/AboutBio.vue'),
+          },
+          {
+            path: 'contact',
+            component: () => import('../components/views/AboutContact.vue'),
+          },
+        ],
+      },
+    ],
+  })
+}
+
+export { clientRouter }
+```
+
+### Registering Router in Astro
+
+Register Vue Router globally via `_app.ts`:
+
+```typescript
+import type { App } from 'vue'
+import { clientRouter } from './_clientRouter'
+
+export default (app: App) => {
+  if (clientRouter) app.use(clientRouter)
+}
+```
+
+## Creating Astro Pages
+
+Astro pages become Vue Router entry points using dynamic catch-all routes:
+
+```astro
+---
+import Layout from '../../../layouts/Layout.astro'
+import ProjectsVue from './_projects.vue'
+---
+
+<Layout title="Projects - Portfolio">
+  <ProjectsVue client:load />
+</Layout>
+```
+
+This setup delegates route handling to Vue Router, enabling SPA-style navigation within these sections.
+
+## Vue Layout & Components
+
+Define intuitive layouts within your Vue islands:
+
+```vue wrap
+<template>
+  <div class="portfolio-layout">
+    <nav class="portfolio-nav" data-allow-mismatch>
+      <a href="/">← Home</a>
+      <router-link to="/portfolio/projects/web">Web Projects</router-link>
+      <router-link to="/portfolio/projects/mobile">Mobile Apps</router-link>
+    </nav>
+    <main class="portfolio-content">
+      <router-view />
+    </main>
+  </div>
+</template>
+```
+
+## Interactive Route Components
+
+Build dynamic, interactive route components like `ProjectsWeb.vue`:
+
+```vue wrap
+<template>
+  <section>
+    <h2>Web Projects</h2>
+    <div v-for="project in webProjects" :key="project.id">
+      <h3>{{ project.name }}</h3>
+      <button @click="toggleLike(project)">
+        {{ project.liked ? '❤️' : '🤍' }} {{ project.likes }}
+      </button>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const webProjects = ref([...])
+
+const toggleLike = (project: any) => {
+  project.liked = !project.liked
+  project.likes += project.liked ? 1 : -1
+}
+</script>
+```
+
+## Key Technical Considerations
+
+### SSR Compatibility
+
+Guard Vue Router initialization to avoid issues in server-rendered contexts:
+
+```typescript
+if (!import.meta.env.SSR) {
+  // client-side only
+}
+```
+
+### Hydration Considerations
+
+Use Astro’s `data-allow-mismatch` to prevent hydration mismatches:
+
+```vue
+<nav data-allow-mismatch>
+  <!-- Navigation links -->
+</nav>
+```
+
+### Performance Optimization
+
+Use dynamic imports for lazy-loaded routes:
+
+```typescript
+{ path: 'web', component: () => import('../views/ProjectsWeb.vue') }
+```
+
+## Conclusion
+
+Integrating Vue Router with Astro SSR provides a powerful hybrid approach: static speed combined with interactive, SPA-like experiences. This architecture is ideal for selectively dynamic sections of your site or application.
+
+Explore the full implementation in our [demo repository](https://github.com/florivdg/astro-vue-router).
