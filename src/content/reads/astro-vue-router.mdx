@@ -14,7 +14,7 @@ import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/astro-vue-router.jpg'
 
-Astro’s unique approach of "islands architecture" makes building performant web applications straightforward. But sometimes, you need deeper client-side interactions. That’s exactly where Vue Router steps in.
+Astro’s unique approach of "islands architecture" makes building performant web applications straightforward. But sometimes, you need deeper client-side interactions. So, why not combine Vue Router with Astro's pages router?
 
 In this guide, you'll discover how to seamlessly integrate Vue Router within your Astro SSR project to build interactive, client-side routed sections.
 
@@ -27,7 +27,7 @@ In this guide, you'll discover how to seamlessly integrate Vue Router within you
 
 ## Quick Recap: Why Astro SSR with Vue?
 
-Astro excels in delivering static content rapidly, but what if you need dynamic, stateful interactions? Combining Astro SSR with Vue.js and Vue Router bridges the gap—offering an exceptional developer experience, high performance, and dynamic client-side navigation precisely where you need it.
+Astro excels in delivering static content rapidly, but what if you need dynamic, stateful interactions? Combining Astro SSR with Vue.js and Vue Router bridges the gap — offering an exceptional developer experience, high performance, and dynamic client-side navigation precisely where you need it.
 
 ## Project Setup & Configuration
 
@@ -35,15 +35,17 @@ Astro excels in delivering static content rapidly, but what if you need dynamic,
 
 Begin by adding essential dependencies to your Astro project:
 
-```bash
-bun add vue vue-router @astrojs/vue
+```shell
+bunx astro add vue
+bun add vue-router
 ```
 
 ### Astro Configuration
 
-Next, configure Astro with a custom app entrypoint to use Vue:
+Next, configure Astro with a custom app entrypoint in order to integrate Vue Router:
 
-```javascript wrap
+```javascript wrap {6}
+# astro.config.mjs
 import { defineConfig } from 'astro/config'
 import vue from '@astrojs/vue'
 
@@ -53,7 +55,10 @@ export default defineConfig({
 })
 ```
 
-This configuration ensures Vue Router is globally available across all Vue islands.
+<Note>
+  **☝️ Good To Know:** By doing this, your Vue Router configuration is shared
+  between all Astro Islands.
+</Note>
 
 ## Configuring Vue Router
 
@@ -62,6 +67,7 @@ This configuration ensures Vue Router is globally available across all Vue islan
 Initialize Vue Router in `_clientRouter.ts` with SSR compatibility:
 
 ```typescript wrap
+# _clientRouter.ts
 import { createRouter, createWebHistory, type Router } from 'vue-router'
 
 let clientRouter: Router | null = null
@@ -105,11 +111,19 @@ if (!import.meta.env.SSR) {
 export { clientRouter }
 ```
 
+If you omit the `if (!import.meta.env.SSR)` check, Vue Router will attempt to initialize on the server side, which will lead to errors since it relies on browser APIs.
+
+<Note>
+  **☝️ Good To Know:** When using the client directive `client:only` this is not
+  a problem at all, since the code then is only run in the browser.
+</Note>
+
 ### Registering Router in Astro
 
 Register Vue Router globally via `_app.ts`:
 
-```typescript
+```typescript {6}
+# _app.ts
 import type { App } from 'vue'
 import { clientRouter } from './_clientRouter'
 
@@ -122,7 +136,7 @@ export default (app: App) => {
 
 Astro pages become Vue Router entry points using dynamic catch-all routes:
 
-```astro
+```astro {7} title="[...path].astro"
 ---
 import Layout from '../../../layouts/Layout.astro'
 import ProjectsVue from './_projects.vue'
@@ -137,9 +151,9 @@ This setup delegates route handling to Vue Router, enabling SPA-style navigation
 
 ## Vue Layout & Components
 
-Define intuitive layouts within your Vue islands:
+Define sub-layouts and router links within your Vue islands:
 
-```vue wrap
+```vue wrap {5,6,9} title="_projects.vue"
 <template>
   <div class="portfolio-layout">
     <nav class="portfolio-nav" data-allow-mismatch>
@@ -154,35 +168,6 @@ Define intuitive layouts within your Vue islands:
 </template>
 ```
 
-## Interactive Route Components
-
-Build dynamic, interactive route components like `ProjectsWeb.vue`:
-
-```vue wrap
-<template>
-  <section>
-    <h2>Web Projects</h2>
-    <div v-for="project in webProjects" :key="project.id">
-      <h3>{{ project.name }}</h3>
-      <button @click="toggleLike(project)">
-        {{ project.liked ? '❤️' : '🤍' }} {{ project.likes }}
-      </button>
-    </div>
-  </section>
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
-const webProjects = ref([...])
-
-const toggleLike = (project: any) => {
-  project.liked = !project.liked
-  project.likes += project.liked ? 1 : -1
-}
-</script>
-```
-
 ## Key Technical Considerations
 
 ### SSR Compatibility
@@ -195,6 +180,8 @@ if (!import.meta.env.SSR) {
 }
 ```
 
+This prevents Vue Router from trying to access browser-specific APIs during server-side rendering, which would lead to errors.
+
 ### Hydration Considerations
 
 Use Astro’s `data-allow-mismatch` to prevent hydration mismatches:
@@ -205,16 +192,20 @@ Use Astro’s `data-allow-mismatch` to prevent hydration mismatches:
 </nav>
 ```
 
+Since Vue Router and its components are not available during the initial server render, this attribute allows Vue to ignore any mismatches between the server-rendered HTML and the client-side Vue components.
+
 ### Performance Optimization
 
 Use dynamic imports for lazy-loaded routes:
 
-```typescript
+```typescript wrap
 { path: 'web', component: () => import('../views/ProjectsWeb.vue') }
 ```
+
+This ensures that only the necessary components are loaded when the user navigates to a specific route, improving initial load times and overall performance.
 
 ## Conclusion
 
 Integrating Vue Router with Astro SSR provides a powerful hybrid approach: static speed combined with interactive, SPA-like experiences. This architecture is ideal for selectively dynamic sections of your site or application.
 
-Explore the full implementation in our [demo repository](https://github.com/florivdg/astro-vue-router).
+Explore the full implementation in my [demo repository on GitHub](https://github.com/florivdg/astro-vue-router).
