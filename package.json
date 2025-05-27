@@ -12,25 +12,25 @@
     "grid:prepare": "bun run ./scripts/grid-vision.ts"
   },
   "dependencies": {
-    "@astrojs/mdx": "4.2.6",
+    "@astrojs/mdx": "4.3.0",
     "@astrojs/sitemap": "3.4.0",
     "@astrojs/vercel": "8.1.4",
-    "@astrojs/vue": "5.0.13",
+    "@astrojs/vue": "5.1.0",
     "@vercel/speed-insights": "^1.2.0",
-    "@vueuse/core": "^13.2.0",
-    "astro": "5.7.13",
+    "@vueuse/core": "^13.3.0",
+    "astro": "5.8.0",
     "astro-expressive-code": "^0.41.2",
-    "sharp": "^0.34.1",
+    "sharp": "^0.34.2",
     "tailwindcss": "^4.1.7",
-    "vue": "^3.5.14"
+    "vue": "^3.5.15"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.7",
-    "@types/bun": "^1.2.13",
+    "@types/bun": "^1.2.14",
     "consola": "^3.4.2",
     "destr": "^2.0.5",
-    "openai": "^4.100.0",
+    "openai": "^4.103.0",
     "prettier": "^3.5.3",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.11"
