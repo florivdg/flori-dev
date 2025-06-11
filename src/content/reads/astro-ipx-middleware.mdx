@@ -26,6 +26,8 @@ While Astro is awesome when it comes to build responsive images for static sites
 
 At my day job, we are currently working on a digital cafeteria menu system powered by Astro that requires real-time image processing capabilities. The challenge lies in dynamically resizing, converting formats, and optimizing images without pre-processing them at build time.
 
+Since our service won't receive much traffic, and our goal is to keep things simple yet performant, we decided to look for a solution that would allow us to handle image transformation within Astro instead of relying on separate services.
+
 ## ipx: On-Demand Image Processing
 
 [ipx](https://unjs.io/packages/ipx) from the [UnJS ecosystem](https://unjs.io) is a powerful, high-performance image proxy service based on Sharp and libvips. It can be used as a standalone server or - like in this case - as middleware in your Astro project. ipx supports various image transformations such as resizing, cropping, format conversion, and more, all on-the-fly.
@@ -119,11 +121,13 @@ export default defineConfig({
 })
 ```
 
-## Utilizing Astro’s `<Image>` Component
+## Utilizing Astro's `<Image>` Component
 
-Astro automatically handles the rest:
+With the ipx image service configured, Astro's `<Image>` component automatically handles image optimization. Here's how to use it for both basic and responsive images:
 
-```astro title="hero.astro"
+### Basic Image Optimization
+
+```astro title="basic-image.astro"
 ---
 import { Image } from 'astro:assets'
 import heroImage from '../assets/hero.jpg'
@@ -145,25 +149,37 @@ This generates an ipx URL like:
 /_ipx/w_800/h_600/q_90/f_webp/assets/hero.jpg
 ```
 
-## Responsive Images
+### Responsive Images for Better Performance
 
-Create responsive image sets dynamically for enhanced user experience:
+The real power comes with responsive images that adapt to different screen sizes:
 
-```astro title="responsive.astro"
+```astro title="responsive-hero.astro"
 ---
 import { Image } from 'astro:assets'
-import responsiveImage from '../assets/responsive.jpg'
+import heroImage from '../assets/hero.jpg'
 ---
 
 <Image
-  src={responsiveImage}
-  widths={[400, 800, 1200]}
-  sizes="(max-width: 768px) 100vw, 50vw"
+  src={heroImage}
+  widths={[400, 800, 1200, 1600]}
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
   format="webp"
-  alt="Responsive Image"
+  quality={85}
+  alt="Responsive Hero Image"
 />
 ```
+
+This creates multiple optimized variants, allowing browsers to choose the most appropriate size based on the device and viewport, significantly improving performance and user experience.
 
 ## Conclusion
 
 By combining ipx middleware with Astro's Image Service API, you get a pretty sweet setup for handling images dynamically. It's flexible, performs well, and makes the developer experience much smoother. Plus, sticking to web standards means everything just works together nicely - sometimes the simplest approach really is the best one.
+
+### Additional Resources
+
+Here are some useful links to help you dive deeper into the topics covered:
+
+- **[ipx Documentation](https://unjs.io/packages/ipx)** - Complete guide to ipx features and configuration
+- **[Astro Image Service API](https://docs.astro.build/en/reference/image-service-reference/)** - Official documentation for creating custom image services
+- **[Astro Middleware Guide](https://docs.astro.build/en/guides/middleware/)** - Learn more about Astro middleware patterns
+- **[UnJS Ecosystem](https://unjs.io)** - Explore other Universal JavaScript utilities
