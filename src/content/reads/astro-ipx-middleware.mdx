@@ -100,6 +100,12 @@ export class ipxImageService implements ImageService {
 }
 ```
 
+<Note>
+  **☝️ Good To Know:** Have a look at [Astro's built-in default image
+  service](https://github.com/withastro/astro/blob/main/packages/astro/src/assets/services/service.ts)
+  for implementation details.
+</Note>
+
 Configure Astro to use this service in `astro.config.mjs`:
 
 ```js {6}
@@ -157,10 +163,6 @@ import responsiveImage from '../assets/responsive.jpg'
   alt="Responsive Image"
 />
 ```
-
-## Web Standards and Performance Benefits
-
-Using standard HTTP request/response patterns ensures compatibility and leverages browser caching efficiently. The middleware adheres to RESTful URL patterns, significantly simplifying integration with CDNs.
 
 ## Conclusion
 
