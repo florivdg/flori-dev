@@ -1,0 +1,167 @@
+---
+title: "Integrating the UnJS ipx Image Proxy as an Astro Middleware"
+pubDate: 2025-06-12
+description: ''
+image: {
+src: '../../assets/reads/astro-ipx-middleware.jpg',
+alt: 'Neon-styled illustration depicting the concept of image optimization: a single image icon on the left, flowing through Astro and UnJS logos in the middle, branching out into multiple optimized image icons on the right, representing the integration of the ipx image proxy as Astro middleware.',
+}
+tags: ['Astro', 'ipx', 'Middleware', 'UnJS', 'Images']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/astro-ipx-middleware.jpg'
+
+While Astro is awesome when it comes to build responsive images for static sites at built time, it lacks the flexibility needed for dynamic image processing in a SSR (server-side rendering) context. This is where [ipx](https://unjs.io/packages/ipx) comes in handy, providing a powerful image proxy that can be integrated as a middleware into your Astro project.
+
+<Image
+  src={coverImage}
+  alt="Neon-styled illustration depicting the concept of image optimization: a single image icon on the left, flowing through Astro and UnJS logos in the middle, branching out into multiple optimized image icons on the right, representing the integration of the ipx image proxy as Astro middleware."
+  caption="Dynamic image optimization with ipx middleware and Astro's Image Service API."
+  lazy={false}
+/>
+
+## The Problem: Image Optimization at Runtime
+
+At my day job, we are currently working on a digital cafeteria menu system powered by Astro that requires real-time image processing capabilities. The challenge lies in dynamically resizing, converting formats, and optimizing images without pre-processing them at build time.
+
+## ipx: On-Demand Image Processing
+
+[ipx](https://unjs.io/packages/ipx) from the [UnJS ecosystem](https://unjs.io) is a powerful, high-performance image proxy service based on Sharp and libvips. It can be used as a standalone server or - like in this case - as middleware in your Astro project. ipx supports various image transformations such as resizing, cropping, format conversion, and more, all on-the-fly.
+
+## Integrating ipx with Astro Middleware
+
+Here's how you can quickly set up ipx as middleware within your Astro project:
+
+### Middleware Configuration
+
+First, configure your ipx server with filesystem storage:
+
+```ts wrap {8-11,14-15}
+# middleware.ts
+import { defineMiddleware } from 'astro:middleware'
+import { createipx, ipxFSStorage, createipxWebServer } from 'ipx'
+
+const dir =
+  process.env.ipx_IMAGES_DIR || new URL('../public/images', import.meta.url).pathname
+
+// Create an ipx instance with filesystem storage
+const ipx = createipx({
+  storage: ipxFSStorage({ dir }),
+  maxAge: 604800, // 7 days
+})
+
+// Create a web server for handling requests
+const server = createipxWebServer(ipx)
+```
+
+### Handling Requests Using Web Standards
+
+Your middleware should handle requests following standard web patterns:
+
+```ts wrap {7}
+# middleware.ts
+export const onRequest = defineMiddleware(async ({ request }, next) => {
+  const url = new URL(request.url)
+
+  if (url.pathname.startsWith('/_ipx')) {
+    const newUrl = new URL(url.pathname.replace('/_ipx', ''), request.url)
+    return server(new Request(newUrl))
+  }
+
+  return next()
+})
+```
+
+## Astro's Image Service Integration
+
+By leveraging Astro's built-in Image Service API, you can seamlessly integrate ipx, automatically translating standard image attributes into ipx parameters.
+
+### Creating a Custom Image Service
+
+```ts
+# ipx-image-service.ts
+import type { ImageService, ImageTransform } from 'astro'
+
+export class ipxImageService implements ImageService {
+  getURL({ src, width, height, quality, format }: ImageTransform) {
+    const params = [
+      width && `w_${width}`,
+      height && `h_${height}`,
+      quality && `q_${quality}`,
+      format && `f_${format}`,
+    ].filter(Boolean)
+
+    return `/_ipx/${params.join('/')}${src}`
+  }
+
+  // parseURL and getHTMLAttributes implementations here
+}
+```
+
+Configure Astro to use this service in `astro.config.mjs`:
+
+```js {6}
+# astro.config.mjs
+import { defineConfig } from 'astro/config'
+
+export default defineConfig({
+  image: {
+    service: { entrypoint: './src/utils/ipx-image-service.ts' },
+  },
+})
+```
+
+## Utilizing Astro’s `<Image>` Component
+
+Astro automatically handles the rest:
+
+```astro title="hero.astro"
+---
+import { Image } from 'astro:assets'
+import heroImage from '../assets/hero.jpg'
+---
+
+<Image
+  src={heroImage}
+  width={800}
+  height={600}
+  quality={90}
+  format="webp"
+  alt="Optimized Hero Image"
+/>
+```
+
+This generates an ipx URL like:
+
+```html
+/_ipx/w_800/h_600/q_90/f_webp/assets/hero.jpg
+```
+
+## Responsive Images
+
+Create responsive image sets dynamically for enhanced user experience:
+
+```astro title="responsive.astro"
+---
+import { Image } from 'astro:assets'
+import responsiveImage from '../assets/responsive.jpg'
+---
+
+<Image
+  src={responsiveImage}
+  widths={[400, 800, 1200]}
+  sizes="(max-width: 768px) 100vw, 50vw"
+  format="webp"
+  alt="Responsive Image"
+/>
+```
+
+## Web Standards and Performance Benefits
+
+Using standard HTTP request/response patterns ensures compatibility and leverages browser caching efficiently. The middleware adheres to RESTful URL patterns, significantly simplifying integration with CDNs.
+
+## Conclusion
+
+By combining ipx middleware with Astro's Image Service API, you get a pretty sweet setup for handling images dynamically. It's flexible, performs well, and makes the developer experience much smoother. Plus, sticking to web standards means everything just works together nicely - sometimes the simplest approach really is the best one.
