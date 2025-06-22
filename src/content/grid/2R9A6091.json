@@ -1,0 +1,23 @@
+{
+  "id": "2R9A6091",
+  "title": "At the Conference",
+  "image": "./2R9A6091.jpg",
+  "alt": "A bustling scene inside a modern venue filled with attendees engaging in discussions and networking. Groups of people gather around tables, some enjoying refreshments while others stand in conversation. Large windows allow natural light to illuminate the space, showcasing natural wood flooring and contemporary design elements. A sign displaying the day's schedule is prominently featured, and various digital displays can be seen in the background. Lush green plants add a touch of nature to the vibrant atmosphere.",
+  "location": "Theater Amsterdam, Netherlands",
+  "date": "2025-03-12",
+  "tags": [
+    "Vue.js Amsterdam",
+    "event",
+    "networking",
+    "conference",
+    "Amsterdam"
+  ],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "2.8",
+    "iso": "320",
+    "focal_length": "35.0",
+    "shutter_speed": "1/160"
+  }
+}

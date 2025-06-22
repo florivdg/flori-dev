@@ -1,0 +1,23 @@
+{
+  "id": "2R9A6282",
+  "title": "Live Coding Session",
+  "image": "./2R9A6282.jpg",
+  "alt": "A lively scene from Vue.js Amsterdam featuring four speakers on stage (Jakub Andrzejewski, Daniel Roe, Alexander Lichter and Alvaro Saburido Rodriguez). The first three speakers are seated on white chairs, dressed in casual attire, with one individual smiling while looking at the audience. The fourth speaker stands behind a podium with a colorful design, energetically engaging the audience. Each speaker has a laptop in front of them, indicating a presentation or demonstration. A large screen in the background displays usernames and a status message, contributing to the interactive environment.",
+  "location": "Theater Amsterdam, Netherlands",
+  "date": "2025-03-12",
+  "tags": [
+    "TresJS",
+    "Vue.js Amsterdam",
+    "presentation",
+    "speakers",
+    "live coding"
+  ],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "3200",
+    "focal_length": "95.0",
+    "shutter_speed": "1/320"
+  }
+}
