@@ -1,0 +1,17 @@
+{
+  "id": "2R9A4821",
+  "title": "Lonely Journey on a Misty Morning",
+  "image": "./2R9A4821.jpg",
+  "alt": "A lone cyclist rides along a narrow path through an expansive green field. The surroundings are enveloped in a thick mist, creating a serene and slightly mysterious atmosphere. In the background, the contours of trees and distant hills are barely visible through the fog, enhancing the sense of solitude and tranquility.",
+  "location": "Alletshof, Wernberg-Köblitz, Germany",
+  "date": "2025-09-06",
+  "tags": ["cyclist", "mist", "field", "solitude", "nature"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF70-200mm F2.8 L IS USM",
+    "aperture": "2.8",
+    "iso": "100",
+    "focal_length": "200.0",
+    "shutter_speed": "1/400"
+  }
+}
