@@ -1,5 +1,4 @@
 ---
-import SpeedInsights from '@vercel/speed-insights/astro'
 import SEO from '../components/SEO.astro'
 import type { SEOData } from '../types/SEO'
 import '../styles/index.css'
@@ -75,7 +74,5 @@ const { seo } = Astro.props
     <div class="relative">
       <slot />
     </div>
-
-    <SpeedInsights />
   </body>
 </html>

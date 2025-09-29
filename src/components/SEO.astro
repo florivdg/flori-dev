@@ -29,7 +29,7 @@ if (og.image) {
   ogImage = src ?? ogImage
 }
 
-/// Prepend Vercel URL to og:image
+/// Prepend deploy URL to og:image for absolute URLs
 if (import.meta.env.PUBLIC_URL) {
   ogImage = `https://${import.meta.env.PUBLIC_URL}${ogImage}`
 }

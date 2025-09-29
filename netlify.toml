@@ -1,0 +1,8 @@
+[build]
+command = "bun run build"
+publish = "dist"
+
+[[redirects]]
+from = "/sitemap.xml"
+to = "/sitemap-index.xml"
+status = 301
