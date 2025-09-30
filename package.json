@@ -29,7 +29,7 @@
     "@types/bun": "^1.2.22",
     "consola": "^3.4.2",
     "destr": "^2.0.5",
-    "openai": "^5.22.0",
+    "openai": "^6.0.0",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.6.14"
