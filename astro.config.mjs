@@ -14,13 +14,17 @@ import sitemap from '@astrojs/sitemap'
 // https://astro.build/config
 import expressiveCode from 'astro-expressive-code'
 
+import netlify from '@astrojs/netlify'
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://flori.dev',
   prefetch: true,
+
   experimental: {
     clientPrerender: true,
   },
+
   integrations: [
     vue(),
     expressiveCode({
@@ -34,16 +38,21 @@ export default defineConfig({
     mdx(),
     sitemap(),
   ],
+
   output: 'static',
+
   vite: {
     define: {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     },
     plugins: [tailwindcss()],
   },
+
   markdown: {
     remarkPlugins: [
       [remarkExternalLinks, { target: '_blank', rel: 'noopener noreferrer' }],
     ],
   },
+
+  adapter: netlify(),
 })
