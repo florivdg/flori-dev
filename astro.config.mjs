@@ -18,6 +18,9 @@ import expressiveCode from 'astro-expressive-code'
 export default defineConfig({
   site: 'https://flori.dev',
   prefetch: true,
+  experimental: {
+    clientPrerender: true,
+  },
   integrations: [
     vue(),
     expressiveCode({
