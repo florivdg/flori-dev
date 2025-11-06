@@ -1,0 +1,17 @@
+{
+  "id": "2R9A6859",
+  "title": "Frosty Sunrise",
+  "image": "./2R9A6859.jpg",
+  "alt": "A tranquil landscape at dawn, featuring a still river reflecting the soft hues of sunrise. Frost covers the foreground and surrounding fields, while trees adorned with autumn leaves line the banks. In the background, gentle hills rise under a sky filled with soft clouds, bathed in golden light as the sun begins to rise. The overall atmosphere evokes a sense of peace and the beauty of nature's early hours.",
+  "location": "Wilhelminenaue, Bayreuth, Germany",
+  "date": "2025-11-06",
+  "tags": ["landscape", "sunrise", "reflection", "nature", "tranquility"],
+  "exif": {
+    "camera": "Canon EOS R6m2",
+    "lens": "RF35mm F1.8 MACRO IS STM",
+    "aperture": "5.6",
+    "iso": "100",
+    "focal_length": "35.0",
+    "shutter_speed": "1/100"
+  }
+}
