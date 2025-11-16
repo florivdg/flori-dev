@@ -148,7 +148,7 @@ import { Database } from 'bun:sqlite'
 import { dirname } from 'node:path'
 import { existsSync, mkdirSync } from 'node:fs'
 
-const defaultDatabasePath = './.data/dimetime.sqlite'
+const defaultDatabasePath = './.data/app.sqlite'
 const databasePath = process.env.DB_FILE_NAME ?? defaultDatabasePath
 
 // Ensure the directory exists before opening the database
