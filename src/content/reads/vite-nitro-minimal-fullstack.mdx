@@ -15,14 +15,14 @@ import coverImage from '../../assets/reads/vite-nitro-minimal-fullstack.png'
 
 For a recent project, I wanted something pretty specific:
 
-- A **Vue 3 SPA** with Vite's fast dev experience.
+- A **[Vue 3](https://vuejs.org/) SPA** with [Vite](https://vite.dev/)'s fast dev experience.
 - A **real backend** (middleware, typed handlers).
 - Easy **Authentication** with support for passkeys.
 - A **SQLite database** with a pleasant type‑safe ORM.
-- Everything running on **Bun**.
+- Everything running on **[Bun](https://bun.sh/)**.
 - Fullstack in one project, yet minimal and easy to setup.
 
-This is where the new [**Nitro 3 Alpha**](https://v3.nitro.build/) (as a Vite plugin), **Better Auth**, and **Drizzle** come together.
+This is where the new [**Nitro 3 Alpha**](https://v3.nitro.build/) (as a Vite plugin), [**Better Auth**](https://www.better-auth.com), and [**Drizzle**](https://orm.drizzle.team) come together.
 
 In this post, I'll walk you through how this stack is wired: from Vite + Nitro 3 to Better Auth on top of Drizzle, all the way to sharing the session in `event.context` and consuming it from a Vue single page application.
 
@@ -35,7 +35,7 @@ In this post, I'll walk you through how this stack is wired: from Vite + Nitro 3
 
 ## So Nitro is now a Vite plugin?
 
-Nitro is usually associated with Nuxt, but with **Nitro 3** (which is currently in alpha as of writing this) you can use it as a **Vite plugin** in a standalone app.
+Nitro is usually associated with [Nuxt](https://nuxt.com/), but with **Nitro 3** (which is currently in alpha as of writing this) you can use it as a **Vite plugin** in a standalone app.
 
 That gives you:
 
@@ -117,7 +117,7 @@ A few things I like here:
 - The `DB_FILE_NAME` env var lets me override the path per environment.
 - Using `bun:sqlite` keeps everything in Bun land without extra dependencies.
 
-Drizzle Kit is configured separately via `drizzle.config.ts` to generate migrations based on the schema under `api/_lib/schema/`.
+[Drizzle Kit](https://orm.drizzle.team/kit) is configured separately via `drizzle.config.ts` to generate migrations based on the schema under `api/_lib/schema/`.
 
 ```ts
 // drizzle.config.ts
@@ -210,7 +210,7 @@ A few details:
 
 ## Exposing Better Auth via Nitro Routes
 
-Better Auth exposes a standard **Web handler**. Nitro expects **H3 handlers**. The bridge between those two lives in `api/auth/[...all].ts`:
+Better Auth exposes a standard **Web handler**. Nitro expects **[H3](https://h3.nuxtjs.org/) handlers**. The bridge between those two lives in `api/auth/[...all].ts`:
 
 ```ts
 // api/auth/[...all].ts
