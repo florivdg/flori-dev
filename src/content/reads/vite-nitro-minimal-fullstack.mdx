@@ -46,7 +46,7 @@ That gives you:
 
 The Vite config looks like this:
 
-```ts
+```ts {7,11}
 // vite.config.ts
 import { fileURLToPath, URL } from 'node:url'
 
@@ -84,7 +84,7 @@ Under the hood, I'm using **Drizzle ORM** with **SQLite** (using the native Bun 
 
 The runtime database client lives in `api/_lib/db.ts`:
 
-```ts
+```ts {8,16,21,23}
 // api/_lib/db.ts
 import { Database } from 'bun:sqlite'
 import { drizzle } from 'drizzle-orm/bun-sqlite'
@@ -119,7 +119,7 @@ A few things I like here:
 
 [Drizzle Kit](https://orm.drizzle.team/kit) is configured separately via `drizzle.config.ts` to generate migrations based on the schema under `api/_lib/schema/`.
 
-```ts
+```ts {4,8,11}
 // drizzle.config.ts
 import { defineConfig } from 'drizzle-kit'
 
@@ -139,7 +139,7 @@ export default defineConfig({
 
 Because Drizzle Kit doesn’t natively speak `bun:sqlite`, the actual migrations are applied via a small Bun script instead of letting Drizzle connect directly:
 
-```ts
+```ts {10,18,20}
 // scripts/migrate.ts
 import { migrate } from 'drizzle-orm/bun-sqlite/migrator'
 
@@ -168,7 +168,7 @@ With the database in place, **Better Auth** sits on top using its Drizzle adapte
 
 The auth configuration lives in `api/_lib/auth.ts`:
 
-```ts
+```ts {9,15,18,21}
 // api/_lib/auth.ts
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
@@ -212,7 +212,7 @@ A few details:
 
 Better Auth exposes a standard **Web handler**. Nitro expects **[H3](https://h3.nuxtjs.org/) handlers**. The bridge between those two lives in `api/auth/[...all].ts`:
 
-```ts
+```ts {6,8}
 // api/auth/[...all].ts
 import { defineHandler, fromWebHandler } from 'nitro/h3'
 
@@ -237,7 +237,7 @@ One of my favorite parts of Nitro is **middleware with `event.context`**. You ca
 
 A global middleware `middleware/auth.ts` can attach the Better Auth session and user:
 
-```ts
+```ts {7,11,12}
 // middleware/auth.ts
 import { defineHandler, getRequestHeaders } from 'nitro/h3'
 
@@ -267,7 +267,7 @@ With the middleware in place, a simple authenticated endpoint becomes almost tri
 
 Here's `api/v1/test.ts`:
 
-```ts
+```ts {5,9}
 // api/v1/test.ts
 import { defineHandler } from 'nitro/h3'
 
@@ -287,7 +287,7 @@ This pattern scales nicely: complex business logic lives in handlers, while auth
 
 On the client side, Better Auth provides a Vue integration. The client setup is small and lives in `src/lib/auth-client.ts`:
 
-```ts
+```ts {4,6}
 // src/lib/auth-client.ts
 import { createAuthClient } from 'better-auth/vue'
 
@@ -320,7 +320,7 @@ So far we've focused on the dev experience, but this setup also builds into a de
 
 The relevant bits in `package.json`:
 
-```json title="package.json"
+```json title="package.json" {4}
 {
   "scripts": {
     "dev": "vite",
