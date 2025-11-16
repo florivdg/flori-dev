@@ -1,25 +1,360 @@
 ---
 title: "Minimal Fullstack Setup with Vite and Nitro"
-pubDate: 2025-11-14
-description: ''
+pubDate: 2025-11-16
+description: 'How I wired up Nitro 3 as a Vite plugin with Better Auth and Drizzle ORM to build a full‑stack Vue 3 app running on Bun, without giving up the simplicity of a classic Vite SPA.'
 image: {
 src: '../../assets/reads/vite-nitro-minimal-fullstack.png',
 alt: 'A web server connected to a glowing orange nitro tank. The server has blue and orange indicator lights, while the nitro tank emits a small flame at the bottom. Neon accents and subtle abstract shapes float in the deep, dark background, giving the scene a futuristic, high-energy look.',
 }
-tags: ['Vite', 'Nitro', 'Fullstack', 'TypeScript']
+tags: ['Nitro', 'Vite', 'Vue 3', 'Better Auth', 'Drizzle', 'Bun']
 ---
 
 import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/vite-nitro-minimal-fullstack.png'
 
-g
+For a recent project, I wanted something pretty specific:
+
+- A **Vue 3 SPA** with Vite's fast dev experience.
+- A **real backend** (middleware, typed handlers).
+- Easy **Authentication** with support for passkeys.
+- A **SQLite database** with a pleasant type‑safe ORM.
+- Everything running on **Bun**.
+- Fullstack in one project, yet minimal and easy to setup.
+
+This is where the new [**Nitro 3 Alpha**](https://v3.nitro.build/) (as a Vite plugin), **Better Auth**, and **Drizzle** come together.
+
+In this post, I'll walk you through how this stack is wired: from Vite + Nitro 3 to Better Auth on top of Drizzle, all the way to sharing the session in `event.context` and consuming it from a Vue single page application.
 
 <Image
   src={coverImage}
   alt="A web server connected to a glowing orange nitro tank. The server has blue and orange indicator lights, while the nitro tank emits a small flame at the bottom. Neon accents and subtle abstract shapes float in the deep, dark background, giving the scene a futuristic, high-energy look."
-  caption=""
+  caption="One Vite dev server, full-stack capabilities."
   lazy={false}
 />
 
-gg
+## So Nitro is now a Vite plugin?
+
+Nitro is usually associated with Nuxt, but with **Nitro 3** (which is currently in alpha as of writing this) you can use it as a **Vite plugin** in a standalone app.
+
+That gives you:
+
+- File‑based **API routes** under `api/`
+- **Middleware** under `middleware/`
+- A unified **Nitro runtime** targeting Bun (or others)
+- And all of that **inside your existing Vite setup**
+
+The Vite config looks like this:
+
+```ts
+// vite.config.ts
+import { fileURLToPath, URL } from 'node:url'
+
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
+import { nitro } from 'nitro/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [vue(), vueDevTools(), nitro()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+})
+```
+
+Nitro plugs into the same Vite dev server the Vue app is using. During development:
+
+- `/` is served by Vite (the SPA)
+- Everything under `/api/**` is served by Nitro
+- There is no separate "backend dev server" to manage
+
+<Note>
+  **☝️ Good To Know:** You don't need a `nitro.config.ts` for this setup. The
+  Vite plugin discovers `api/` and `middleware/` and wires everything up for you
+  as part of the same build.
+</Note>
+
+## Drizzle + Bun: SQLite in One File
+
+Under the hood, I'm using **Drizzle ORM** with **SQLite** (using the native Bun driver). The goal is simple: a single `.sqlite` file in the repo folder, managed by Drizzle.
+
+The runtime database client lives in `api/_lib/db.ts`:
+
+```ts
+// api/_lib/db.ts
+import { Database } from 'bun:sqlite'
+import { drizzle } from 'drizzle-orm/bun-sqlite'
+import { existsSync, mkdirSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+
+const defaultDatabasePath = './.data/app.sqlite'
+const databasePath = process.env.DB_FILE_NAME ?? defaultDatabasePath
+const resolvedPath = resolve(process.cwd(), databasePath)
+const databaseDirectory = dirname(resolvedPath)
+
+if (!existsSync(databaseDirectory)) {
+  mkdirSync(databaseDirectory, { recursive: true })
+}
+
+const sqlite = new Database(resolvedPath, {
+  create: true,
+  strict: true,
+})
+
+sqlite.run('PRAGMA foreign_keys = ON')
+
+export const db = drizzle(sqlite)
+export type DatabaseClient = typeof db
+```
+
+A few things I like here:
+
+- The `.sqlite` file sits in `.data/`, easy to inspect or back up.
+- The `DB_FILE_NAME` env var lets me override the path per environment.
+- Using `bun:sqlite` keeps everything in Bun land without extra dependencies.
+
+Drizzle Kit is configured separately via `drizzle.config.ts` to generate migrations based on the schema under `api/_lib/schema/`.
+
+```ts
+// drizzle.config.ts
+import { defineConfig } from 'drizzle-kit'
+
+const databaseUrl = process.env.DB_FILE_NAME ?? './.data/app.sqlite'
+
+export default defineConfig({
+  dialect: 'sqlite',
+  schema: './api/_lib/schema/',
+  out: './drizzle',
+  dbCredentials: {
+    url: databaseUrl,
+  },
+})
+```
+
+### Drizzle Migrations with native Bun's SQLite Driver
+
+Because Drizzle Kit doesn’t natively speak `bun:sqlite`, the actual migrations are applied via a small Bun script instead of letting Drizzle connect directly:
+
+```ts
+// scripts/migrate.ts
+import { migrate } from 'drizzle-orm/bun-sqlite/migrator'
+
+import { drizzle } from 'drizzle-orm/bun-sqlite'
+import { Database } from 'bun:sqlite'
+import { dirname } from 'node:path'
+import { existsSync, mkdirSync } from 'node:fs'
+
+const defaultDatabasePath = './.data/dimetime.sqlite'
+const databasePath = process.env.DB_FILE_NAME ?? defaultDatabasePath
+
+// Ensure the directory exists before opening the database
+const dbDir = dirname(databasePath)
+if (!existsSync(dbDir)) {
+  mkdirSync(dbDir, { recursive: true })
+}
+
+const sqlite = new Database(databasePath)
+const db = drizzle(sqlite)
+migrate(db, { migrationsFolder: './drizzle' })
+```
+
+## Better Auth on Top of Drizzle
+
+With the database in place, **Better Auth** sits on top using its Drizzle adapter.
+
+The auth configuration lives in `api/_lib/auth.ts`:
+
+```ts
+// api/_lib/auth.ts
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+
+import { db } from './db'
+import * as schema from './schema/auth'
+
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: 'sqlite',
+    schema,
+  }),
+  emailAndPassword: {
+    enabled: true,
+    disableSignUp: true,
+    password: {
+      async hash(password) {
+        return await Bun.password.hash(password)
+      },
+      async verify(data) {
+        return await Bun.password.verify(data.password, data.hash)
+      },
+    },
+  },
+})
+```
+
+A few details:
+
+- `schema` is a set of Drizzle tables (`user`, `session`, `account`, `verification`) in `api/_lib/schema/auth.ts`.
+- The **Drizzle adapter** knows how to map Better Auth's models to those tables.
+- Password hashing and verification are implemented using **`Bun.password`**, which keeps the whole flow inside the Bun runtime and again not reaching out to other dependencies.
+
+<Note>
+  **🔥 Hot Tip:** By passing `disableSignUp: true`, I'm forcing sign‑ups to be
+  controlled (e.g. seeding users manually or via a protected admin flow) while
+  still enjoying Better Auth's login flow.
+</Note>
+
+## Exposing Better Auth via Nitro Routes
+
+Better Auth exposes a standard **Web handler**. Nitro expects **H3 handlers**. The bridge between those two lives in `api/auth/[...all].ts`:
+
+```ts
+// api/auth/[...all].ts
+import { defineHandler, fromWebHandler } from 'nitro/h3'
+
+import { auth } from '../_lib/auth'
+
+const handler = fromWebHandler((request) => auth.handler(request))
+
+export default defineHandler(handler)
+```
+
+What this gives you:
+
+- `/auth/*` is entirely handled by Better Auth.
+- Nitro translates the incoming request (cookies, headers, body) into what Better Auth expects.
+- Responses (including setting cookies) are passed back through Nitro/H3.
+
+From the client's perspective, it's just hitting `/auth/*` routes on the same origin.
+
+## Sharing the Session via Nitro Middleware
+
+One of my favorite parts of Nitro is **middleware with `event.context`**. You can enrich the request context before any route runs.
+
+A global middleware `middleware/auth.ts` can attach the Better Auth session and user:
+
+```ts
+// middleware/auth.ts
+import { defineHandler, getRequestHeaders } from 'nitro/h3'
+
+import { auth } from '../api/_lib/auth'
+
+export default defineHandler(async (event) => {
+  const session = await auth.api.getSession({
+    headers: getRequestHeaders(event),
+  })
+
+  event.context.authSession = session
+  event.context.user = session?.user ?? undefined
+})
+```
+
+What happens on each request:
+
+1. The middleware reads incoming headers (including cookies) via `getRequestHeaders`.
+2. It calls `auth.api.getSession` to resolve the current session.
+3. It stores both the raw session and the user object on `event.context`.
+
+Every subsequent API handler now has immediate access to `event.context.user` without manually decoding cookies or tokens.
+
+## Example Auth‑Aware API Route
+
+With the middleware in place, a simple authenticated endpoint becomes almost trivial.
+
+Here's `api/v1/test.ts`:
+
+```ts
+// api/v1/test.ts
+import { defineHandler } from 'nitro/h3'
+
+export default defineHandler((event) => {
+  const user = event.context.user
+
+  return {
+    hello: user?.name ?? user?.email ?? 'world',
+    authenticated: Boolean(user),
+  }
+})
+```
+
+This pattern scales nicely: complex business logic lives in handlers, while auth and session wiring stays centralized in middleware.
+
+## Vue Client: Better Auth on the Frontend
+
+On the client side, Better Auth provides a Vue integration. The client setup is small and lives in `src/lib/auth-client.ts`:
+
+```ts
+// src/lib/auth-client.ts
+import { createAuthClient } from 'better-auth/vue'
+
+export const authClient = createAuthClient({
+  fetchOptions: {
+    credentials: 'include',
+  },
+})
+
+export type AuthClient = typeof authClient
+```
+
+A couple of important details:
+
+- `credentials: 'include'` makes sure cookies are sent along with each request.
+- The client automatically talks to your `/auth/*` routes.
+- You can use `authClient` in components or composables to log in, log out, or fetch the current session.
+
+From there, Vue views and components can call:
+
+- `authClient.signIn.email({ email, password })`
+- `authClient.signOut()`
+- `authClient.session.useSession()` to reactively read the current user
+
+…all backed by the Nitro + Better Auth + Drizzle stack we just wired up.
+
+## Building for Bun with Nitro 3
+
+So far we've focused on the dev experience, but this setup also builds into a deployable Bun server.
+
+The relevant bits in `package.json`:
+
+```json title="package.json"
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "NITRO_PRESET=bun run-p type-check \"build-only {@}\" --",
+    "build-only": "vite build",
+    ...
+  }
+}
+```
+
+- `NITRO_PRESET=bun` tells Nitro to target Bun for the server output.
+- `vite build` runs through the Nitro Vite plugin, producing both the **client bundle** and the **Nitro server**.
+- You end up with a Bun‑ready server that can serve both the SPA and your API routes. 🎉
+
+From there, you can:
+
+- Run it directly with Bun.
+- Wrap it in a simple container image.
+- Or deploy it wherever Bun/Nitro is supported.
+
+## Putting It All Together
+
+To recap, the stack looks like this:
+
+- **Vite + Nitro 3**  
+  One dev server, SPA and API in a single codebase, with file‑based routes and middleware.
+
+- **Drizzle + SQLite + Bun**  
+  A lightweight, type‑safe database setup with a single `.sqlite` file and Bun's built‑in SQLite driver.
+
+- **Better Auth**  
+  Authentication plugged directly into Drizzle, exposed via Nitro routes, and shared through middleware on `event.context`.
+
+- **Vue 3 client**  
+  Uses Better Auth's Vue client to talk to `/auth/*` and consume authenticated APIs like `api/v1/test`.
+
+The result is a full‑stack setup that feels like "just a Vite app" when you're working in it, but hides a surprisingly capable backend behind the scenes.
