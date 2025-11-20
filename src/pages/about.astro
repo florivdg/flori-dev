@@ -9,6 +9,7 @@ import { Picture } from 'astro:assets'
 
 import imageFlori from '../assets/images/flori.jpg'
 import imageKids from '../assets/images/cute_toddler_girl_and_cute_baby_boy_as_software_engineers.jpg'
+import imageFloriAtWork from '../assets/images/flori_infoflow_live.jpg'
 
 /// Page title
 const title = 'About'
@@ -31,13 +32,13 @@ const seo: SEOData = {
       <h1 class="mb-6 text-4xl font-black">About me</h1>
 
       <p class="mb-4 text-xl font-semibold">
-        <span class="highlight">tl;dr</span> Florian van der Galiën, creates stuff
-        with code.
+        <span class="highlight">tl;dr</span> Florian van der Galiën: Letting coding
+        agents create things.
       </p>
 
-      <p class="mb-8 text-balance text-xl lg:mb-12">
-        In here I'll let you know who I am, what I do for a living and what
-        inspires me the most.
+      <p class="mb-8 text-xl text-balance lg:mb-12">
+        Here, I'll share who I am, what I do for a living, and what inspires me
+        most.
       </p>
     </BoxedContent>
 
@@ -45,22 +46,25 @@ const seo: SEOData = {
       <div class="flex flex-col items-center gap-12 md:flex-row">
         <div>
           <h2 class="mb-4 text-xl font-semibold">
-            My name is Florian van der Galiën.
+            Hi, I'm Florian van der Galiën.
           </h2>
           <p class="mb-8 text-xl">
-            I am a <MyAge /> web developer with a focus on <span
+            I'm a <MyAge /> web developer who loves working with <span
               class="highlight">Vue.js</span
-            >, Tailwind CSS, <span class="highlight">Deno</span>, TypeScript, <span
-              class="highlight">Supabase</span
-            >, and iOS development using Swift. I have a strong foundation in
-            modern web and app development. While I am well-versed in WordPress,
-            I am passionate about building custom solutions that deliver
-            exceptional user experiences.
+            >, <span class="highlight">Astro</span>, Tailwind CSS, <span
+              class="highlight">Bun</span
+            >, TypeScript, Supabase but also SQLite and <span class="highlight"
+              >Drizzle</span
+            >. Lately, I've been exploring AI-assisted <span class="highlight"
+              >agentic coding</span
+            > (<span class="slanted">embrace the vibe</span> 😉)—having AI agents
+            help me build things is pretty fun. I enjoy creating fast, modern web
+            apps that work well and look good.
           </p>
         </div>
 
         <div
-          class="relative aspect-[9/10] w-full flex-none rotate-2 overflow-hidden rounded-xl sm:w-72 sm:rounded-2xl"
+          class="relative aspect-9/10 w-full flex-none rotate-2 overflow-hidden rounded-xl sm:w-72 sm:rounded-2xl"
         >
           <Picture
             alt="Florian van der Galiën"
@@ -88,13 +92,45 @@ const seo: SEOData = {
         innovative IT, Internet, and media services. We value a balanced
         work-life environment, and I enjoy the open and familial atmosphere. My
         role allows me to stay at the forefront of technology, contributing to
-        our diverse range of services.<br /><br />As a <span class="highlight"
-          >Full Stack Developer</span
-        >, I constantly strive to bring innovation to my work at TMT. I leverage
-        my expertise in frontend as well as backend technologies to create
-        cutting-edge solutions that push the boundaries of what's <span
-          class="slanted"
-        >
+        our diverse range of services.
+      </p>
+
+      <figure class="mb-8">
+        <div class="group relative mt-8 mb-16">
+          <Picture
+            alt="Me, Florian van der Galiën, at an event representing our product iNFOFLOW."
+            src={imageFloriAtWork}
+            formats={['avif', 'webp']}
+            densities={[1, 2, 3]}
+            width={700}
+            height={420}
+            loading="lazy"
+            class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
+          />
+          <div
+            class="absolute right-8 bottom-0 left-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 sm:px-12 sm:py-4 dark:bg-slate-50/90 dark:text-slate-800"
+          >
+            <p class="text-sm leading-tight font-[450] text-pretty">
+              Me, Florian van der Galiën, at an event at our offices
+              representing the AI product iNFOFLOW.
+            </p>
+          </div>
+        </div>
+        <figcaption class="-mt-[2em]!">
+          Representing our product <a
+            href="https://www.tmt-infoflow.de"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link">iNFOFLOW</a
+          > at an in-house event at TMT offices.
+        </figcaption>
+      </figure>
+
+      <p class="mb-8 text-xl">
+        As a <span class="highlight">Full Stack Developer</span>, I constantly
+        strive to bring innovation to my work at TMT. I leverage my expertise in
+        frontend as well as backend technologies to create cutting-edge
+        solutions that push the boundaries of what's <span class="slanted">
           inside the box</span
         >. I'm always exploring new technologies and methodologies, and I'm not
         afraid to <span class="highlight">challenge the status quo</span>. My
@@ -117,7 +153,7 @@ const seo: SEOData = {
       </p>
 
       <figure class="mb-8">
-        <div class="group relative mb-16 mt-8">
+        <div class="group relative mt-8 mb-16">
           <Picture
             alt="Cute toddler girl and cute baby boy as software engineers in their kids playroom cartoon, flat vector illustration (MidJourney v6)"
             src={imageKids}
@@ -125,20 +161,20 @@ const seo: SEOData = {
             densities={[1, 2, 3]}
             width={700}
             height={350}
-            loading="eager"
+            loading="lazy"
             class="-rotate-1 -skew-x-3 rounded-lg shadow-lg"
           />
 
           <div
-            class="absolute bottom-0 left-8 right-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 sm:px-12 sm:py-4 dark:bg-slate-50/90 dark:text-slate-800"
+            class="absolute right-8 bottom-0 left-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 sm:px-12 sm:py-4 dark:bg-slate-50/90 dark:text-slate-800"
           >
-            <p class="text-sm font-[450] leading-tight">
+            <p class="text-sm leading-tight font-[450]">
               Cute toddler girl and cute baby boy as software engineers in their
               kids playroom cartoon, flat vector illustration (MidJourney v6)
             </p>
           </div>
         </div>
-        <figcaption class="!-mt-[2em]">
+        <figcaption class="-mt-[2em]!">
           This is how I imagine my kids will be hacking things together when
           they're older.
         </figcaption>
