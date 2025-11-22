@@ -1,7 +1,7 @@
 <template>
   <section class="browser-stats flex flex-col gap-8">
     <header
-      class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between dark:border-slate-800 dark:bg-slate-900/40"
+      class="flex flex-col gap-4 rounded-2xl bg-slate-50/90 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 sm:flex-row sm:items-end sm:justify-between dark:bg-slate-900/60 dark:shadow-slate-950/30"
     >
       <div>
         <p
@@ -43,7 +43,7 @@
 
     <div
       v-if="errorMessage"
-      class="rounded-2xl border border-rose-200 bg-rose-50/60 p-6 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200"
+      class="rounded-2xl bg-rose-50/80 p-6 text-rose-800 shadow-xl shadow-rose-200/40 dark:bg-rose-950/40 dark:text-rose-100 dark:shadow-rose-950/30"
     >
       <p class="font-semibold">Unable to load stats</p>
       <p class="mt-2 text-sm">
@@ -61,7 +61,7 @@
     <div v-else>
       <div
         v-if="!stats && isLoading"
-        class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+        class="rounded-2xl bg-slate-50/90 p-8 text-center text-slate-500 shadow-xl shadow-slate-700/10 dark:bg-slate-900/60 dark:text-slate-300 dark:shadow-slate-950/20"
       >
         Loading usage details…
       </div>
@@ -71,7 +71,7 @@
           <article
             v-for="card in summaryCards"
             :key="card.label"
-            class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+            class="rounded-2xl bg-slate-50 p-5 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
           >
             <p
               class="text-xs font-semibold tracking-widest text-slate-500 uppercase dark:text-slate-400"
@@ -92,7 +92,7 @@
 
         <section class="grid gap-8 xl:grid-cols-2">
           <article
-            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+            class="rounded-2xl bg-slate-50 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
           >
             <div class="flex items-center justify-between gap-4">
               <div>
@@ -125,7 +125,7 @@
 
               <p
                 v-else
-                class="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-10 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400"
+                class="rounded-xl bg-slate-100/80 px-4 py-10 text-center text-sm text-slate-500 shadow-inner shadow-slate-200 dark:bg-slate-900/40 dark:text-slate-300 dark:shadow-slate-950/30"
               >
                 No browser breakdown available for this time span.
               </p>
@@ -133,7 +133,7 @@
           </article>
 
           <article
-            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+            class="rounded-2xl bg-slate-50 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
           >
             <div class="flex items-center justify-between gap-4">
               <div>
@@ -165,7 +165,7 @@
               />
               <p
                 v-else
-                class="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-10 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400"
+                class="rounded-xl bg-slate-100/80 px-4 py-10 text-center text-sm text-slate-500 shadow-inner shadow-slate-200 dark:bg-slate-900/40 dark:text-slate-300 dark:shadow-slate-950/30"
               >
                 No machine level details for this range.
               </p>
@@ -174,7 +174,7 @@
         </section>
 
         <section
-          class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+          class="rounded-2xl bg-slate-50 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
         >
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
@@ -220,7 +220,7 @@
 
             <p
               v-else
-              class="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-10 text-center text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400"
+              class="rounded-xl bg-slate-100/80 px-4 py-10 text-center text-sm text-slate-500 shadow-inner shadow-slate-200 dark:bg-slate-900/40 dark:text-slate-300 dark:shadow-slate-950/30"
             >
               No time series data was returned for this selection.
             </p>
@@ -234,7 +234,7 @@
           <article
             v-for="machine in machineBreakdown"
             :key="machine.id"
-            class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+            class="rounded-2xl bg-slate-50 p-5 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
           >
             <div class="flex items-baseline justify-between gap-4">
               <div>
@@ -280,7 +280,7 @@
 
       <div
         v-else
-        class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+        class="rounded-2xl bg-slate-50/90 p-8 text-center text-slate-500 shadow-xl shadow-slate-700/10 dark:bg-slate-900/60 dark:text-slate-300 dark:shadow-slate-950/20"
       >
         No stats were returned for this time selection.
       </div>
