@@ -1,5 +1,5 @@
 <template>
-  <section class="flex flex-col gap-8">
+  <section class="browser-stats flex flex-col gap-8">
     <header
       class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between dark:border-slate-800 dark:bg-slate-900/40"
     >
@@ -18,7 +18,7 @@
       <label class="flex flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
         Time span
         <select
-          v-model.number="selectedRange"
+          v-model="selectedRange"
           class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-medium text-slate-900 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200 sm:min-w-[220px] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-sky-500/40"
         >
           <option v-for="option in timeframeOptions" :key="option.value" :value="option.value">
@@ -258,7 +258,7 @@ interface BrowserStatsResponse {
 
 interface TimeframeOption {
   label: string
-  value: number
+  value: number | 'all'
 }
 
 interface SummaryCard {
@@ -310,9 +310,10 @@ const timeframeOptions: TimeframeOption[] = [
   { label: 'Last 30 days', value: 30 },
   { label: 'Last 90 days', value: 90 },
   { label: 'Last year', value: 365 },
+  { label: 'All time', value: 'all' },
 ]
 
-const selectedRange = ref<number>(90)
+const selectedRange = ref<TimeframeOption['value']>(90)
 const stats = ref<BrowserStatsResponse | null>(null)
 const isLoading = ref(false)
 const errorMessage = ref<string | null>(null)
@@ -587,3 +588,42 @@ watch(selectedRange, () => {
   fetchStats()
 })
 </script>
+
+<style scoped>
+.browser-stats {
+  --legend-row-gap: 0.35rem;
+  --legend-column-gap: 1rem;
+}
+
+.browser-stats :global(.unovis-single-container),
+.browser-stats :global(.unovis-xy-container) {
+  width: 100%;
+  max-width: 100%;
+}
+
+.browser-stats :global(.unovis-single-container svg),
+.browser-stats :global(.unovis-xy-container svg) {
+  max-width: 100%;
+}
+
+.browser-stats :global([data-vis-bullet-legend]) {
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--legend-column-gap);
+  row-gap: var(--legend-row-gap);
+}
+
+.browser-stats :global([data-vis-bullet-legend] > *) {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1 1 140px;
+  min-width: 120px;
+}
+
+@media (min-width: 768px) {
+  .browser-stats :global([data-vis-bullet-legend]) {
+    justify-content: flex-start;
+  }
+}
+</style>
