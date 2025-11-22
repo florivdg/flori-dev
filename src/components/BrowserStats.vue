@@ -7,14 +7,18 @@
         <p
           class="text-xs font-semibold tracking-widest text-slate-500 uppercase dark:text-slate-400"
         >
-          Browser stats
+          Default browser tracker
         </p>
         <h2 class="mt-2 text-3xl font-black text-slate-900 dark:text-white">
-          Usage insights from my machines
+          Live defaults from my Macs
         </h2>
         <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          Pulled directly from van-der-hub and refreshed whenever you switch the
-          time span.
+          These counts come from the LaunchAgent + SSE backend I describe in my
+          <a href="/reads/default-browser-server-sent-events" class="link"
+            >Reads article</a
+          >
+          and reflect which browser is currently the default on my Macs for the
+          selected window.
         </p>
       </div>
 
@@ -95,16 +99,16 @@
                 <p
                   class="text-sm font-semibold text-slate-500 dark:text-slate-400"
                 >
-                  Browser distribution
+                  Default browser distribution
                 </p>
                 <p class="text-lg font-bold text-slate-900 dark:text-white">
-                  What I actually click on
+                  Who holds the default slot most often
                 </p>
               </div>
               <span
                 class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
               >
-                {{ totalEntries }} sessions
+                {{ totalEntries }} updates
               </span>
             </div>
 
@@ -136,10 +140,10 @@
                 <p
                   class="text-sm font-semibold text-slate-500 dark:text-slate-400"
                 >
-                  Machines
+                  Macs reporting
                 </p>
                 <p class="text-lg font-bold text-slate-900 dark:text-white">
-                  Where those sessions originated
+                  Which Mac broadcast those defaults
                 </p>
               </div>
             </div>
@@ -180,7 +184,7 @@
                 Time series
               </p>
               <p class="text-lg font-bold text-slate-900 dark:text-white">
-                Every hit across the selected window
+                Every default update across the selected window
               </p>
             </div>
             <span
@@ -240,7 +244,7 @@
                   {{ formatMachineLabel(machine.id) }}
                 </p>
                 <p class="text-xl font-bold text-slate-900 dark:text-white">
-                  {{ machine.sessions }} sessions
+                  {{ machine.sessions }} updates
                 </p>
               </div>
               <p
@@ -479,7 +483,7 @@ const summaryCards = computed<SummaryCard[]>(() => {
 
   return [
     {
-      label: 'Total sessions',
+      label: 'Total default updates',
       value: numberFormatter.format(totalEntries.value),
       helper: `${stats.value.days} days tracked`,
     },
@@ -490,10 +494,10 @@ const summaryCards = computed<SummaryCard[]>(() => {
     {
       label: 'Top browser',
       value: topBrowserShare,
-      helper: topBrowserId ? 'Most used client by raw hits' : undefined,
+      helper: topBrowserId ? 'Most frequent default selection' : undefined,
     },
     {
-      label: 'Machines online',
+      label: 'Macs reporting',
       value: numberFormatter.format(
         Object.keys(stats.value.machineDistribution ?? {}).length,
       ),
@@ -523,7 +527,9 @@ const machineChartData = computed<MachineChartDataset>(() => {
     return {
       data: [],
       height: 260,
-      categories: { sessions: { name: 'Sessions', color: '#6366f1' } },
+      categories: {
+        sessions: { name: 'Default updates', color: '#6366f1' },
+      },
     }
   }
 
@@ -539,7 +545,7 @@ const machineChartData = computed<MachineChartDataset>(() => {
     height: Math.max(220, entries.length * 48),
     categories: {
       sessions: {
-        name: 'Sessions',
+        name: 'Default updates',
         color: '#6366f1',
       },
     },
