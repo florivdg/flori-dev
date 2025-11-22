@@ -68,164 +68,123 @@
 
       <div v-else-if="stats" class="flex flex-col gap-8">
         <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <article
+          <StatsCard
             v-for="card in summaryCards"
             :key="card.label"
-            class="rounded-2xl bg-slate-50 p-5 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
-          >
-            <p
-              class="text-xs font-semibold tracking-widest text-slate-500 uppercase dark:text-slate-400"
-            >
-              {{ card.label }}
-            </p>
-            <p class="mt-3 text-3xl font-black text-slate-900 dark:text-white">
-              {{ card.value }}
-            </p>
-            <p
-              v-if="card.helper"
-              class="mt-1 text-sm text-slate-600 dark:text-slate-400"
-            >
-              {{ card.helper }}
-            </p>
-          </article>
+            :label="card.label"
+            :value="card.value"
+            :helper="card.helper"
+          />
         </section>
 
         <section class="grid gap-8 xl:grid-cols-2">
-          <article
-            class="rounded-2xl bg-slate-50 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
+          <StatsPanel
+            title="Default browser distribution"
+            subtitle="Who holds the default slot most often"
+            :badge="`${totalEntries} updates`"
           >
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <p
-                  class="text-sm font-semibold text-slate-500 dark:text-slate-400"
-                >
-                  Default browser distribution
-                </p>
-                <p class="text-lg font-bold text-slate-900 dark:text-white">
-                  Who holds the default slot most often
-                </p>
-              </div>
-              <span
-                class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
-              >
-                {{ totalEntries }} updates
-              </span>
-            </div>
-
-            <div class="mt-4">
-              <DonutChart
-                v-if="browserDonut.data.length"
-                :data="browserDonut.data"
-                :height="320"
-                :arc-width="32"
-                :radius="0"
-                :categories="browserDonut.categories"
-                :legend-position="LegendPosition.BottomCenter"
-              />
-
-              <p
-                v-else
-                class="rounded-xl bg-slate-100/80 px-4 py-10 text-center text-sm text-slate-500 shadow-inner shadow-slate-200 dark:bg-slate-900/40 dark:text-slate-300 dark:shadow-slate-950/30"
-              >
-                No browser breakdown available for this time span.
-              </p>
-            </div>
-          </article>
-
-          <article
-            class="rounded-2xl bg-slate-50 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
-          >
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <p
-                  class="text-sm font-semibold text-slate-500 dark:text-slate-400"
-                >
-                  Macs reporting
-                </p>
-                <p class="text-lg font-bold text-slate-900 dark:text-white">
-                  Which Mac broadcast those defaults
-                </p>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <BarChart
-                v-if="machineChartData.data.length"
-                :data="machineChartData.data"
-                :height="machineChartData.height"
-                :categories="machineChartData.categories"
-                :y-axis="['sessions']"
-                :x-axis="'machine'"
-                :orientation="Orientation.Horizontal"
-                :x-grid-line="false"
-                :legend-position="LegendPosition.BottomLeft"
-                :x-formatter="formatMachineLabel"
-                :y-formatter="formatCountLabel"
-                hide-tooltip
-              />
-              <p
-                v-else
-                class="rounded-xl bg-slate-100/80 px-4 py-10 text-center text-sm text-slate-500 shadow-inner shadow-slate-200 dark:bg-slate-900/40 dark:text-slate-300 dark:shadow-slate-950/30"
-              >
-                No machine level details for this range.
-              </p>
-            </div>
-          </article>
-        </section>
-
-        <section
-          class="rounded-2xl bg-slate-50 p-6 shadow-xl shadow-slate-700/10 transition-shadow duration-200 dark:bg-slate-900/70 dark:shadow-slate-950/20"
-        >
-          <div class="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p
-                class="text-sm font-semibold text-slate-500 dark:text-slate-400"
-              >
-                Time series
-              </p>
-              <p class="text-lg font-bold text-slate-900 dark:text-white">
-                Every default update across the selected window
-              </p>
-            </div>
-            <span
-              v-if="timeSeriesWindow"
-              class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
-            >
-              {{ timeSeriesWindow }}
-            </span>
-          </div>
-
-          <div class="mt-4">
-            <BarChart
-              v-if="
-                timeSeriesChart.data.length &&
-                Object.keys(timeSeriesChart.categories).length
-              "
-              :data="timeSeriesChart.data"
-              :height="420"
-              :stacked="true"
-              :categories="timeSeriesChart.categories"
-              :y-axis="timeSeriesChart.yAxisKeys"
-              :x-axis="'date'"
-              :group-padding="4"
-              :bar-padding="0.15"
-              :radius="2"
+            <DonutChart
+              v-if="browserDonut.data.length"
+              :data="browserDonut.data"
+              :height="320"
+              :arc-width="32"
+              :radius="0"
+              :categories="browserDonut.categories"
               :legend-position="LegendPosition.BottomCenter"
-              :y-grid-line="true"
+            >
+              <template #tooltip="{ values }">
+                <div
+                  v-if="values && browserDonutSegments[values.index]"
+                  class="chart-tooltip"
+                >
+                  <div class="chart-tooltip__title">
+                    {{ browserDonutSegments[values.index].name }}
+                  </div>
+                  <div class="chart-tooltip__row">
+                    <span
+                      class="chart-tooltip__dot"
+                      :style="{
+                        backgroundColor:
+                          browserDonutSegments[values.index].color,
+                      }"
+                    ></span>
+                    <span class="chart-tooltip__value">
+                      {{
+                        numberFormatter.format(
+                          browserDonutSegments[values.index].count,
+                        )
+                      }}
+                      <span class="chart-tooltip__share">
+                        ({{ browserDonutSegments[values.index].share }})
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </template>
+            </DonutChart>
+            <EmptyState
+              v-else
+              message="No browser breakdown available for this time span."
+            />
+          </StatsPanel>
+
+          <StatsPanel
+            title="Macs reporting"
+            subtitle="Which Mac broadcast those defaults"
+          >
+            <BarChart
+              v-if="machineChartData.data.length"
+              :data="machineChartData.data"
+              :height="machineChartData.height"
+              :categories="machineChartData.categories"
+              :y-axis="['sessions']"
+              :x-axis="'machine'"
+              :orientation="Orientation.Horizontal"
               :x-grid-line="false"
-              :x-formatter="formatTimeSeriesTick"
+              :legend-position="LegendPosition.BottomLeft"
+              :x-formatter="formatMachineLabel"
               :y-formatter="formatCountLabel"
               hide-tooltip
             />
-
-            <p
+            <EmptyState
               v-else
-              class="rounded-xl bg-slate-100/80 px-4 py-10 text-center text-sm text-slate-500 shadow-inner shadow-slate-200 dark:bg-slate-900/40 dark:text-slate-300 dark:shadow-slate-950/30"
-            >
-              No time series data was returned for this selection.
-            </p>
-          </div>
+              message="No machine level details for this range."
+            />
+          </StatsPanel>
         </section>
+
+        <StatsPanel
+          title="Time series"
+          subtitle="Every default update across the selected window"
+          :badge="timeSeriesWindow"
+        >
+          <BarChart
+            v-if="
+              timeSeriesChart.data.length &&
+              Object.keys(timeSeriesChart.categories).length
+            "
+            :data="timeSeriesChart.data"
+            :height="420"
+            :stacked="true"
+            :categories="timeSeriesChart.categories"
+            :y-axis="timeSeriesChart.yAxisKeys"
+            :x-axis="'date'"
+            :group-padding="4"
+            :bar-padding="0.15"
+            :radius="2"
+            :legend-position="LegendPosition.BottomCenter"
+            :y-grid-line="true"
+            :x-grid-line="false"
+            :x-formatter="formatTimeSeriesTick"
+            :y-formatter="formatCountLabel"
+            hide-tooltip
+          />
+
+          <EmptyState
+            v-else
+            message="No time series data was returned for this selection."
+          />
+        </StatsPanel>
 
         <section
           v-if="machineBreakdown.length"
@@ -292,6 +251,9 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { BarChart, DonutChart, LegendPosition, Orientation } from 'vue-chrts'
 import { getBrowserLabel } from '../utils/browserMap'
+import EmptyState from './stats/EmptyState.vue'
+import StatsCard from './stats/StatsCard.vue'
+import StatsPanel from './stats/StatsPanel.vue'
 
 interface BrowserStatsResponse {
   totalEntries: number
@@ -316,6 +278,13 @@ interface SummaryCard {
 interface DonutDataset {
   data: number[]
   categories: Record<string, { name: string; color?: string }>
+}
+
+interface DonutSegmentDetails {
+  name: string
+  color: string
+  count: number
+  share: string
 }
 
 interface MachineChartDataset {
@@ -520,6 +489,25 @@ const browserDonut = computed<DonutDataset>(() => {
   )
 
   return { data, categories }
+})
+
+const browserDonutSegments = computed<DonutSegmentDetails[]>(() => {
+  const dataset = browserDonut.value
+  const categoryList = Object.values(dataset.categories)
+
+  return dataset.data.map((count, index) => {
+    const category = categoryList[index]
+    const share = totalEntries.value
+      ? formatPercent(count / totalEntries.value)
+      : formatPercent(0)
+
+    return {
+      name: category?.name ?? 'Unknown browser',
+      color: category?.color ?? '#94a3b8',
+      count,
+      share,
+    }
+  })
 })
 
 const machineChartData = computed<MachineChartDataset>(() => {
@@ -749,5 +737,42 @@ watch(selectedRange, () => {
   .browser-stats :global([data-vis-bullet-legend]) {
     justify-content: flex-start;
   }
+}
+
+.chart-tooltip {
+  padding: 10px 15px;
+  color: var(--tooltip-value-color);
+}
+
+.chart-tooltip__title {
+  color: var(--tooltip-label-color);
+  font-weight: 600;
+  text-transform: capitalize;
+  border-bottom: 1px solid var(--tooltip-border-color);
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.chart-tooltip__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-tooltip__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+}
+
+.chart-tooltip__value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  color: var(--tooltip-value-color);
+}
+
+.chart-tooltip__share {
+  color: var(--tooltip-label-color);
 }
 </style>

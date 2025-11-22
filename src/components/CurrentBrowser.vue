@@ -4,7 +4,7 @@
       class="relative flex -rotate-1 -skew-x-3 flex-col rounded-lg border border-slate-300 bg-gray-100 p-4 shadow-xl @4xl:flex-row @4xl:items-center @4xl:justify-center @4xl:gap-4 dark:border-slate-700 dark:bg-slate-900"
     >
       <p
-        class="self-center bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text !p-2.5 text-center text-6xl font-black text-transparent @xl:self-start @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
+        class="self-center bg-linear-to-tr from-pink-500 to-sky-500 bg-clip-text p-2.5! text-center text-6xl font-black text-transparent @xl:self-start @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
       >
         I'm on
       </p>
@@ -37,7 +37,7 @@
         </svg>
       </div>
       <p
-        class="self-center bg-gradient-to-tl from-pink-500 to-sky-500 bg-clip-text !p-2.5 text-center text-6xl font-black text-transparent @xl:self-end @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
+        class="self-center bg-linear-to-tl from-pink-500 to-sky-500 bg-clip-text p-2.5! text-center text-6xl font-black text-transparent @xl:self-end @4xl:self-auto @4xl:text-5xl @5xl:text-7xl"
       >
         right now.
       </p>
