@@ -15,7 +15,7 @@
         <img
           v-if="isBrowserValid(browser)"
           :src="`/icons/${browser}.svg`"
-          :alt="validBrowserBundleIds[browser as keyof typeof validBrowserBundleIds]"
+          :alt="getBrowserAlt(browser)"
           class="aspect-square w-full object-contain p-5 @4xl:p-10"
           loading="lazy"
           width="100"
@@ -43,7 +43,7 @@
       </p>
 
       <div
-        class="relative bottom-0 right-0 mt-4 flex justify-end @4xl:absolute @4xl:mt-0 @4xl:px-3.5 @4xl:py-2.5"
+        class="relative right-0 bottom-0 mt-4 flex justify-end @4xl:absolute @4xl:mt-0 @4xl:px-3.5 @4xl:py-2.5"
       >
         <span
           class="flex items-center gap-1 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 dark:focus-visible:ring-slate-600"
@@ -54,7 +54,7 @@
             :class="[status === 'OPEN' ? 'bg-lime-500' : 'bg-red-500']"
           ></span>
           <span
-            class="font-mono text-xs font-bold uppercase text-slate-600 dark:text-slate-400"
+            class="font-mono text-xs font-bold text-slate-600 uppercase dark:text-slate-400"
             >{{ status === 'OPEN' ? 'Connected' : 'Reconnect?' }}</span
           >
         </span>
@@ -66,6 +66,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useEventSource } from '@vueuse/core'
+import { browserBundleMap, getBrowserLabel } from '../utils/browserMap'
 
 const { status, data } = useEventSource(
   'https://van-der-hub.flori.dev/browser/live',
@@ -84,23 +85,12 @@ watch(data, (data) => {
 })
 
 /**
- * List of valid browser bundle ids for that exist icons.
- */
-const validBrowserBundleIds = {
-  'com.apple.Safari': 'Safari',
-  'com.apple.SafariTechnologyPreview': 'Safari Technology Preview',
-  'com.brave.Browser': 'Brave',
-  'com.google.Chrome.canary': 'Chrome Canary',
-  'com.google.Chrome': 'Chrome',
-  'com.microsoft.edgemac': 'Edge',
-  'org.mozilla.firefox': 'Firefox',
-  'company.thebrowser.Browser': 'Arc',
-}
-
-/**
  * Check if the received browser data is valid.
  */
 const isBrowserValid = (browser: string) => {
-  return Object.keys(validBrowserBundleIds).includes(browser)
+  return browser in browserBundleMap
 }
+
+const getBrowserAlt = (bundleId: string) =>
+  getBrowserLabel(bundleId) ?? bundleId
 </script>

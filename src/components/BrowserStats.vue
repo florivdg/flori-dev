@@ -287,6 +287,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { BarChart, DonutChart, LegendPosition, Orientation } from 'vue-chrts'
+import { getBrowserLabel } from '../utils/browserMap'
 
 interface BrowserStatsResponse {
   totalEntries: number
@@ -377,26 +378,18 @@ const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
 })
 
-const knownBrowserNames: Record<string, string> = {
-  'com.apple.Safari': 'Safari',
-  'com.apple.SafariTechnologyPreview': 'Safari Technology Preview',
-  'com.brave.Browser': 'Brave',
-  'com.google.Chrome': 'Chrome',
-  'com.google.Chrome.canary': 'Chrome Canary',
-  'org.mozilla.firefox': 'Firefox',
-  'company.thebrowser.dia': 'Arc',
-  'company.thebrowser.Browser': 'Arc',
-}
-
 const knownBrowserColors: Record<string, string> = {
   'com.apple.Safari': '#0ea5e9',
   'com.apple.SafariTechnologyPreview': '#38bdf8',
   'com.google.Chrome': '#facc15',
-  'com.google.Chrome.canary': '#fb7185',
   'org.mozilla.firefox': '#f97316',
   'company.thebrowser.dia': '#c026d3',
   'company.thebrowser.Browser': '#c026d3',
+  'com.microsoft.edgemac': '#2563eb',
+  'app.zen-browser.zen': '#8b5cf6',
+  'com.google.Chrome.canary': '#fb7185',
   'com.brave.Browser': '#ea580c',
+  'net.imput.helium': '#22d3ee',
 }
 
 const fallbackColors = [
@@ -429,7 +422,8 @@ const getBrowserColor = (id: string) => {
 }
 
 const formatBrowserName = (bundleId: string) => {
-  if (knownBrowserNames[bundleId]) return knownBrowserNames[bundleId]
+  const label = getBrowserLabel(bundleId)
+  if (label) return label
   const segments = bundleId.split('.')
   return segments[segments.length - 1] ?? bundleId
 }
