@@ -1,14 +1,14 @@
 ---
 import { Picture } from 'astro:assets'
-import Layout from '../layouts/Layout.astro'
-import BoxedContent from '../components/BoxedContent.astro'
-import FluidContent from '../components/FluidContent.astro'
-import UsesList from '../components/UsesList.astro'
-import CurrentBrowser from '../components/CurrentBrowser.vue'
-import type { SEOData } from '../types/SEO'
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
+import FluidContent from '../../components/FluidContent.astro'
+import UsesList from '../../components/UsesList.astro'
+import CurrentBrowser from '../../components/CurrentBrowser.vue'
+import type { SEOData } from '../../types/SEO'
 
-import imageCodingByDay from '../assets/images/coding_by_day.jpg'
-import imageCodingAtNight from '../assets/images/coding_at_night.jpg'
+import imageCodingByDay from '../../assets/images/coding_by_day.jpg'
+import imageCodingAtNight from '../../assets/images/coding_at_night.jpg'
 
 /// Page title
 const title = 'Uses'
@@ -194,7 +194,7 @@ const entries: UsesSection[] = [
           So without further ado, let's dive into my tech stack!
         </p>
 
-        <div class="group relative mb-16 mt-8">
+        <div class="group relative mt-8 mb-16">
           <Picture
             alt="A guy coding at night, sitting on a desk, wearing a hoodie, camera from behind, cartoon, super detailed, ambient lighting (MidJourney v6)"
             formats={['avif', 'webp']}
@@ -218,14 +218,14 @@ const entries: UsesSection[] = [
           />
 
           <div
-            class="absolute bottom-0 left-8 right-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 sm:px-12 sm:py-4 dark:bg-slate-50/90 dark:text-slate-800"
+            class="absolute right-8 bottom-0 left-8 z-10 -translate-y-8 -rotate-6 -skew-x-3 rounded bg-gray-700/90 px-4 py-2 text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-3 group-hover:rotate-0 group-hover:opacity-100 sm:px-12 sm:py-4 dark:bg-slate-50/90 dark:text-slate-800"
           >
-            <p class="hidden text-sm font-[450] leading-tight dark:inline">
+            <p class="hidden text-sm leading-tight font-[450] dark:inline">
               A guy coding at night, sitting on a desk, wearing a hoodie, camera
               from behind, cartoon, super detailed, ambient lighting (MidJourney
               v6)
             </p>
-            <p class="text-sm font-[450] leading-tight dark:hidden">
+            <p class="text-sm leading-tight font-[450] dark:hidden">
               A guy from behind sitting at a Starbucks at day with a laptop and
               drinking a coffee. He is coding software and is wearing a hoodie.
               You can't see his face. The light is ambient and the details are
@@ -269,11 +269,14 @@ const entries: UsesSection[] = [
 
       <CurrentBrowser client:only="vue" />
 
-      <div class="mt-12 text-center">
+      <div
+        class="mt-12 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-center"
+      >
         <a
           href="/reads/default-browser-server-sent-events"
-          class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:rotate-0 hover:skew-x-0 hover:scale-150 hover:shadow-2xl"
-          ><svg
+          class="inline-flex -skew-x-6 items-center rounded bg-linear-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl"
+        >
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
@@ -288,8 +291,15 @@ const entries: UsesSection[] = [
               clip-rule="evenodd"></path>
           </svg>
 
-          <span>How does this work?</span></a
+          <span>How does this work?</span>
+        </a>
+
+        <a
+          href="/uses/browserstats"
+          class="inline-flex -skew-x-6 items-center rounded border border-slate-300 px-8 py-2 font-mono font-semibold text-slate-900 transition hover:skew-0 hover:border-slate-500 hover:text-slate-600 dark:border-slate-700 dark:text-white dark:hover:border-slate-500 dark:hover:text-slate-200"
         >
+          View stats
+        </a>
       </div>
     </FluidContent>
   </main>
