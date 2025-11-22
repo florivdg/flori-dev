@@ -237,7 +237,7 @@
                 <p
                   class="text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400"
                 >
-                  {{ machine.id }}
+                  {{ formatMachineLabel(machine.id) }}
                 </p>
                 <p class="text-xl font-bold text-slate-900 dark:text-white">
                   {{ machine.sessions }} sessions
@@ -345,6 +345,16 @@ interface MachineBreakdownItem {
 }
 
 const STATS_ENDPOINT = 'https://van-der-hub.flori.dev/browser/stats'
+
+const MACHINE_LABELS: Record<string, string> = {
+  'Mac13,1': 'Mac Studio M1 Max',
+  'Mac14,15': 'MacBook Air M2',
+}
+
+const formatMachineLabel = (value: string | number) => {
+  const machineId = String(value)
+  return MACHINE_LABELS[machineId] ?? machineId
+}
 
 const timeframeOptions: TimeframeOption[] = [
   { label: 'Last 24 hours', value: 1 },
@@ -525,7 +535,7 @@ const machineChartData = computed<MachineChartDataset>(() => {
 
   const entries = Object.entries(stats.value.machineDistribution ?? {})
     .map(([machine, sessions]) => ({
-      machine,
+      machine: formatMachineLabel(machine),
       sessions,
     }))
     .sort((a, b) => b.sessions - a.sessions)
@@ -636,7 +646,6 @@ const machineBreakdown = computed<MachineBreakdownItem[]>(() => {
 })
 
 const formatCountLabel = (value: number) => `${numberFormatter.format(value)}`
-const formatMachineLabel = (value: string | number) => String(value)
 
 const formatTimeSeriesTick = (value: number | Date) => {
   if (value instanceof Date) {
