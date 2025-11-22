@@ -28,7 +28,7 @@
         Time span
         <select
           v-model="selectedRange"
-          class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-medium text-slate-900 shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none sm:min-w-[220px] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-sky-500/40"
+          class="timeframe-select w-full appearance-none rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 pr-14 text-base font-semibold text-slate-900 shadow-inner shadow-white/40 focus:border-sky-400 focus:ring-2 focus:ring-sky-200 focus:outline-none sm:min-w-[220px] dark:border-slate-600/50 dark:bg-slate-900/70 dark:text-white dark:shadow-none dark:focus:border-sky-500/70 dark:focus:ring-sky-500/30"
         >
           <option
             v-for="option in timeframeOptions"
@@ -710,6 +710,24 @@ watch(selectedRange, () => {
   gap: 0.35rem;
   flex: 1 1 140px;
   min-width: 120px;
+}
+
+.timeframe-select {
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%2363748b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 5l3.5 4 3.5-4'/%3E%3C/svg%3E");
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 1.35rem center;
+  background-size: 0.75rem;
+  padding-right: 3.5rem;
+  appearance: none;
+}
+
+.timeframe-select::-ms-expand {
+  display: none;
+}
+
+:global(.dark) .timeframe-select {
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%23f8fafc' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 5l3.5 4 3.5-4'/%3E%3C/svg%3E");
 }
 
 @media (min-width: 768px) {
