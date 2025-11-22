@@ -13,7 +13,7 @@
       </div>
       <span
         v-if="badge"
-        class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+        class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold whitespace-nowrap text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
       >
         {{ badge }}
       </span>
