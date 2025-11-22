@@ -1,0 +1,51 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import BoxedContent from '../../components/BoxedContent.astro'
+import FluidContent from '../../components/FluidContent.astro'
+import BrowserStats from '../../components/BrowserStats.vue'
+import type { SEOData } from '../../types/SEO'
+
+const title = 'Browser usage stats'
+
+const seo: SEOData = {
+  head: {
+    title,
+    description:
+      'A transparent look at the browsers and machines I actually use, straight from van-der-hub.',
+  },
+  og: {
+    type: 'website',
+  },
+}
+---
+
+<Layout seo={seo}>
+  <main>
+    <BoxedContent>
+      <article>
+        <p
+          class="mb-3 text-sm font-semibold tracking-[0.2em] text-slate-500 uppercase dark:text-slate-400"
+        >
+          /uses · telemetry
+        </p>
+        <h1 class="mb-6 text-4xl font-black text-slate-900 dark:text-white">
+          Browser Usage Stats
+        </h1>
+        <p class="text-xl text-slate-700 dark:text-slate-300">
+          This page streams the same telemetry I use to power the
+          <span class="highlight">current browser</span> widget on my main <a
+            class="link"
+            href="/uses">/uses</a
+          >
+          page. Everything is recorded by a tiny Deno app running on Deno Deploy
+          and stored in a Turso database so I can compare how my habits change. Switch
+          the time span to see how browser and usage by machine evolves.
+        </p>
+      </article>
+    </BoxedContent>
+
+    <FluidContent>
+      <BrowserStats client:only="vue" />
+    </FluidContent>
+  </main>
+</Layout>
