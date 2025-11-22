@@ -289,7 +289,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { BarChart, DonutChart, LegendPosition, Orientation } from 'vue-chrts'
 import { getBrowserLabel } from '../utils/browserMap'
 
@@ -673,7 +673,22 @@ const formatPercent = (value: number) => {
   return `${Math.round(value * 1000) / 10}%`
 }
 
-onMounted(fetchStats)
+const refreshStatsOnReturn = () => {
+  if (document.visibilityState !== 'visible') return
+  if (isLoading.value) return
+  fetchStats()
+}
+
+onMounted(() => {
+  fetchStats()
+  window.addEventListener('focus', refreshStatsOnReturn)
+  document.addEventListener('visibilitychange', refreshStatsOnReturn)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('focus', refreshStatsOnReturn)
+  document.removeEventListener('visibilitychange', refreshStatsOnReturn)
+})
 
 watch(selectedRange, () => {
   fetchStats()
