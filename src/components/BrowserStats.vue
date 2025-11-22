@@ -4,24 +4,33 @@
       class="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between dark:border-slate-800 dark:bg-slate-900/40"
     >
       <div>
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        <p
+          class="text-xs font-semibold tracking-widest text-slate-500 uppercase dark:text-slate-400"
+        >
           Browser stats
         </p>
         <h2 class="mt-2 text-3xl font-black text-slate-900 dark:text-white">
           Usage insights from my machines
         </h2>
         <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          Pulled directly from van-der-hub and refreshed whenever you switch the time span.
+          Pulled directly from van-der-hub and refreshed whenever you switch the
+          time span.
         </p>
       </div>
 
-      <label class="flex flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+      <label
+        class="flex flex-col gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300"
+      >
         Time span
         <select
           v-model="selectedRange"
-          class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-medium text-slate-900 shadow-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200 sm:min-w-[220px] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-sky-500/40"
+          class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-medium text-slate-900 shadow-sm focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none sm:min-w-[220px] dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:ring-sky-500/40"
         >
-          <option v-for="option in timeframeOptions" :key="option.value" :value="option.value">
+          <option
+            v-for="option in timeframeOptions"
+            :key="option.value"
+            :value="option.value"
+          >
             {{ option.label }}
           </option>
         </select>
@@ -53,17 +62,16 @@
         Loading usage details…
       </div>
 
-      <div
-        v-else-if="stats"
-        class="flex flex-col gap-8"
-      >
+      <div v-else-if="stats" class="flex flex-col gap-8">
         <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <article
             v-for="card in summaryCards"
             :key="card.label"
             class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
           >
-            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+            <p
+              class="text-xs font-semibold tracking-widest text-slate-500 uppercase dark:text-slate-400"
+            >
               {{ card.label }}
             </p>
             <p class="mt-3 text-3xl font-black text-slate-900 dark:text-white">
@@ -79,11 +87,19 @@
         </section>
 
         <section class="grid gap-8 xl:grid-cols-2">
-          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40">
+          <article
+            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+          >
             <div class="flex items-center justify-between gap-4">
               <div>
-                <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Browser distribution</p>
-                <p class="text-lg font-bold text-slate-900 dark:text-white">What I actually click on</p>
+                <p
+                  class="text-sm font-semibold text-slate-500 dark:text-slate-400"
+                >
+                  Browser distribution
+                </p>
+                <p class="text-lg font-bold text-slate-900 dark:text-white">
+                  What I actually click on
+                </p>
               </div>
               <span
                 class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
@@ -112,11 +128,19 @@
             </div>
           </article>
 
-          <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40">
+          <article
+            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+          >
             <div class="flex items-center justify-between gap-4">
               <div>
-                <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Machines</p>
-                <p class="text-lg font-bold text-slate-900 dark:text-white">Where those sessions originated</p>
+                <p
+                  class="text-sm font-semibold text-slate-500 dark:text-slate-400"
+                >
+                  Machines
+                </p>
+                <p class="text-lg font-bold text-slate-900 dark:text-white">
+                  Where those sessions originated
+                </p>
               </div>
             </div>
 
@@ -145,11 +169,19 @@
           </article>
         </section>
 
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40">
+        <section
+          class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950/40"
+        >
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Time series</p>
-              <p class="text-lg font-bold text-slate-900 dark:text-white">Every hit across the selected window</p>
+              <p
+                class="text-sm font-semibold text-slate-500 dark:text-slate-400"
+              >
+                Time series
+              </p>
+              <p class="text-lg font-bold text-slate-900 dark:text-white">
+                Every hit across the selected window
+              </p>
             </div>
             <span
               v-if="timeSeriesWindow"
@@ -161,7 +193,10 @@
 
           <div class="mt-4">
             <BarChart
-              v-if="timeSeriesChart.data.length && Object.keys(timeSeriesChart.categories).length"
+              v-if="
+                timeSeriesChart.data.length &&
+                Object.keys(timeSeriesChart.categories).length
+              "
               :data="timeSeriesChart.data"
               :height="420"
               :stacked="true"
@@ -199,14 +234,18 @@
           >
             <div class="flex items-baseline justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                <p
+                  class="text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400"
+                >
                   {{ machine.id }}
                 </p>
                 <p class="text-xl font-bold text-slate-900 dark:text-white">
                   {{ machine.sessions }} sessions
                 </p>
               </div>
-              <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">
+              <p
+                class="text-sm font-semibold text-slate-600 dark:text-slate-300"
+              >
                 {{ machine.share }}
               </p>
             </div>
@@ -224,7 +263,9 @@
                   ></span>
                   {{ browser.name }}
                 </span>
-                <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+                <span
+                  class="font-mono text-xs text-slate-500 dark:text-slate-400"
+                >
                   {{ browser.count }} ({{ browser.share }})
                 </span>
               </li>
@@ -280,7 +321,8 @@ interface MachineChartDataset {
 
 interface TimeSeriesDatum {
   date: number
-  [browserId: string]: number
+  dateLabel: string
+  [browserId: string]: number | string
 }
 
 interface TimeSeriesChartDataset {
@@ -320,6 +362,10 @@ const errorMessage = ref<string | null>(null)
 const abortController = ref<AbortController | null>(null)
 
 const numberFormatter = new Intl.NumberFormat('en-US')
+const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+})
 
 const knownBrowserNames: Record<string, string> = {
   'com.apple.Safari': 'Safari',
@@ -362,7 +408,10 @@ const getBrowserColor = (id: string) => {
   if (knownBrowserColors[id]) return knownBrowserColors[id]
 
   if (!dynamicBrowserColors.has(id)) {
-    dynamicBrowserColors.set(id, fallbackColors[fallbackIndex % fallbackColors.length])
+    dynamicBrowserColors.set(
+      id,
+      fallbackColors[fallbackIndex % fallbackColors.length],
+    )
     fallbackIndex += 1
   }
 
@@ -383,20 +432,26 @@ const fetchStats = async () => {
   try {
     isLoading.value = true
     errorMessage.value = null
-    const response = await fetch(`${STATS_ENDPOINT}?days=${selectedRange.value}`, {
-      signal: controller.signal,
-      headers: {
-        Accept: 'application/json',
+    const response = await fetch(
+      `${STATS_ENDPOINT}?days=${selectedRange.value}`,
+      {
+        signal: controller.signal,
+        headers: {
+          Accept: 'application/json',
+        },
       },
-    })
+    )
 
-    if (!response.ok) throw new Error(`Request failed with status ${response.status}`)
+    if (!response.ok)
+      throw new Error(`Request failed with status ${response.status}`)
 
     const payload = (await response.json()) as BrowserStatsResponse
     stats.value = payload
   } catch (error) {
     if ((error as DOMException).name === 'AbortError') return
-    errorMessage.value = (error as Error)?.message ?? 'Something went wrong while loading the stats.'
+    errorMessage.value =
+      (error as Error)?.message ??
+      'Something went wrong while loading the stats.'
   } finally {
     if (!controller.signal.aborted) {
       isLoading.value = false
@@ -435,7 +490,9 @@ const summaryCards = computed<SummaryCard[]>(() => {
     },
     {
       label: 'Machines online',
-      value: numberFormatter.format(Object.keys(stats.value.machineDistribution ?? {}).length),
+      value: numberFormatter.format(
+        Object.keys(stats.value.machineDistribution ?? {}).length,
+      ),
     },
   ]
 })
@@ -443,7 +500,9 @@ const summaryCards = computed<SummaryCard[]>(() => {
 const browserDonut = computed<DonutDataset>(() => {
   if (!stats.value) return { data: [], categories: {} }
 
-  const entries = Object.entries(stats.value.browserDistribution).sort((a, b) => b[1] - a[1])
+  const entries = Object.entries(stats.value.browserDistribution).sort(
+    (a, b) => b[1] - a[1],
+  )
   const data = entries.map(([, count]) => count)
   const categories = Object.fromEntries(
     entries.map(([browserId], index) => [
@@ -489,34 +548,42 @@ const timeSeriesChart = computed<TimeSeriesChartDataset>(() => {
   }
 
   const allBrowserIds = new Set<string>()
-  Object.values(stats.value.timeSeriesDistribution ?? {}).forEach((distribution) => {
-    Object.keys(distribution).forEach((browser) => allBrowserIds.add(browser))
-  })
+  Object.values(stats.value.timeSeriesDistribution ?? {}).forEach(
+    (distribution) => {
+      Object.keys(distribution).forEach((browser) => allBrowserIds.add(browser))
+    },
+  )
 
-  const sortedDates = Object.keys(stats.value.timeSeriesDistribution ?? {}).sort()
+  const sortedDates = Object.keys(
+    stats.value.timeSeriesDistribution ?? {},
+  ).sort()
 
   const browserIds = Array.from(allBrowserIds)
 
   const data = sortedDates.map((isoDate) => {
     const entry = stats.value?.timeSeriesDistribution?.[isoDate] ?? {}
-    const timestamp = new Date(isoDate).getTime()
+    const parsedDate = new Date(isoDate)
+    const timestamp = parsedDate.getTime()
+    const formattedDate = shortDateFormatter.format(parsedDate)
 
     return browserIds.reduce<TimeSeriesDatum>(
       (acc, browser) => {
         acc[browser] = entry[browser] ?? 0
         return acc
       },
-      { date: timestamp },
+      { dateLabel: formattedDate, date: timestamp },
     )
   })
 
-  const categories = browserIds.reduce<Record<string, { name: string; color: string }>>(
-    (acc, browserId) => {
-      acc[browserId] = { name: formatBrowserName(browserId), color: getBrowserColor(browserId) }
-      return acc
-    },
-    {},
-  )
+  const categories = browserIds.reduce<
+    Record<string, { name: string; color: string }>
+  >((acc, browserId) => {
+    acc[browserId] = {
+      name: formatBrowserName(browserId),
+      color: getBrowserColor(browserId),
+    }
+    return acc
+  }, {})
 
   return { data, categories, yAxisKeys: browserIds }
 })
@@ -525,12 +592,18 @@ const timeSeriesWindow = computed(() => {
   if (!stats.value) return null
   const dates = Object.keys(stats.value.timeSeriesDistribution ?? {}).sort()
   if (!dates.length) return null
-  const formatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' })
-  const start = formatter.format(new Date(dates[0]))
-  const end = formatter.format(new Date(dates[dates.length - 1]))
+  const start = shortDateFormatter.format(new Date(dates[0]))
+  const end = shortDateFormatter.format(new Date(dates[dates.length - 1]))
   if (start === end) return start
   return `${start} — ${end}`
 })
+
+const timeSeriesTickLabels = computed(() =>
+  timeSeriesChart.value.data.map((datum) => ({
+    label: datum.dateLabel,
+    timestamp: datum.date,
+  })),
+)
 
 const machineBreakdown = computed<MachineBreakdownItem[]>(() => {
   if (!stats.value) return []
@@ -567,11 +640,20 @@ const formatMachineLabel = (value: string | number) => String(value)
 
 const formatTimeSeriesTick = (value: number | Date) => {
   if (value instanceof Date) {
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(value)
+    return shortDateFormatter.format(value)
   }
 
   if (Number.isFinite(value)) {
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(new Date(value))
+    const ticks = timeSeriesTickLabels.value
+    const index = Math.round(Number(value))
+    const clampedIndex = Math.min(Math.max(index, 0), ticks.length - 1)
+    const tick = ticks[clampedIndex]
+    if (tick?.label) return tick.label
+    if (Number.isFinite(tick?.timestamp)) {
+      return shortDateFormatter.format(new Date(Number(tick?.timestamp)))
+    }
+
+    return shortDateFormatter.format(new Date(Number(value)))
   }
 
   return String(value)
