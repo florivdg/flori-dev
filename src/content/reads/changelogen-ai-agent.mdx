@@ -1,0 +1,110 @@
+---
+title: "Generating CHANGELOG.md from Conventional Commits"
+pubDate: 2025-11-22
+description: 'Learn how to automate changelog generation from Conventional Commits using unjs/changelogen and your AI coding agent of choice to create clean and structured release documentation.'
+image: {
+src: '../../assets/reads/changelogen-ai-agent.jpg',
+alt: 'Split screen showing a terminal window on the left with colorful conventional commit messages (feat, fix, docs) connected by dotted lines to a CHANGELOG.md file on the right, with a glowing cyan AI robot assistant automating the transformation on a dark blue-purple gradient background.',
+}
+tags: ['Git', 'Changelog', 'Agents', 'Conventional Commits', 'AI']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/changelogen-ai-agent.jpg'
+
+For quite a while now I've been using [**Conventional Commits**](https://www.conventionalcommits.org/) to structure my commit messages. This practice not only brings clarity to the development process but also enables automated tools to generate changelogs effortlessly.
+
+Since it's made with and for TypeScript, I've been using [**unjs/changelogen**](https://github.com/unjs/changelogen) to generate my `CHANGELOG.md` files. With my beloved coding agent of choice (as of this week it's Codex CLI 😜) always at hand, I created a simple **slash command** to automate the generation and most importantly to also **clean up** the output.
+
+<Image
+  src={coverImage}
+  alt="Split screen showing a terminal window on the left with colorful conventional commit messages (feat, fix, docs) connected by dotted lines to a CHANGELOG.md file on the right, with a glowing cyan AI robot assistant automating the transformation on a dark blue-purple gradient background."
+  caption="Conventional Commits based CHANGELOG.md with a little bit of AI sauce."
+  lazy={false}
+/>
+
+## Use Conventional Commits to Structure Your Commits
+
+[Conventional Commits](https://www.conventionalcommits.org/) is a lightweight specification for adding human and machine-readable meaning to commit messages. The format follows a simple structure: `<type>[optional scope]: <description>`, followed by optional body and footer sections.
+
+The most common types are:
+
+- **feat**: A new feature for the user
+- **fix**: A bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (formatting, missing semicolons, etc.)
+- **refactor**: Code changes that neither fix a bug nor add a feature
+- **perf**: Performance improvements
+- **test**: Adding or correcting tests
+- **chore**: Changes to the build process or auxiliary tools
+
+For example: `feat(auth): add OAuth2 login support` or `fix: resolve memory leak in image processing`.
+
+By following this convention, you make your commit history more readable and enable automated tools to generate changelogs, determine version bumps, and maintain a clean project history.
+
+## Create Beautiful Changelogs with changelogen
+
+[changelogen](https://github.com/unjs/changelogen) is a tool from the [UnJS](https://unjs.io/) ecosystem that generates beautiful changelogs from Conventional Commits. It automatically groups changes by type, extracts contributors, and can even bump your `package.json` version.
+
+The basic usage is straightforward:
+
+```sh
+# Generate a changelog and display it in console
+bunx changelogen@latest
+
+# Generate changelog, bump version, and update CHANGELOG.md
+bunx changelogen@latest --bump
+
+# Full release: bump version, update changelog, commit and tag
+bunx changelogen@latest --release
+```
+
+You can also specify version ranges:
+
+```sh
+# Generate changelog from a specific commit to HEAD
+bunx changelogen@latest --from=abc1234 --bump --patch
+```
+
+The tool helps you generate a changelog that follows semantic versioning conventions. You can specify the version bump type using `--major`, `--minor`, or `--patch` flags to indicate the nature of your changes.
+
+## Have your AI Agent Clean Up the Output
+
+While changelogen does an excellent job generating changelogs, there are often small cleanup tasks that need attention—duplicate issue numbers, incorrect contributor names, or formatting inconsistencies. So let's have our AI agent handle that for us!
+
+Custom slash commands (available in tools like [Codex CLI](https://developers.openai.com/codex/guides/slash-commands.md), Claude Code, and other AI-powered coding assistants) allow you to encapsulate repetitive workflows into reusable prompts. You create a Markdown file with instructions, and the tool turns it into a command you can invoke with `/prompts:<name>`.
+
+Here's the custom prompt I use at `~/.codex/prompts/changelog.md`:
+
+```markdown title="changelog.md"
+---
+description: Create or update the CHANGELOG.md
+argument-hint: [SEMVER=<major|minor|patch>]
+---
+
+First, find the commit ID of the last version for this work. Do not look at tags, only check in commit messages where the last version was set. You will need this later when generating the changelog.
+
+Then run `bunx changelogen@latest --from=<commit_id> --bump --$SEMVER`.
+In non-TypeScript or non-JavaScript projects, omit the --bump flag since this only works for package.json.
+
+After that, make sure to update the compare changes link to include the last tag (not the commit ID).
+In the actual changes, remove any duplicate issue numbers. `#9 (#9)` should be just `#9` for example.
+If Florian van der Galiën is mentioned in the Contributors section, make sure to correct the spelling (Florian van der Galiën).
+Never change the contents of the CHANGELOG.md file that existed before running this script.
+```
+
+Now I can simply type `/prompts:changelog SEMVER=minor` and my AI agent will:
+
+1. Find the last version commit
+2. Run changelogen with the correct parameters
+3. Clean up duplicate issue numbers
+4. Fix my name spelling (because apparently changelogen has trouble with my name 😅)
+5. Ensure previous changelog entries remain untouched
+
+<Note>
+  **☝️ Good To Know:** Over-committed? 😜 Let the AI handle merging or
+  summarizing your commit messages for a cleaner changelog!
+</Note>
+
+This combination of conventional commits, automated tooling, and AI assistance creates a seamless workflow for maintaining clean, accurate changelogs without the manual hassle.
