@@ -117,7 +117,7 @@ A few things I like here:
 - The `DB_FILE_NAME` env var lets me override the path per environment.
 - Using `bun:sqlite` keeps everything in Bun land without extra dependencies.
 
-[Drizzle Kit](https://orm.drizzle.team/kit) is configured separately via `drizzle.config.ts` to generate migrations based on the schema under `api/_lib/schema/`.
+[Drizzle Kit](https://orm.drizzle.team/docs/kit-overview) is configured separately via `drizzle.config.ts` to generate migrations based on the schema under `api/_lib/schema/`.
 
 ```ts {4,8,11}
 // drizzle.config.ts
@@ -210,7 +210,7 @@ A few details:
 
 ## Exposing Better Auth via Nitro Routes
 
-Better Auth exposes a standard **Web handler**. Nitro expects **[H3](https://h3.nuxtjs.org/) handlers**. The bridge between those two lives in `api/auth/[...all].ts`:
+Better Auth exposes a standard **Web handler**. Nitro expects **[H3](https://h3.dev/) handlers**. The bridge between those two lives in `api/auth/[...all].ts`:
 
 ```ts {6,8}
 // api/auth/[...all].ts
