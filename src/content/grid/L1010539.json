@@ -1,0 +1,17 @@
+{
+  "id": "L1010539",
+  "title": "Pastel Sundown Beyond the Mountains",
+  "image": "./L1010539.jpg",
+  "alt": "Snow-covered fields stretch toward a distant mountain range under a sky shifting from warm pink to deep blue as the sun sets. Soft mist lingers at the base of the mountains and around scattered trees and small buildings. The scene is calm and still, with the fading light of dusk illuminating the landscape.",
+  "location": "Sonthofen, Germany",
+  "date": "2025-11-29",
+  "tags": ["landscape", "sundown", "mountains", "winter", "mist"],
+  "exif": {
+    "camera": "LEICA D-Lux 8",
+    "lens": "DC VARIO-SUMMILUX 1:1.7-2.8/10.9-34 ASPH.",
+    "aperture": "2.6",
+    "iso": "320",
+    "focal_length": "20.4",
+    "shutter_speed": "1/100"
+  }
+}
