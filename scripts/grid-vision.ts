@@ -169,8 +169,8 @@ Create an accurate and detailed description of this image that would also work a
           ],
         },
       ],
-      model: 'gpt-4o-mini',
-      max_tokens: 2048,
+      model: 'gpt-5.1-chat-latest',
+      max_completion_tokens: 2048,
       response_format: zodResponseFormat(VisionResponse, 'visionResponse'),
     })
 
