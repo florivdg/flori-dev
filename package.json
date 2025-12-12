@@ -25,7 +25,7 @@
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
     "vue": "^3.5.25",
-    "vue-chrts": "^1.0.2"
+    "vue-chrts": "^2.0.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
