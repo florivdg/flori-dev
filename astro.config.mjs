@@ -54,6 +54,6 @@ export default defineConfig({
   adapter: netlify(),
 
   security: {
-    csp: true,
+    csp: false, // Incompatible with Expressive Code's inline styles and scripts
   },
 })
