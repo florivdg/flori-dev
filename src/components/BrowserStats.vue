@@ -94,28 +94,28 @@
             >
               <template #tooltip="{ values }">
                 <div
-                  v-if="values && browserDonutSegments[values.index]"
+                  v-if="values?.label && donutSegmentByName.get(values.label)"
                   class="chart-tooltip"
                 >
                   <div class="chart-tooltip__title">
-                    {{ browserDonutSegments[values.index].name }}
+                    {{ values.label }}
                   </div>
                   <div class="chart-tooltip__row">
                     <span
                       class="chart-tooltip__dot"
                       :style="{
                         backgroundColor:
-                          browserDonutSegments[values.index].color,
+                          donutSegmentByName.get(values.label)?.color,
                       }"
                     ></span>
                     <span class="chart-tooltip__value">
                       {{
                         numberFormatter.format(
-                          browserDonutSegments[values.index].count,
+                          donutSegmentByName.get(values.label)?.count ?? 0,
                         )
                       }}
                       <span class="chart-tooltip__share">
-                        ({{ browserDonutSegments[values.index].share }})
+                        ({{ donutSegmentByName.get(values.label)?.share }})
                       </span>
                     </span>
                   </div>
@@ -142,9 +142,8 @@
               :orientation="Orientation.Horizontal"
               :x-grid-line="false"
               :legend-position="LegendPosition.BottomLeft"
-              :x-formatter="formatMachineLabel"
+              :x-formatter="formatMachineChartLabel"
               :y-formatter="formatCountLabel"
-              hide-tooltip
             />
             <EmptyState
               v-else
@@ -177,8 +176,38 @@
             :x-grid-line="false"
             :x-formatter="formatTimeSeriesTick"
             :y-formatter="formatCountLabel"
-            hide-tooltip
-          />
+          >
+            <template #tooltip="{ values }">
+              <div
+                v-if="values?.datum?.dateLabel"
+                class="chart-tooltip"
+              >
+                <div class="chart-tooltip__title">
+                  {{ values.datum.dateLabel }}
+                </div>
+                <div
+                  v-for="[browserId, cat] in timeSeriesCategoryEntries"
+                  :key="browserId"
+                  class="chart-tooltip__row"
+                >
+                  <span
+                    class="chart-tooltip__dot"
+                    :style="{ backgroundColor: cat.color }"
+                  ></span>
+                  <span class="chart-tooltip__value">
+                    {{ cat.name }}
+                    <span class="chart-tooltip__share">
+                      {{
+                        numberFormatter.format(
+                          Number(values.datum[browserId] ?? 0),
+                        )
+                      }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </template>
+          </BarChart>
 
           <EmptyState
             v-else
@@ -510,6 +539,10 @@ const browserDonutSegments = computed<DonutSegmentDetails[]>(() => {
   })
 })
 
+const donutSegmentByName = computed(() =>
+  new Map(browserDonutSegments.value.map((s) => [s.name, s]))
+)
+
 const machineChartData = computed<MachineChartDataset>(() => {
   if (!stats.value) {
     return {
@@ -586,6 +619,10 @@ const timeSeriesChart = computed<TimeSeriesChartDataset>(() => {
   return { data, categories, yAxisKeys: browserIds }
 })
 
+const timeSeriesCategoryEntries = computed(() =>
+  Object.entries(timeSeriesChart.value.categories),
+)
+
 const timeSeriesWindow = computed(() => {
   if (!stats.value) return null
   const dates = Object.keys(stats.value.timeSeriesDistribution ?? {}).sort()
@@ -596,12 +633,10 @@ const timeSeriesWindow = computed(() => {
   return `${start} — ${end}`
 })
 
-const timeSeriesTickLabels = computed(() =>
-  timeSeriesChart.value.data.map((datum) => ({
-    label: datum.dateLabel,
-    timestamp: datum.date,
-  })),
-)
+const formatMachineChartLabel = (tick: number) => {
+  const entry = machineChartData.value.data[Math.round(tick)]
+  return entry?.machine ?? ''
+}
 
 const machineBreakdown = computed<MachineBreakdownItem[]>(() => {
   if (!stats.value) return []
@@ -635,25 +670,9 @@ const machineBreakdown = computed<MachineBreakdownItem[]>(() => {
 
 const formatCountLabel = (value: number) => `${numberFormatter.format(value)}`
 
-const formatTimeSeriesTick = (value: number | Date) => {
-  if (value instanceof Date) {
-    return shortDateFormatter.format(value)
-  }
-
-  if (Number.isFinite(value)) {
-    const ticks = timeSeriesTickLabels.value
-    const index = Math.round(Number(value))
-    const clampedIndex = Math.min(Math.max(index, 0), ticks.length - 1)
-    const tick = ticks[clampedIndex]
-    if (tick?.label) return tick.label
-    if (Number.isFinite(tick?.timestamp)) {
-      return shortDateFormatter.format(new Date(Number(tick?.timestamp)))
-    }
-
-    return shortDateFormatter.format(new Date(Number(value)))
-  }
-
-  return String(value)
+const formatTimeSeriesTick = (tick: number) => {
+  const entry = timeSeriesChart.value.data[Math.round(tick)]
+  return entry?.dateLabel ?? ''
 }
 
 const formatPercent = (value: number) => {
