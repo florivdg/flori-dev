@@ -23,7 +23,7 @@
     "astro-expressive-code": "^0.41.3",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.1.17",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vue": "^3.5.25",
     "vue-chrts": "^1.0.2"
   },
