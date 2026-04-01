@@ -60,3 +60,7 @@ A live dashboard at `/uses/browserstats` showing default browser usage across th
 - No semicolons, single quotes, trailing commas, 2-space indent (Prettier config in `.prettierrc`)
 - TypeScript in strict mode (extends `astro/tsconfigs/strict`)
 - Prettier plugins: `prettier-plugin-astro`, `prettier-plugin-tailwindcss`
+
+## Editing Guidelines
+
+After applying changes, run `bunx prettier --write` on changed files to ensure consistent formatting. For TypeScript changes, run `bun run astro check` to verify type correctness. For Vue.js components run `bunx vue-tsc --noEmit` to check for type errors.
