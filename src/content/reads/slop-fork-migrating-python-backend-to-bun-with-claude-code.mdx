@@ -2,10 +2,24 @@
 title: 'The Slop Fork: Migrating a Python Backend to Bun with Claude Code'
 pubDate: 2026-04-01
 description: "I used Claude Code to migrate our entire production RAG backend from Python, FastAPI, and Supabase to Bun, Hono, and Drizzle ORM. 109 commits in 5 days, 14,000 lines of TypeScript, and an 83-test smoke test that actually passes. Here's how I approached it."
+image:
+  {
+    src: '../../assets/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code.jpg',
+    alt: 'A developer sits in front of five monitors connected by glowing neon circuit lines branching from a central fork node. Left screens show Python code, right screens show TypeScript. A badge at the bottom reads 83/83 tests passed.',
+  }
 tags: ['AI', 'Claude', 'Bun', 'TypeScript', 'Migration', 'Agents', 'Python']
 ---
 
+import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code.jpg'
+
+<Image
+  src={coverImage}
+  alt="A developer sits in front of five monitors connected by glowing neon circuit lines branching from a central fork node. Left screens show Python code, right screens show TypeScript. A badge at the bottom reads 83/83 tests passed."
+  caption="From Python to TypeScript: 109 commits, 5 parallel agents, and 83/83 smoke tests passing."
+  lazy={false}
+/>
 
 A few months ago I wrote about my [first hands-on experience with Claude Code](/reads/coding-agents-like-claude-code). Back then, I migrated a small Express app to Hono, improved test coverage for a Vue.js library, and added tests to a project that had none. The results were impressive, but these were relatively small projects. So naturally, I wondered: **could Claude Code handle a full production backend migration?**
 
