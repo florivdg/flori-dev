@@ -1,7 +1,6 @@
 ---
 title: 'The Slop Fork: Migrating a Python Backend to Bun with Claude Code'
 pubDate: 2026-04-01
-draft: true
 description: "I used Claude Code to migrate our entire production RAG backend from Python, FastAPI, and Supabase to Bun, Hono, and Drizzle ORM. 109 commits in 5 days, 14,000 lines of TypeScript, and an 83-test smoke test that actually passes. Here's how I approached it."
 tags: ['AI', 'Claude', 'Bun', 'TypeScript', 'Migration', 'Agents', 'Python']
 ---
@@ -14,7 +13,7 @@ The answer is yes. Sort of. What I ended up with is what they like to call a **"
 
 ## The Starting Point
 
-At [TMT](https://www.tmt.de), we build [iNFOFLOW](https://www.tmt-infoflow.de), a RAG-powered knowledge management platform. The backend was a **Python/FastAPI** application that heavily relied on **Supabase** — Supabase Auth for authentication, Supabase Storage for files, PostgREST for direct database access from the frontend, and Row-Level Security (RLS) for authorization. Under the hood, it used **LangChain** and **LangGraph** for the RAG pipeline, and pgvector for vector search.
+The project was a RAG-powered knowledge management platform. The backend was a **Python/FastAPI** application that heavily relied on **Supabase** — Supabase Auth for authentication, Supabase Storage for files, PostgREST for direct database access from the frontend, and Row-Level Security (RLS) for authorization. Under the hood, it used **LangChain** and **LangGraph** for the RAG pipeline, and pgvector for vector search.
 
 The Python backend itself was about **14,200 lines of code** across ~50 files, with 18 CRUD modules, 12 route files, and a full document processing pipeline for ingesting PDFs, DOCX files, and web pages.
 
