@@ -32,7 +32,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
 <style>
   .bento-grid > * {
-    @apply transition-opacity duration-150;
+    @apply transition-all duration-150;
   }
 
   .bento-grid:has(:hover) > :not(:hover) {
@@ -60,7 +60,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
   >
     <a
       href={`/reads/${featuredRead.id}`}
-      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 dark:shadow-slate-950/20"
+      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 dark:shadow-slate-950/20"
     >
       {
         featuredRead.data.image ? (
@@ -107,7 +107,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/grid/${firstPhoto.id}/`}
-      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
+      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
     >
       <Picture
         src={firstPhoto.data.image}
@@ -136,7 +136,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/grid/${secondPhoto.id}/`}
-      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
+      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
     >
       <Picture
         src={secondPhoto.data.image}
@@ -167,7 +167,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/reads/${secondRead.id}`}
-      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-[1.02] hover:motion-safe:-rotate-1 dark:shadow-slate-950/20"
+      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 dark:shadow-slate-950/20"
     >
       {
         secondRead.data.image ? (
@@ -205,7 +205,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/grid/${thirdPhoto.id}/`}
-      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
+      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
     >
       <Picture
         src={thirdPhoto.data.image}
@@ -234,7 +234,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/reads/${thirdRead.id}`}
-      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 md:flex-row lg:col-span-3 dark:shadow-slate-950/20"
+      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 md:flex-row lg:col-span-3 dark:shadow-slate-950/20"
     >
       <div
         class="img-fill relative aspect-video shrink-0 md:aspect-auto md:w-2/5"
