@@ -1,11 +1,12 @@
-import { z, defineCollection } from 'astro:content'
+import { defineCollection } from 'astro:content'
+import { z } from 'astro/zod'
 import { glob } from 'astro/loaders'
 
 /**
  * Define a content collection for my reads.
  */
 const readsCollection = defineCollection({
-  loader: glob({ pattern: '**\/[^_]*.{md,mdx}', base: './src/content/reads' }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/reads' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
@@ -26,7 +27,7 @@ const readsCollection = defineCollection({
  * Define a content collection for photos.
  */
 const gridCollection = defineCollection({
-  loader: glob({ pattern: '**\/[^_]*.json', base: './src/content/grid' }),
+  loader: glob({ pattern: '**/[^_]*.json', base: './src/content/grid' }),
   schema: ({ image }) =>
     z.object({
       id: z.string(),
