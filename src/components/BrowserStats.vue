@@ -104,8 +104,8 @@
                     <span
                       class="chart-tooltip__dot"
                       :style="{
-                        backgroundColor:
-                          donutSegmentByName.get(values.label)?.color,
+                        backgroundColor: donutSegmentByName.get(values.label)
+                          ?.color,
                       }"
                     ></span>
                     <span class="chart-tooltip__value">
@@ -178,12 +178,9 @@
             :y-formatter="formatCountLabel"
           >
             <template #tooltip="{ values }">
-              <div
-                v-if="values?.datum?.dateLabel"
-                class="chart-tooltip"
-              >
+              <div v-if="values?.dateLabel" class="chart-tooltip">
                 <div class="chart-tooltip__title">
-                  {{ values.datum.dateLabel }}
+                  {{ values.dateLabel }}
                 </div>
                 <div
                   v-for="[browserId, cat] in timeSeriesCategoryEntries"
@@ -198,9 +195,7 @@
                     {{ cat.name }}
                     <span class="chart-tooltip__share">
                       {{
-                        numberFormatter.format(
-                          Number(values.datum[browserId] ?? 0),
-                        )
+                        numberFormatter.format(Number(values[browserId] ?? 0))
                       }}
                     </span>
                   </span>
@@ -539,8 +534,8 @@ const browserDonutSegments = computed<DonutSegmentDetails[]>(() => {
   })
 })
 
-const donutSegmentByName = computed(() =>
-  new Map(browserDonutSegments.value.map((s) => [s.name, s]))
+const donutSegmentByName = computed(
+  () => new Map(browserDonutSegments.value.map((s) => [s.name, s])),
 )
 
 const machineChartData = computed<MachineChartDataset>(() => {
