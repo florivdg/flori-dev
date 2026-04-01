@@ -98,7 +98,7 @@ async function extractExifMetadata(imagePath: string): Promise<ExifMetadata> {
   /// Check if `exiftool` is installed.
   try {
     Bun.spawn(['exiftool', '--version'])
-  } catch (error) {
+  } catch {
     consola.error(
       'exiftool is not installed. Please run `brew install exiftool`.',
     )
@@ -268,4 +268,4 @@ async function main() {
   consola.success('All images processed successfully.')
 }
 
-main()
+void main()
