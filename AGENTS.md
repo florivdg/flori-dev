@@ -12,6 +12,7 @@ Personal website for [flori.dev](https://flori.dev) — an Astro static site wit
 - **Build:** `bun run build`
 - **Preview production build:** `bun run preview`
 - **Type check:** `bunx astro check`
+- **Type aware linting:** `bun run lint --type-aware`
 - **Format:** `bunx prettier --write .`
 - **Generate photo metadata:** `bun run grid:prepare` (requires `OPENAI_API_KEY`)
 
@@ -63,4 +64,8 @@ A live dashboard at `/uses/browserstats` showing default browser usage across th
 
 ## Editing Guidelines
 
-After applying changes, run `bunx prettier --write` on changed files to ensure consistent formatting. For TypeScript changes, run `bun run astro check` to verify type correctness. For Vue.js components run `bunx vue-tsc --noEmit` to check for type errors.
+For TypeScript changes, run `bun run astro check` to verify type correctness. For Vue.js components run `bunx vue-tsc --noEmit` to check for type errors.
+
+Run `bun run lint --type-aware` to catch linting issues.
+
+After applying all changes, run `bunx prettier --write` on changed files to ensure consistent formatting.

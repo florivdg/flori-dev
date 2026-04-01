@@ -58,6 +58,7 @@ The dev server starts at `http://localhost:4321`.
 | `bun run dev`          | Start the development server                    |
 | `bun run build`        | Build the production site to `./dist/`          |
 | `bun run preview`      | Preview the production build locally            |
+| `bun run lint`         | Lint with oxlint                                |
 | `bun run grid:prepare` | Generate AI metadata for new photos (see below) |
 
 ## Photo Metadata Generation
