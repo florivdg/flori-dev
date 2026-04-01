@@ -1,0 +1,252 @@
+---
+title: 'The Slop Fork: Migrating a Python Backend to Bun with Claude Code'
+pubDate: 2026-04-01
+description: "I used Claude Code to migrate our entire production RAG backend from Python, FastAPI, and Supabase to Bun, Hono, and Drizzle ORM. 109 commits in 5 days, 14,000 lines of TypeScript, and an 83-test smoke test that actually passes. Here's how I approached it."
+image:
+  {
+    src: '../../assets/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code.jpg',
+    alt: 'A developer sits in front of five monitors connected by glowing neon circuit lines branching from a central fork node. Left screens show Python code, right screens show TypeScript. A badge at the bottom reads 83/83 tests passed.',
+  }
+tags: ['AI', 'Claude', 'Bun', 'TypeScript', 'Migration', 'Agents', 'Python']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code.jpg'
+
+<Image
+  src={coverImage}
+  alt="A developer sits in front of five monitors connected by glowing neon circuit lines branching from a central fork node. Left screens show Python code, right screens show TypeScript. A badge at the bottom reads 83/83 tests passed."
+  caption="From Python to TypeScript: 109 commits, 5 parallel agents, and 83/83 smoke tests passing."
+  lazy={false}
+/>
+
+A few months ago I wrote about my [first hands-on experience with Claude Code](/reads/coding-agents-like-claude-code). Back then, I migrated a small Express app to Hono, improved test coverage for a Vue.js library, and added tests to a project that had none. The results were impressive, but these were relatively small projects. So naturally, I wondered: **could Claude Code handle a full production backend migration?**
+
+The answer is yes. Sort of. What I ended up with is what they like to call a **"slop fork"** — a complete AI rewrite that passes its smoke test, but has never been tested against the actual frontend, never been deployed to a staging environment, and never had a human manually start the server and click through the app. The smoke test is the **only** proof that it works. And honestly? That's exactly the right outcome for a first pass.
+
+## The Starting Point
+
+The project was a RAG-powered knowledge management platform. The backend was a **Python/FastAPI** application that heavily relied on **Supabase** — Supabase Auth for authentication, Supabase Storage for files, PostgREST for direct database access from the frontend, and Row-Level Security (RLS) for authorization. Under the hood, it used **LangChain** and **LangGraph** for the RAG pipeline, and pgvector for vector search.
+
+The Python backend itself was about **14,200 lines of code** across ~50 files, with 18 CRUD modules, 12 route files, and a full document processing pipeline for ingesting PDFs, DOCX files, and web pages.
+
+I wanted to rewrite the whole thing in **TypeScript** using **Bun**, **Hono**, **Drizzle ORM**, and **Better Auth**. Why? Because maintaining a Python backend alongside a TypeScript frontend and TypeScript tooling was becoming friction. And because Supabase, while great for getting started, was adding complexity we no longer needed.
+
+## Phase 0: Plan Before You Prompt
+
+Here's the most important lesson from this whole experience: **don't just throw your codebase at an AI and say "rewrite this."** That's a recipe for disaster.
+
+Instead, I spent an entire evening having Claude Code write **13 detailed planning documents** — one for each migration phase. These weren't vague outlines. They were step-by-step guides with code examples, file mappings from Python to TypeScript, and explicit tech choices.
+
+```
+planning/
+├── 01-project-setup.md
+├── 02-database-schema.md
+├── 03-authentication.md
+├── 04-api-layer.md
+├── 05-rag-pipeline.md
+├── 06-document-processing.md
+├── 07-web-scraping.md
+├── 08-testing-deployment.md
+├── 09-frontend-migration.md
+├── 10-gap-analysis.md
+├── 11-frontend-compatibility-analysis.md
+├── 12-e2e-smoke-test.md
+└── 13-supabase-removal.md
+```
+
+The first 8 documents covered the core migration. The remaining 5 emerged later as we discovered gaps and blockers. In total, these planning docs amounted to **~14,800 lines of Markdown** — essentially a book about how to migrate this specific backend.
+
+<Note>
+  **🔥 Hot Tip:** Write your planning docs from within the original project
+  directory. That way Claude Code has full access to the existing codebase and
+  can reference real code, real database schemas, and real API routes.
+</Note>
+
+### Verify Everything Against Real Docs
+
+Here's where it gets interesting. After generating the planning docs, I had Claude **verify every code example and API call** against the actual library documentation using the [context7 MCP server](https://context7.com). It checked about **115 claims** across all 8 documents.
+
+The result? **83% were correct, 13% had issues, and 4% couldn't be verified.** The issues were not trivial:
+
+- **Better Auth** API method names were wrong (`createInvitation` should be `inviteMember`)
+- **Better Auth** defaults to scrypt for password hashing, not bcrypt — important for Supabase migration compatibility
+- **Hono SSE** patterns needed different header handling than documented
+- **CORS with credentials** can't use `allowHeaders: ["*"]` — needs an explicit header list
+- **LangGraph.js** streaming format differs from the Python version
+
+Catching these **before writing a single line of code** saved hours of debugging later. This is the key insight: **AI-generated planning docs are only as good as their verification.**
+
+<Note>
+  **☝️ Good To Know:** I also had Claude check the live Supabase database via
+  MCP to verify that every table, every RLS policy, and every PostgREST endpoint
+  was accounted for in the migration plan. It turned out the planning docs only
+  covered 10 Python backend routes, but the frontend was directly accessing
+  **20+ tables via PostgREST**. Each of those needed an explicit Hono route.
+</Note>
+
+## Phase 1: Tests First, Code Later
+
+Before writing any application code, I had Claude port over all **~270 test methods** from the Python backend to Bun's test runner. These tests were written against interfaces that didn't exist yet — they imported from files that would only be created in later phases.
+
+This test-first approach was crucial. It gave us a **contract** to code against and a way to measure progress. Every phase of implementation could be validated against these pre-written tests.
+
+## Phases 1-2: Scaffolding and Schema
+
+Phase 1 created the project structure, installed dependencies, and set up the Hono app skeleton. Phase 2 translated all **32 Supabase database tables** into Drizzle ORM schema definitions, maintaining 100% parity with the existing database.
+
+After these two phases: **55 source files, 76 passing tests, 0 TypeScript errors.**
+
+## Phases 3-7: The Parallel Agent Swarm
+
+This is where things got wild. The next five phases — authentication, API layer, RAG pipeline, document processing, and web scraping — had dependencies between them, but could largely be implemented in parallel.
+
+I created **5 Claude Code agents**, each running in its own **isolated git worktree**. Each agent was assigned a single phase and worked independently:
+
+| Agent | Phase               | Scope                                       |
+| ----- | ------------------- | ------------------------------------------- |
+| 1     | Authentication      | Better Auth, RBAC, middleware               |
+| 2     | API Layer           | 30+ route groups, CRUD operations           |
+| 3     | RAG Pipeline        | LangGraph, vector store, LLM providers      |
+| 4     | Document Processing | PDF/DOCX loaders, chunking, funnel pipeline |
+| 5     | Web Scraping        | Crawlee integration, queue runner           |
+
+To make parallel work possible, I created a **shared type contract** (`src/types/auth.ts`) with the `AuthContext` interface that all phases could import. Phases that depended on functions from other phases used **stub files** — just the exported function signatures with placeholder implementations.
+
+After all agents finished, branches were **merged in dependency order**: auth first, then API, then RAG, docs, and scraping. Merge conflicts were expected and mostly involved replacing stubs with real implementations.
+
+<Note>
+  **🔥 Hot Tip:** When using parallel agents, create a shared type contract and
+  stub files upfront. This lets each agent write real `import` statements
+  instead of guessing at interfaces. The merge conflicts will be predictable and
+  mechanical.
+</Note>
+
+## The Numbers
+
+After all phases were implemented and merged, here's where we stood:
+
+| Metric                           | Value                                                |
+| -------------------------------- | ---------------------------------------------------- |
+| **TypeScript source lines**      | ~14,000                                              |
+| **Test lines**                   | ~8,200                                               |
+| **Script lines**                 | ~1,800                                               |
+| **Planning doc lines**           | ~14,800                                              |
+| **Total commits**                | 109                                                  |
+| **Git insertions**               | 81,007                                               |
+| **Git deletions**                | 29,441                                               |
+| **Files changed**                | 1,235                                                |
+| **Co-authored commits (Claude)** | 92                                                   |
+| **Worktree agent merges**        | 11                                                   |
+| **Claude Code sessions**         | 30 (in the Bun project) + 15 (in the Python project) |
+| **Model messages**               | 4,477                                                |
+| **Model**                        | Claude Opus 4.6 (exclusively)                        |
+| **Session data**                 | 58 MB of JSONL                                       |
+| **Calendar time**                | 5 days (March 19-23)                                 |
+| **Commits per day (peak)**       | 68 (March 21)                                        |
+
+### Token Usage
+
+Since I was using Claude Code via the **Max subscription**, I wasn't billed per token. But for context, here's what the equivalent API usage would have looked like:
+
+| Token Type          | Count | Equivalent API Cost |
+| ------------------- | ----- | ------------------- |
+| Input tokens        | ~219K | $3                  |
+| Output tokens       | ~1.2M | $91                 |
+| Cache read tokens   | ~522M | $980                |
+| Cache create tokens | ~16M  | $303                |
+| **Total**           |       | **~$1,376**         |
+
+The cache numbers are staggering. Claude Code reads a lot of context — your files, your planning docs, your test output — and the prompt cache makes this efficient. Without caching, the cost would be significantly higher.
+
+## Post-Implementation: Cleanup and Polish
+
+After the initial implementation, the work wasn't done. In fact, some of the most interesting sessions happened **after** the code was written:
+
+1. **Code review and simplification** — I ran Claude Code's `/simplify` skill across all 7 phases
+2. **DRY analysis** — A deep-dive session identified code duplication and suggested improvements
+3. **Dependency audit** — Replaced `nanoid`, `date-fns`, and `iconv-lite` with native Bun/Web APIs
+4. **Tooling migration** — Swapped Biome for `oxfmt` + `oxlint` (the new Rust-based linter)
+5. **Driver migration** — Replaced `node-postgres` with `Bun.sql` for native Postgres support
+6. **Zod upgrade** — Migrated from Zod 3 to Zod 4 (required by Better Auth)
+7. **Security hardening** — Route-level authorization guards, versioned encryption, SSRF protection
+8. **Supabase removal** — Replaced Supabase Storage with local filesystem, added Nodemailer for emails
+
+Each of these was its own Claude Code session. Some took 30 minutes, others took hours. The pattern was always the same: **plan first, then implement, then verify.**
+
+## The Smoke Test
+
+The final proof that the slop fork actually works: an **83-test end-to-end smoke test** that exercises every endpoint group in the application. To be clear — this is the **only** verification we performed. I never started the server manually, never pointed the frontend at it, and never deployed it to any staging system. The smoke test is a script that Claude Code itself wrote, ran against a local PostgreSQL database with pgvector, and iterated on until all checks passed.
+
+It covers:
+
+- Health checks and OpenAPI docs
+- Authentication (sign-up, sign-in, sessions)
+- Organization CRUD
+- Buckets, channels, groups, memberships
+- User management (profiles, roles)
+- AI providers and models
+- Chat system (sessions, threads, messages)
+- File operations
+- Scraping jobs
+- RAG integration (with a real OpenAI API key)
+
+All 83 tests pass. The RAG tests actually send documents through the pipeline, create embeddings, and verify that the chat agent returns relevant answers — not just "I don't know."
+
+That said, a smoke test is not a substitute for real-world usage. There's an entire class of issues — frontend compatibility, session handling under load, file upload edge cases, WebSocket behavior — that **only surface when a human actually uses the application**. The smoke test proves the API contract is fulfilled. Whether the frontend agrees with that contract is a different story entirely.
+
+<Note>
+  **☝️ Good To Know:** When your smoke test's RAG checks are returning "I don't
+  know" answers, something is broken upstream. In our case, it was a combination
+  of JSON double-encoding in the database (Bun's `Bun.sql` driver handles JSON
+  differently than `node-postgres`) and incorrect vector query bindings. Claude
+  Code fixed both issues once pointed in the right direction.
+</Note>
+
+## What I Learned
+
+### 1. Planning Is 80% of the Work
+
+The 13 planning documents were the single most important investment. They gave Claude Code a clear target for each phase and made the parallel agent approach possible. Without them, the agents would have stepped on each other's toes and produced inconsistent code.
+
+### 2. Verify AI Output Against Real Documentation
+
+AI models have knowledge cutoffs and can hallucinate API methods. Using MCP servers like context7 to verify code examples against real library docs caught **15 issues** that would have been painful runtime bugs.
+
+### 3. The Slop Fork Is the Right First Step
+
+Don't expect production-ready code from an AI rewrite. Expect a **working prototype** that passes its own tests. Then iterate. The smoke test proves the API surfaces exist and respond correctly in isolation — but it doesn't prove the app works in the real world. Frontend integration, staging deployment, and manual testing are still ahead. The refinement — actual user flows, edge cases, performance under real data — is where human judgment matters most.
+
+### 4. Parallel Agents Are Powerful but Need Structure
+
+Running 5 agents in parallel worktrees was a force multiplier. But it only works if you've defined clear boundaries: shared type contracts, stub files, and a merge order. Without that structure, you get merge hell.
+
+### 5. Test-First Gives You a Safety Net
+
+Porting the tests before writing any application code meant every phase had a built-in validation step. When tests broke, it was almost always because of a real issue — not a flawed test.
+
+### 6. The Long Tail Is Real
+
+The initial implementation (phases 1-7) took about 2 days. The remaining 3 days were spent on cleanup, security, tooling, and making the smoke test actually pass end-to-end. The last 20% of the work takes 60% of the time, even with AI.
+
+## Conclusion
+
+Migrating a **14,000-line Python backend** to TypeScript in 5 days using Claude Code is something I would not have attempted by hand. It would have taken weeks, maybe months. But the AI didn't do it alone — **I was in the driver's seat the entire time**, planning, verifying, course-correcting, and making architectural decisions.
+
+The result is a slop fork: a complete rewrite that passes 83 API-level smoke tests and handles real RAG queries. It has never seen a real user, never talked to the frontend, and never run on anything but my local machine. But that's the point — it's a **massive head start**, not a finished product. What remains is the unglamorous but essential work: hooking it up to the frontend, deploying it to staging, and finding all the things that a smoke test can't catch. That's exactly what coding agents are best at — giving you the first 80% so you can focus your expertise on the last 20%.
+
+**The future of software engineering isn't AI replacing developers. It's developers who know how to wield AI replacing those who don't.** And honestly? I had a blast doing it. 🚀
+
+### Tech Stack
+
+- **Runtime**: [Bun](https://bun.sh)
+- **Framework**: [Hono](https://hono.dev)
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team)
+- **Auth**: [Better Auth](https://www.better-auth.com) (with Organization + RBAC plugins)
+- **RAG**: [LangChain.js](https://js.langchain.com) + [LangGraph](https://langchain-ai.github.io/langgraphjs/)
+- **Vector Store**: [pgvector](https://github.com/pgvector/pgvector) (native, no Supabase)
+- **Scraping**: [Crawlee](https://crawlee.dev)
+- **Linter**: [oxlint](https://oxc.rs)
+- **Formatter**: [oxfmt](https://oxc.rs)
+- **AI Tool**: [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) (Opus 4.6, Max subscription)
