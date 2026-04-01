@@ -6,6 +6,7 @@ import FluidContent from '../components/FluidContent.astro'
 import MyAge from '../components/MyAge.astro'
 import MySkills from '../components/MySkills.astro'
 import HotStuff from '../components/HotStuff.astro'
+import LatestSection from '../components/LatestSection.astro'
 import type { SEOData } from '../types/SEO'
 
 import imageFlori from '../assets/images/flori.jpg'
@@ -125,7 +126,7 @@ const seo: SEOData = {
       <div class="mt-12 text-center">
         <a
           href="/about/"
-          class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:rotate-0 hover:skew-x-0 hover:scale-150 hover:shadow-2xl"
+          class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
@@ -141,6 +142,8 @@ const seo: SEOData = {
         >
       </div>
     </BoxedContent>
+
+    <LatestSection />
 
     <HotStuff />
 

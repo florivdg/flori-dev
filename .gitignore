@@ -24,3 +24,5 @@ pnpm-debug.log*
 .env.*.local
 # Local Netlify folder
 .netlify
+
+.playwright-cli/
