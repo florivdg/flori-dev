@@ -1,5 +1,5 @@
 ---
-title: 'Astro Is Quietly a Great App Framework'
+title: 'Astro: To the Moon 🚀 and Back'
 pubDate: 2026-04-08
 description: "Astro is marketed for content-driven sites, but the last handful of apps I've shipped say otherwise. Here's the stack that keeps coming back when I use Astro as a real app framework."
 image:
@@ -24,9 +24,9 @@ import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/astro-is-quietly-a-great-app-framework.jpg'
 
-For the last year or so, every time I sat down to start a new app, I ended up reaching for **[Astro](https://astro.build/)**. Not because I was building a blog. Not because the project needed perfect Lighthouse scores. But because Astro turned out to be the most _coherent_ way I know to ship a small-to-mid-sized full-stack app in 2026.
+While [Artemis II](https://www.nasa.gov/mission/artemis-ii/) is busy taking astronauts around the Moon right now, I've been on my own mission — except my spacecraft is called **[Astro](https://astro.build/)** and the payload is full-stack web apps. For the last year or so, every time I sat down to start a new app, I ended up reaching for it. Not because I was building a blog. Not because the project needed perfect Lighthouse scores. But because Astro turned out to be the most _coherent_ way I know to ship a small-to-mid-sized full-stack app in 2026.
 
-That's a little funny, because Astro doesn't really sell itself that way. Open the homepage and you'll see talk of **content-driven websites**, marketing pages, documentation, and blogs. All of which is true — Astro is genuinely great at all of those.
+That's a little ironic, because Astro doesn't really sell itself that way. Open the homepage and you'll see talk of **content-driven websites**, marketing pages, documentation, and blogs. All of which is true — Astro is genuinely great at all of those.
 
 But when I look back at the apps I've actually built and shipped lately — admin panels, dashboards, customer-facing forms, things with logins and databases and background work behind them — they're all Astro apps. The "static site framework" label sells it short. Most of them also run on **[Bun](https://bun.sh/)**, and that turns out to matter more than I expected — but we'll get to that.
 
@@ -65,7 +65,7 @@ export default defineConfig({
 
 A few things this gets you:
 
-- A real long-running Node process you can drop in any container.
+- A real long-running Node process you can run in any container.
 - No "edge function" boundaries to worry about — your handlers are just functions in a Node server.
 - `checkOrigin` adds built-in CSRF protection for SSR pages by rejecting cross-origin form-style writes by default, which is exactly what you want for a session-cookie app.
 
@@ -172,7 +172,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 Error responses always look like `{ error: string }`. Successful ones always look like `{ data: T }`. Status codes do the heavy lifting: `400` for bad input, `401` for unauthenticated, `403` for forbidden, `429` for rate-limited, `500` for everything else. There's no clever wrapper library in play here — just a convention that's easy to write and easy to read on the client.
 
-For race-sensitive writes — think redeem-a-code or decrement-a-counter — I lean on Drizzle's transaction API and let the database do the locking. No queue, no Redis dance, just a plain old SQL transaction.
+For race-sensitive writes — think redeeming a code or decrementing a counter — I lean on Drizzle's transaction API and let the database do the locking. No queue, no Redis dance, just a plain old SQL transaction.
 
 ## A Type-Safe Database Layer with Drizzle
 
@@ -259,13 +259,13 @@ The plugin list is where Better Auth really earns its keep. The four I reach for
 - **`admin()`** — role gating and an admin API for managing users.
 - **`organization()`** — multi-tenant workspaces with invitations, member roles, and a notion of an "active org" baked into the session.
 
-Email-based flows (verification, password reset, organisation invitations) wire straight into a transactional sender — I use **[nodemailer](https://nodemailer.com/)** with whatever SMTP provider is convenient. Password hashing is done via **[`Bun.password`](https://bun.sh/docs/runtime/hashing)** — argon2id, built into the runtime, no separate `argon2` or `bcrypt` package needed. Better Auth is flexible enough to wire that in cleanly; I [walked through that exact setup](/reads/vite-nitro-minimal-fullstack) in an earlier post if you want to see it spelled out.
+Email-based flows (verification, password reset, organization invitations) wire straight into a transactional sender — I use **[nodemailer](https://nodemailer.com/)** with whatever SMTP provider is convenient. Password hashing is done via **[`Bun.password`](https://bun.sh/docs/runtime/hashing)** — argon2id, built into the runtime, with no separate `argon2` or `bcrypt` package needed. Better Auth is flexible enough to wire that in cleanly; I [walked through that exact setup](/reads/vite-nitro-minimal-fullstack) in an earlier post if you want to see it spelled out.
 
 The result is that "build login" goes from a multi-week project to a single afternoon. You still own the schema, the database, and the cookies — Better Auth just stops you from reinventing the parts you'd rather not.
 
 ## End-to-End Validation with Zod
 
-The same Zod schema that validates a request body on the server can also validate a form on the client. That's not a small thing — it means there can be exactly one source of truth for what a valid `Note`, `Invitation`, or `User` looks like.
+The same Zod schema that validates a request body on the server can also validate a form on the client. That's not a small thing — it means you can keep exactly one source of truth for what a valid `Note`, `Invitation`, or `User` looks like.
 
 On the client I use **[vee-validate](https://vee-validate.logaretm.com/v4/)** with `@vee-validate/zod` to wire those schemas into Vue forms. Real-time inline errors, instant submit-button states, no duplicated validation logic. The server still re-validates everything — it has to, because the client is not a security boundary — but the user-facing UX gets much better without needing a second schema.
 
