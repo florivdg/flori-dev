@@ -17,33 +17,33 @@ const { entry, prev, next } = Astro.props
 const placeholder = await generateBlurPlaceholder(entry.data.image)
 ---
 
-<div class="fixed inset-0 h-dvh w-full bg-slate-50 px-2 py-3 dark:bg-gray-950">
-  <div class="flex h-full w-full items-center justify-center">
-    <div
-      class="relative max-h-full max-w-full -rotate-[0.5deg] -skew-x-[0.5deg] overflow-hidden rounded-xl shadow-xl shadow-slate-700/10 dark:shadow-slate-950/20"
-    >
-      <img
-        src={placeholder}
-        alt=""
-        aria-hidden="true"
-        class="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
-      />
+<div
+  class="fixed inset-0 flex h-dvh w-full items-center justify-center bg-slate-50 px-2 py-3 dark:bg-gray-950"
+>
+  <div
+    class="relative max-h-full max-w-full -rotate-[0.5deg] -skew-x-[0.5deg] overflow-hidden rounded-xl shadow-xl shadow-slate-700/10 dark:shadow-slate-950/20"
+  >
+    <img
+      src={placeholder}
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+    />
 
-      <Picture
-        src={entry.data.image}
-        alt={entry.data.alt}
-        width="1800"
-        densities={[1, 2]}
-        formats={['webp']}
-        quality={60}
-        pictureAttributes={{
-          class: 'relative flex items-center justify-center',
-        }}
-        class="block h-auto max-h-[calc(100dvh-1.5rem)] w-auto max-w-[calc(100vw-1rem)] opacity-0 transition-opacity duration-500"
-        loading="eager"
-        data-grid-image
-      />
-    </div>
+    <Picture
+      src={entry.data.image}
+      alt={entry.data.alt}
+      width="1800"
+      densities={[1, 2]}
+      formats={['webp']}
+      quality={60}
+      pictureAttributes={{
+        class: 'relative flex items-center justify-center',
+      }}
+      class="block h-auto max-h-[calc(100dvh-1.5rem)] w-auto max-w-[calc(100vw-1rem)] opacity-0 transition-opacity duration-500"
+      loading="eager"
+      data-grid-image
+    />
   </div>
 
   <GridImageBackButton client:load />
