@@ -21,7 +21,7 @@
     "@vercel/speed-insights": "^2.0.0",
     "@unovis/vue": "^1.6.4",
     "@vueuse/core": "^14.2.1",
-    "astro": "6.1.5",
+    "astro": "6.1.8",
     "astro-expressive-code": "^0.41.7",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2",
