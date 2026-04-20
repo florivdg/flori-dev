@@ -4,7 +4,7 @@ This file provides guidance to Coding Agents when working with code in this repo
 
 ## Project Overview
 
-Personal website for [flori.dev](https://flori.dev) — an Astro static site with Vue interactive components, deployed on Netlify.
+Personal website for [flori.dev](https://flori.dev) — an Astro static site with Vue interactive components, deployed on Vercel.
 
 ## Commands
 
@@ -22,7 +22,7 @@ Use **Bun** as the package manager (not npm/yarn/pnpm). Install dependencies wit
 
 ### Rendering Strategy
 
-Static output (`output: 'static'`) with Netlify adapter. Vue components hydrate client-side via `client:only="vue"` or `client:load` directives.
+Static output (`output: 'static'`) with Vercel adapter. Vue components hydrate client-side via `client:only="vue"` or `client:load` directives.
 
 ### Layouts
 
