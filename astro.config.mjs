@@ -14,7 +14,7 @@ import sitemap from '@astrojs/sitemap'
 // https://astro.build/config
 import expressiveCode from 'astro-expressive-code'
 
-import netlify from '@astrojs/netlify'
+import vercel from '@astrojs/vercel'
 
 // https://astro.build/config
 export default defineConfig({
@@ -51,7 +51,10 @@ export default defineConfig({
     ],
   },
 
-  adapter: netlify(),
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+    imageService: true,
+  }),
 
   security: {
     csp: false, // Incompatible with Expressive Code's inline styles and scripts

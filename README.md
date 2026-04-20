@@ -1,6 +1,6 @@
 # flori.dev
 
-Source code for [flori.dev](https://flori.dev) — a personal website and blog built with Astro, Vue, and Tailwind CSS. Deployed as a static site on Netlify.
+Source code for [flori.dev](https://flori.dev) — a personal website and blog built with Astro, Vue, and Tailwind CSS. Deployed as a static site on Vercel.
 
 ## Tech Stack
 
@@ -74,7 +74,8 @@ Drop a `.jpg` into `src/content/grid/` and run `bun run grid:prepare`. The scrip
 
 ## Deployment
 
-Hosted on [Netlify](https://www.netlify.com/) as a static site. Configuration is in `netlify.toml`:
+Hosted on [Vercel](https://vercel.com/) as a static site. Configuration is in `vercel.json`:
 
 - Build command: `bun run build`
-- Publish directory: `dist/`
+- Output directory: `dist/`
+- Redirects: `/sitemap.xml` → `/sitemap-index.xml` (301)
