@@ -4,6 +4,15 @@
 
 @config '../../tailwind.config.cjs';
 
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
+
 @theme {
   --font-sans: 'Mona Sans', 'sans-serif';
   --font-mono: 'Monaspace Neon', 'monospace';
