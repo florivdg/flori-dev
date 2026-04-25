@@ -6,26 +6,35 @@ import '../styles/index.css'
 
 export interface Props {
   seo: SEOData
+  forceDark?: boolean
 }
 
 /// SEO
-const { seo } = Astro.props
+const { seo, forceDark = false } = Astro.props
 ---
 
-<html lang="en" class="h-full antialiased">
+<html lang="en" class:list={['h-full antialiased', { dark: forceDark }]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta
-      name="theme-color"
-      content="#fff"
-      media="(prefers-color-scheme: light)"
-    />
-    <meta
-      name="theme-color"
-      content="rgb(31 41 55)"
-      media="(prefers-color-scheme: dark)"
-    />
+    {
+      forceDark ? (
+        <meta name="theme-color" content="rgb(3 7 18)" />
+      ) : (
+        <>
+          <meta
+            name="theme-color"
+            content="#fff"
+            media="(prefers-color-scheme: light)"
+          />
+          <meta
+            name="theme-color"
+            content="rgb(31 41 55)"
+            media="(prefers-color-scheme: dark)"
+          />
+        </>
+      )
+    }
     <link
       rel="preload"
       href="/fonts/Mona-Sans.woff2"
