@@ -29,13 +29,13 @@ const placeholders = await Promise.all(
             class="relative block aspect-[4/5] overflow-hidden"
             data-grid-link
           >
-            <img
-              src={placeholders[i]}
-              alt=""
+            <div
               aria-hidden="true"
-              decoding={isAboveFold ? 'sync' : 'async'}
-              loading={isAboveFold ? 'eager' : 'lazy'}
-              class="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+              style={{
+                backgroundColor: placeholders[i].color,
+                backgroundImage: `url('${placeholders[i].dataUrl}')`,
+              }}
+              class="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-xl"
             />
             <Picture
               src={entry.data.image}

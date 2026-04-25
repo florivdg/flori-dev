@@ -23,13 +23,13 @@ const placeholder = await generateBlurPlaceholder(entry.data.image)
   <div
     class="relative max-h-full max-w-full -rotate-[0.5deg] -skew-x-[0.5deg] overflow-hidden rounded-xl shadow-xl shadow-slate-700/10 dark:shadow-slate-950/20"
   >
-    <img
-      src={placeholder}
-      alt=""
+    <div
       aria-hidden="true"
-      decoding="sync"
-      fetchpriority="high"
-      class="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+      style={{
+        backgroundColor: placeholder.color,
+        backgroundImage: `url('${placeholder.dataUrl}')`,
+      }}
+      class="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-xl"
     />
 
     <Picture
