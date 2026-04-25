@@ -56,15 +56,8 @@ const placeholder = await generateBlurPlaceholder(entry.data.image)
 </div>
 
 <script>
+  import { revealOnLoad } from '../../utils/revealOnLoad'
+
   const img = document.querySelector<HTMLImageElement>('[data-grid-image]')
-
-  if (img) {
-    const reveal = () => img.classList.remove('opacity-0')
-
-    if (img.complete && img.naturalWidth > 0) {
-      reveal()
-    } else {
-      img.addEventListener('load', reveal, { once: true })
-    }
-  }
+  if (img) revealOnLoad(img)
 </script>

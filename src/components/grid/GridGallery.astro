@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import { Picture } from 'astro:assets'
+import { generateBlurPlaceholder } from '../../utils/placeholder'
 
 const images = (await getCollection('grid')).sort((a, b) => {
   const dateComparison = b.data.date.getTime() - a.data.date.getTime()
@@ -9,29 +10,49 @@ const images = (await getCollection('grid')).sort((a, b) => {
   }
   return dateComparison
 })
+
+const placeholders = await Promise.all(
+  images.map((entry) => generateBlurPlaceholder(entry.data.image)),
+)
 ---
 
 <ul
   class="moments -mx-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:mx-0 sm:grid-cols-3 lg:gap-6"
 >
   {
-    images.map((entry, i) => (
-      <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
-        <a href={`/grid/${entry.id}/`} class="block" data-grid-link>
-          <Picture
-            src={entry.data.image}
-            alt={entry.data.alt}
-            width="700"
-            height="875"
-            densities={[1, 2]}
-            formats={['webp']}
-            quality={60}
-            class="aspect-[4/5] h-full w-full object-cover object-center"
-            loading={i >= 3 ? 'lazy' : 'eager'}
-          />
-        </a>
-      </li>
-    ))
+    images.map((entry, i) => {
+      const isAboveFold = i < 3
+      return (
+        <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
+          <a
+            href={`/grid/${entry.id}/`}
+            class="relative block aspect-[4/5] overflow-hidden"
+            data-grid-link
+          >
+            <img
+              src={placeholders[i]}
+              alt=""
+              aria-hidden="true"
+              decoding={isAboveFold ? 'sync' : 'async'}
+              loading={isAboveFold ? 'eager' : 'lazy'}
+              class="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+            />
+            <Picture
+              src={entry.data.image}
+              alt={entry.data.alt}
+              width="700"
+              height="875"
+              densities={[1, 2]}
+              formats={['webp']}
+              quality={60}
+              loading={isAboveFold ? 'eager' : 'lazy'}
+              data-grid-thumb
+              class="relative h-full w-full object-cover object-center opacity-0 transition-opacity duration-500"
+            />
+          </a>
+        </li>
+      )
+    })
   }
 </ul>
 
@@ -56,6 +77,8 @@ const images = (await getCollection('grid')).sort((a, b) => {
 </style>
 
 <script>
+  import { revealOnLoad } from '../../utils/revealOnLoad'
+
   /// Find all grid links on the page.
   const links = document.querySelectorAll('a[data-grid-link]')
 
@@ -66,4 +89,8 @@ const images = (await getCollection('grid')).sort((a, b) => {
       sessionStorage.setItem('from-grid', 'true')
     })
   })
+
+  document
+    .querySelectorAll<HTMLImageElement>('img[data-grid-thumb]')
+    .forEach(revealOnLoad)
 </script>
