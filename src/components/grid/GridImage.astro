@@ -27,6 +27,8 @@ const placeholder = await generateBlurPlaceholder(entry.data.image)
       src={placeholder}
       alt=""
       aria-hidden="true"
+      decoding="sync"
+      fetchpriority="high"
       class="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
     />
 
