@@ -1,0 +1,59 @@
+---
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import { generateBlurPlaceholder } from '../../utils/placeholder'
+
+interface Props {
+  image: ImageMetadata
+  alt: string
+  width: number
+  height?: number
+  loading?: 'eager' | 'lazy'
+  imgClass?: string
+  pictureClass?: string
+}
+
+const {
+  image,
+  alt,
+  width,
+  height,
+  loading = 'lazy',
+  imgClass,
+  pictureClass,
+} = Astro.props
+
+const placeholder = await generateBlurPlaceholder(image)
+---
+
+<div
+  aria-hidden="true"
+  style={{
+    backgroundColor: placeholder.color,
+    backgroundImage: `url('${placeholder.dataUrl}')`,
+  }}
+  class="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-xl"
+>
+</div>
+
+<Picture
+  src={image}
+  alt={alt}
+  width={width}
+  height={height}
+  densities={[1, 2]}
+  formats={['webp']}
+  quality={60}
+  loading={loading}
+  data-blurred-img
+  pictureAttributes={pictureClass ? { class: pictureClass } : undefined}
+  class:list={['opacity-0 transition-opacity duration-500', imgClass]}
+/>
+
+<script>
+  import { revealOnLoad } from '../../utils/revealOnLoad'
+
+  document
+    .querySelectorAll<HTMLImageElement>('img[data-blurred-img]')
+    .forEach(revealOnLoad)
+</script>

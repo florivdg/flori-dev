@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content'
-import { Picture } from 'astro:assets'
-import { generateBlurPlaceholder } from '../../utils/placeholder'
+import BlurredPicture from './BlurredPicture.astro'
 
 const images = (await getCollection('grid')).sort((a, b) => {
   const dateComparison = b.data.date.getTime() - a.data.date.getTime()
@@ -10,49 +9,30 @@ const images = (await getCollection('grid')).sort((a, b) => {
   }
   return dateComparison
 })
-
-const placeholders = await Promise.all(
-  images.map((entry) => generateBlurPlaceholder(entry.data.image)),
-)
 ---
 
 <ul
-  class="moments -mx-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:mx-0 sm:grid-cols-3 lg:gap-6"
+  class="moments xs:grid-cols-2 -mx-4 grid grid-cols-1 gap-3 sm:mx-0 sm:grid-cols-3 lg:gap-6"
 >
   {
-    images.map((entry, i) => {
-      const isAboveFold = i < 3
-      return (
-        <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
-          <a
-            href={`/grid/${entry.id}/`}
-            class="relative block aspect-[4/5] overflow-hidden"
-            data-grid-link
-          >
-            <div
-              aria-hidden="true"
-              style={{
-                backgroundColor: placeholders[i].color,
-                backgroundImage: `url('${placeholders[i].dataUrl}')`,
-              }}
-              class="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-xl"
-            />
-            <Picture
-              src={entry.data.image}
-              alt={entry.data.alt}
-              width="700"
-              height="875"
-              densities={[1, 2]}
-              formats={['webp']}
-              quality={60}
-              loading={isAboveFold ? 'eager' : 'lazy'}
-              data-grid-thumb
-              class="relative h-full w-full object-cover object-center opacity-0 transition-opacity duration-500"
-            />
-          </a>
-        </li>
-      )
-    })
+    images.map((entry, i) => (
+      <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
+        <a
+          href={`/grid/${entry.id}/`}
+          class="relative block aspect-[4/5] overflow-hidden"
+          data-grid-link
+        >
+          <BlurredPicture
+            image={entry.data.image}
+            alt={entry.data.alt}
+            width={700}
+            height={875}
+            loading={i < 3 ? 'eager' : 'lazy'}
+            imgClass="relative h-full w-full object-cover object-center"
+          />
+        </a>
+      </li>
+    ))
   }
 </ul>
 
@@ -77,8 +57,6 @@ const placeholders = await Promise.all(
 </style>
 
 <script>
-  import { revealOnLoad } from '../../utils/revealOnLoad'
-
   /// Find all grid links on the page.
   const links = document.querySelectorAll('a[data-grid-link]')
 
@@ -89,8 +67,4 @@ const placeholders = await Promise.all(
       sessionStorage.setItem('from-grid', 'true')
     })
   })
-
-  document
-    .querySelectorAll<HTMLImageElement>('img[data-grid-thumb]')
-    .forEach(revealOnLoad)
 </script>
