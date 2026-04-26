@@ -16,7 +16,7 @@ const currentPath = new URL(Astro.request.url).pathname
 ---
 
 <footer
-  class="mx-auto mt-16 max-w-5xl border-t border-slate-100 text-slate-500 dark:border-slate-700/60 dark:text-slate-200 sm:px-8"
+  class="mx-auto mt-16 max-w-5xl border-t border-slate-100 text-slate-500 sm:px-8 dark:border-slate-700/60 dark:text-slate-200"
 >
   <section class="bg-white px-4 dark:bg-gray-800">
     <div class="py-16">
@@ -28,65 +28,68 @@ const currentPath = new URL(Astro.request.url).pathname
             href="https://astro.build"
             target="_blank"
             rel="noopener noreferrer"
-            title="Astro"
+            aria-label="Astro"
+            class="focus-ring"
           >
             <img
               src="/icons/astro-icon-dark.svg"
-              alt="Astro"
+              alt=""
               width="63"
               height="79"
-              class="ml-1 mr-3 inline-block h-5 w-auto dark:hidden"
+              class="mr-3 ml-1 inline-block h-5 w-auto dark:hidden"
               loading="lazy"
             />
             <img
               src="/icons/astro-icon-light.svg"
-              alt="Astro"
+              alt=""
               width="63"
               height="79"
-              class="ml-1 mr-3 hidden h-5 w-auto dark:inline-block"
+              class="mr-3 ml-1 hidden h-5 w-auto dark:inline-block"
               loading="lazy"
             />
-          </a><span class="sr-only">Astro.</span> Fueled by
+          </a>. Fueled by
 
           <a
             href="https://www.starbucksathome.com"
             target="_blank"
             rel="noopener noreferrer"
-            title="Starbucks coffee"
+            aria-label="Starbucks coffee"
+            class="focus-ring"
           >
             <img
               src="/icons/starbucks.svg"
-              alt="Starbucks logo"
+              alt=""
               width="237.4"
               height="240.3"
-              class="ml-1 mr-3 inline-block h-5 w-auto"
+              class="mr-3 ml-1 inline-block h-5 w-auto"
               loading="lazy"
             />
-          </a><span class="sr-only">Starbucks coffee.</span> Coded with
+          </a>. Coded with
 
           <a
             href="https://code.visualstudio.com"
             target="_blank"
             rel="noopener noreferrer"
-            title="Visual Studio Code"
+            aria-label="Visual Studio Code"
+            class="focus-ring"
           >
             <img
               src="/icons/vscode.svg"
-              alt="Visual Studio Code"
+              alt=""
               width="100"
               height="100"
               class="ml-1 inline-block h-5 w-auto"
               loading="lazy"
             />
-          </a><span class="sr-only">Visual Studio Code.</span>
+          </a>.
         </p>
-        <p class="mb-16 mt-8 text-center">
+        <p class="mt-8 mb-16 text-center">
           <a
             href="https://astro.build"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-block"
-            ><span class="sr-only">My website is built with Astro.</span><img
+            class="focus-ring inline-block"
+            ><img
               src="https://astro.badg.es/v2/built-with-astro/large.svg"
               alt="Built with Astro"
               width="288"
@@ -100,18 +103,23 @@ const currentPath = new URL(Astro.request.url).pathname
         <div class="text-sm font-medium">
           <ul class="flex justify-center gap-6 lg:justify-start">
             {
-              footerNavItems.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class:list={[
-                      { 'text-pink-600': currentPath === item.href },
-                    ]}
-                  >
-                    {item.name}
-                  </a>
-                </li>
-              ))
+              footerNavItems.map((item) => {
+                const isActive = currentPath === item.href
+                return (
+                  <li>
+                    <a
+                      href={item.href}
+                      class:list={[
+                        'focus-ring inline-block py-1',
+                        { 'text-pink-700 dark:text-pink-400': isActive },
+                      ]}
+                      aria-current={isActive ? 'page' : undefined}
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                )
+              })
             }
           </ul>
         </div>

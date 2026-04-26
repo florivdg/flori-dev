@@ -59,3 +59,7 @@
     @apply bg-slate-800/80 text-slate-100 dark:bg-slate-200/80 dark:text-slate-700;
   }
 }
+
+.focus-ring {
+  @apply rounded-xs focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 focus-visible:outline-none dark:focus-visible:ring-slate-300 dark:focus-visible:ring-offset-gray-900;
+}
