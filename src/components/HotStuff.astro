@@ -35,7 +35,8 @@ const stuff = [
     @apply transition-opacity duration-150;
   }
 
-  .hot-stuff:has(:hover) li:not(:hover) {
+  .hot-stuff:has(:hover) li:not(:hover),
+  .hot-stuff:has(:focus-visible) li:not(:focus-visible) {
     opacity: 0.5;
   }
 </style>
@@ -61,7 +62,7 @@ const stuff = [
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="relative block -rotate-2 -skew-x-3 rounded bg-white/90 px-4 py-1.5 font-mono text-xl font-semibold text-slate-700 shadow-sm backdrop-blur-sm transition-all duration-150 hover:z-10 hover:rotate-0 hover:skew-x-0 hover:scale-150 hover:shadow-2xl dark:bg-gray-800/80 dark:text-slate-100"
+              class="focus-ring relative block -rotate-2 -skew-x-3 rounded bg-white/90 px-4 py-1.5 font-mono text-xl font-semibold text-slate-700 shadow-sm backdrop-blur-sm transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl focus-visible:z-10 focus-visible:scale-150 focus-visible:rotate-0 focus-visible:skew-x-0 dark:bg-gray-800/80 dark:text-slate-100"
               title={s.description}
             >
               {s.name}
