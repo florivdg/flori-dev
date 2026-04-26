@@ -43,6 +43,7 @@
 
     <div
       v-if="errorMessage"
+      role="alert"
       class="rounded-2xl bg-rose-50/80 p-6 text-rose-800 shadow-xl shadow-rose-200/40 dark:bg-rose-950/40 dark:text-rose-100 dark:shadow-rose-950/30"
     >
       <p class="font-semibold">Unable to load stats</p>
@@ -61,6 +62,8 @@
     <div v-else>
       <div
         v-if="!stats && isLoading"
+        role="status"
+        aria-live="polite"
         class="rounded-2xl bg-slate-50/90 p-8 text-center text-slate-500 shadow-xl shadow-slate-700/10 dark:bg-slate-900/60 dark:text-slate-300 dark:shadow-slate-950/20"
       >
         Loading usage details…
@@ -727,6 +730,20 @@ watch(selectedRange, () => {
   gap: 0.35rem;
   flex: 1 1 140px;
   min-width: 120px;
+}
+
+.browser-stats {
+  --vis-legend-label-color: #475569;
+}
+
+@media (prefers-color-scheme: dark) {
+  .browser-stats {
+    --vis-legend-label-color: #cbd5e1;
+  }
+}
+
+:global(.dark) .browser-stats {
+  --vis-legend-label-color: #cbd5e1;
 }
 
 .timeframe-select {
