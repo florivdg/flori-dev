@@ -63,14 +63,82 @@ const images = (await getCollection('grid')).sort((a, b) => {
 </style>
 
 <script>
-  /// Find all grid links on the page.
-  const links = document.querySelectorAll('a[data-grid-link]')
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('a[data-grid-link]'),
+  )
 
-  /// Add event listeners to set sessions storage value when clicked.
   links.forEach((l) => {
     l.addEventListener('click', () => {
-      /// Save a boolean value to session storage
       sessionStorage.setItem('from-grid', 'true')
     })
+  })
+
+  const focusAt = (idx: number) => {
+    links[Math.max(0, Math.min(links.length - 1, idx))]?.focus()
+  }
+
+  const findVerticalNeighbor = (
+    current: HTMLAnchorElement,
+    direction: 1 | -1,
+  ): HTMLAnchorElement | undefined => {
+    const cur = current.getBoundingClientRect()
+    const candidates = links
+      .filter((el) => el !== current)
+      .map((el) => ({ el, rect: el.getBoundingClientRect() }))
+      .filter(({ rect }) =>
+        direction === 1 ? rect.top > cur.bottom - 1 : rect.bottom < cur.top + 1,
+      )
+    if (candidates.length === 0) return undefined
+
+    const targetRowTop =
+      direction === 1
+        ? Math.min(...candidates.map((c) => c.rect.top))
+        : Math.max(...candidates.map((c) => c.rect.top))
+
+    const sameRow = candidates.filter(
+      (c) => Math.abs(c.rect.top - targetRowTop) < 4,
+    )
+
+    return sameRow.reduce((best, c) =>
+      Math.abs(c.rect.left - cur.left) < Math.abs(best.rect.left - cur.left)
+        ? c
+        : best,
+    ).el
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return
+
+    const active = document.activeElement
+    if (!(active instanceof HTMLAnchorElement)) return
+
+    const idx = links.indexOf(active)
+    if (idx < 0) return
+
+    let handled = true
+    switch (event.key) {
+      case 'ArrowRight':
+        focusAt(idx + 1)
+        break
+      case 'ArrowLeft':
+        focusAt(idx - 1)
+        break
+      case 'Home':
+        focusAt(0)
+        break
+      case 'End':
+        focusAt(links.length - 1)
+        break
+      case 'ArrowDown':
+        findVerticalNeighbor(active, 1)?.focus()
+        break
+      case 'ArrowUp':
+        findVerticalNeighbor(active, -1)?.focus()
+        break
+      default:
+        handled = false
+    }
+
+    if (handled) event.preventDefault()
   })
 </script>
