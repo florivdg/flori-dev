@@ -54,7 +54,8 @@ const seo: SEOData = {
 ---
 
 <BasicLayout seo={seo} forceDark>
-  <main>
+  <main id="main" tabindex="-1">
+    <h1 class="sr-only">{entry.data.title}</h1>
     <GridImage entry={entry} prev={prev} next={next} />
   </main>
 

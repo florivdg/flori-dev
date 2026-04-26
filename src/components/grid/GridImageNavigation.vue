@@ -1,14 +1,15 @@
 <template>
-  <div class="absolute bottom-0 left-0 right-0 z-10 flex justify-center p-6">
+  <div class="absolute right-0 bottom-0 left-0 z-10 flex justify-center p-6">
     <nav>
       <ul class="flex gap-2">
-        <li>
-          <component
-            :is="prevLink ? 'a' : 'span'"
-            :href="prevLink"
-            title="Go to previous photo"
+        <li v-for="button in buttons" :key="button.label">
+          <a
+            :href="button.href ?? '#'"
+            :aria-disabled="button.href ? undefined : 'true'"
+            :tabindex="button.href ? undefined : -1"
+            :aria-label="button.label"
             class="image-grid-button"
-            :class="[prevLink ? '' : 'pointer-events-none opacity-50']"
+            :class="{ 'pointer-events-none opacity-50': !button.href }"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -17,42 +18,15 @@
               stroke-width="1.25"
               stroke="currentColor"
               class="h-6 w-6 text-slate-700 dark:text-slate-300"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                :d="button.path"
               />
             </svg>
-
-            <span class="sr-only">Go to previous photo</span>
-          </component>
-        </li>
-        <li>
-          <component
-            :is="nextLink ? 'a' : 'span'"
-            :href="nextLink"
-            title="Go to next photo"
-            class="image-grid-button"
-            :class="[nextLink ? '' : 'pointer-events-none opacity-50']"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.25"
-              stroke="currentColor"
-              class="h-6 w-6 text-slate-700 dark:text-slate-300"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-              />
-            </svg>
-
-            <span class="sr-only">Go to next photo</span>
-          </component>
+          </a>
         </li>
       </ul>
     </nav>
@@ -64,36 +38,34 @@ import { computed, ref, watch } from 'vue'
 import { useMagicKeys } from '@vueuse/core'
 import type { CollectionEntry } from 'astro:content'
 
-/**
- * Props.
- */
 const props = defineProps<{
   prev?: CollectionEntry<'grid'>
   next?: CollectionEntry<'grid'>
 }>()
 
-/**
- * The link to the previous photo.
- */
 const prevLink = computed(() =>
   props.prev ? `/grid/${props.prev.id}/` : undefined,
 )
 
-/**
- * The link to the next photo.
- */
 const nextLink = computed(() =>
   props.next ? `/grid/${props.next.id}/` : undefined,
 )
 
-/**
- * Whether navigation is underway.
- */
+const buttons = computed(() => [
+  {
+    href: prevLink.value,
+    label: 'Go to previous photo',
+    path: 'M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18',
+  },
+  {
+    href: nextLink.value,
+    label: 'Go to next photo',
+    path: 'M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3',
+  },
+])
+
 const navigationIsUnderway = ref(false)
 
-/**
- * Use keyboard navigation.
- */
 const { ArrowLeft, ArrowRight } = useMagicKeys()
 watch([ArrowLeft, ArrowRight], ([pressedLeft, pressedRight]) => {
   if (navigationIsUnderway.value) return

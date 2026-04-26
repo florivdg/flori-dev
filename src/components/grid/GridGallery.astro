@@ -19,7 +19,7 @@ const images = (await getCollection('grid')).sort((a, b) => {
       <li class="moment -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-1 dark:shadow-slate-950/20">
         <a
           href={`/grid/${entry.id}/`}
-          class="relative block aspect-[4/5] overflow-hidden"
+          class="focus-ring relative block aspect-[4/5] overflow-hidden"
           data-grid-link
         >
           <BlurredPicture
@@ -50,6 +50,12 @@ const images = (await getCollection('grid')).sort((a, b) => {
 
     &:has(.moment:hover) {
       .moment:not(:hover) {
+        opacity: 0.75;
+      }
+    }
+
+    &:has(.moment:focus-visible) {
+      .moment:not(:focus-visible) {
         opacity: 0.75;
       }
     }
