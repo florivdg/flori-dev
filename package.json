@@ -51,5 +51,8 @@
     "esbuild",
     "sharp",
     "vue-demi"
-  ]
+  ],
+  "overrides": {
+    "estree-walker": "2.0.2"
+  }
 }
