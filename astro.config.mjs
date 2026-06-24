@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config'
+import { unified } from '@astrojs/markdown-remark'
 import tailwindcss from '@tailwindcss/vite'
 import remarkExternalLinks from './src/plugins/remarkExternalLinks'
 
@@ -45,10 +46,15 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
+  // Astro 7 defaults to the Rust-based Sätteri Markdown processor. Opt back
+  // into the unified() pipeline so our remark plugin and rehype-based
+  // Expressive Code integration keep working.
   markdown: {
-    remarkPlugins: [
-      [remarkExternalLinks, { target: '_blank', rel: 'noopener noreferrer' }],
-    ],
+    processor: unified({
+      remarkPlugins: [
+        [remarkExternalLinks, { target: '_blank', rel: 'noopener noreferrer' }],
+      ],
+    }),
   },
 
   adapter: vercel({
