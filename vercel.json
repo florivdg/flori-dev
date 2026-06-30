@@ -4,6 +4,11 @@
       "source": "/sitemap.xml",
       "destination": "/sitemap-index.xml",
       "permanent": true
+    },
+    {
+      "source": "/reads/astro-to-the-moon-and-back",
+      "destination": "/reads/astro-the-perfect-application-framework",
+      "permanent": true
     }
   ]
 }
