@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/slides/ubt26-beyond-the-vibe/:path*",
+      "destination": "/slides/ubt26-beyond-the-vibe/index.html"
+    }
+  ],
   "redirects": [
     {
       "source": "/sitemap.xml",
