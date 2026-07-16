@@ -1,0 +1,137 @@
+---
+title: 'I Gave a Talk at the University of Bayreuth: Beyond the Vibe'
+pubDate: 2026-07-16
+description: 'My guest lecture on AI coding agents at the University of Bayreuth, in English: why context, verification, and infrastructure matter more than the model you pick.'
+image:
+  {
+    src: '../../assets/reads/beyond-the-vibe-ubt26-1.jpg',
+    alt: 'Florian speaking at a podium in a lecture hall at the University of Bayreuth, gesturing next to a laptop covered in stickers, with a terminal-styled slide reading "Fragen?" projected behind him and listeners in the foreground.',
+  }
+tags: ['AI', 'Agents', 'Claude', 'Software Development']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/beyond-the-vibe-ubt26-1.jpg'
+import loopsImage from '../../assets/reads/beyond-the-vibe-ubt26-2.jpg'
+import breatherImage from '../../assets/reads/beyond-the-vibe-ubt26-3.jpg'
+import finalSlideImage from '../../assets/reads/beyond-the-vibe-slide-systems.png'
+import titleSlideImage from '../../assets/reads/beyond-the-vibe-slide-title.png'
+
+<Image
+  src={coverImage}
+  alt="Florian speaking at a podium in a lecture hall at the University of Bayreuth, gesturing next to a laptop covered in stickers, with a terminal-styled slide reading 'Fragen?' projected behind him and listeners in the foreground."
+  caption="Q&A time at the University of Bayreuth — the best part of every talk."
+  lazy={false}
+/>
+
+Last week I had the pleasure of giving a guest lecture at the University of Bayreuth. Prof. Dr. Agnes Koschmider's chair for Business Informatics and Process Analytics runs a [lecture series on Generative AI](https://www.pa.uni-bayreuth.de/de/lehre/Generative-KI-2026/Programme/index.html) this summer semester — covering everything from LLM fundamentals and prompt engineering to ethics, data protection, and regulation, with guest speakers adding real-world perspectives from industry and public institutions.
+
+My part was the practitioner's slot: a talk titled **"Beyond the Vibe"** — about how AI coding agents actually get used in day-to-day software development, beyond the hype and beyond, well, the vibes. 😉
+
+<Image
+  src={breatherImage}
+  alt="Florian gesturing with both hands while explaining a densely written slide projected on the wall behind him in a bright seminar room."
+  caption="Mid-talk in Bayreuth — this is what 'talking with your hands' looks like."
+/>
+
+The talk was in German, but the ideas aren't — so this post is the English, personal version of it. Not a slide-by-slide transcript (the <a href="/slides/ubt26-beyond-the-vibe/" target="_blank">full deck is online</a> if you want that), but the essence: **how I approach AI coding, and why I believe context, verification, and infrastructure matter more than the model you pick.**
+
+<a href="/slides/ubt26-beyond-the-vibe/" target="_blank">
+  <Image
+    src={titleSlideImage}
+    alt="Dark editor-styled title slide reading 'Beyond the Vibe' with 'Vibe' highlighted in cyan, subtitled 'Praktischer Einsatz von KI-Agenten im Entwicklungsalltag eines ISO-27001-zertifizierten Unternehmens.'"
+    caption="The title slide — click it to browse the full deck."
+  />
+</a>
+
+The title is a nod to Andrej Karpathy, who coined _vibe coding_ in February 2025: _"fully give in to the vibes, embrace exponentials, and forget that the code even exists."_ A throwaway tweet that became the term of the year — and honestly, my own about page says "embrace the vibe," so no judgment here. Vibing is where everyone starts — [my first Claude Code post](/reads/coding-agents-like-claude-code) from March 2025 certainly did. This post is about what comes after.
+
+## Agents Inside an ISO-27001-Certified SDLC
+
+First, where I'm coming from. I work as a senior software developer at an ISO/IEC 27001:2022-certified [company](https://www.tmt.de): documented processes, traceable reviews, a secure development lifecycle. Real customers, production systems, audits.
+
+And here's the thing: **agents get no special rules.** They go through the same cycle as everyone else — plan, build, review, operate — with the same gates. Every merge request additionally passes through an AI review layer in our CI: a GPT-based reviewer that comments on risks, quality, and test coverage. It doesn't replace the human reviewer; it's an independent layer _before_ them. The human decides.
+
+When the external auditor looked at how we develop software, agents included, his verdict was:
+
+> State of the art — with an asterisk.
+
+The asterisk wasn't a caveat. It was praise — a process that goes _above_ the standard. And it captures the insight that drives this whole post: **agents work productively because of strict processes, not despite them.** Good process and good agents amplify each other. That belief shapes everything below — even on this website, where the certification body is future-me. 😄
+
+## Context Is Queen (or King)
+
+The lever isn't the model — it's **what the agent can see**. Same model, same prompt, wildly different results depending on the context. Models rarely hallucinate out of malice; they lack information: the current API signature, the project convention, the existing design, the reason behind an old decision.
+
+**The first context lives in the repo.** A `CLAUDE.md` or `AGENTS.md` file carries the stack, the conventions, the commands — "this is how we build here." It's versioned, shared, and traceable (a nice echo of the ISO backdrop), and it grows with the project. This site has exactly that, with a small twist: `AGENTS.md` is a symlink to `CLAUDE.md` — one source of truth, two conventions, one harness-agnostic and one for Claude Code.
+
+**Plan first.** For larger tasks I have the agent write a plan before it touches code. Assumptions become visible and correctable — much cheaper than throwing away a finished, wrong branch.
+
+Beyond the repo, an agent gets context through three channels: its **built-in tools** (read, edit, search), **Bash** — the agent inherits my terminal, so every CLI I use becomes a tool — and **MCP** for external systems. Examples I actually use: [context7](https://context7.com) for current framework docs instead of stale training data, a GitLab MCP server at work, and design files via the Penpot MCP server.
+
+Counterpoint: **not everything needs an MCP server.** Often the plain CLI is simpler and more robust — `gh` and `glab` cover most of what a Git-platform MCP does, and `playwright-cli` drives a real browser without any extra integration.
+
+There's a cost side too, and it's easy to miss: **every tool you connect writes its description into the system prompt** before the agent has done anything. My favorite stat: Playwright as an MCP server ships 25+ tools and can burn ~114k tokens per test run; the slim CLI does the same job for ~27k. And more tools means more choices, which means less focus. The fix is lazy loading — tool schemas get pulled in only when they're actually needed.
+
+<Note>
+  **🔥 Hot Tip:** Relevant context beats maximal context. Curating what an agent
+  sees is worth more than connecting everything you can — curation beats full
+  loadout.
+</Note>
+
+The same lazy-loading idea powers **skills**: a folder with a `SKILL.md` that packages a way of working — review criteria, security checklists, project workflows. Only the one-line description sits in the prompt until the task actually matches. Best practices become reproducible and shareable instead of evaporating with the prompt that contained them.
+
+## Prompts Are Out, Loops Are In
+
+<Image
+  src={loopsImage}
+  alt="Florian standing at a small round table with a sticker-covered laptop, mid-sentence, in front of a projected slide reading 'Loops, Loops, Loops'."
+  caption="The section title says it all: change, check, fix — until green."
+/>
+
+The unit of work isn't the perfectly phrased prompt. It's the **loop**: change → check → fix, repeated until green. Which leads to my favorite one-liner from the talk:
+
+<Note>
+  **🔁 Remember:** An agent is only as autonomous as its means of verifying its
+  own results. Without checks, every iteration is blind.
+</Note>
+
+Think of verification as a ladder, cheap to expensive. At the bottom: **deterministic checks as loop fuel.** Linters, typechecks, formatting, static analysis — cheap, fast, and deterministic, a clear red/green signal the agent can pull itself up on. A compiler error is a perfect teacher. On flori.dev that's `astro check`, type-aware linting, and Prettier.
+
+Next rung: **tests as eyes.** Unit tests are the tight, fast feedback path. End-to-end tests with Playwright go further — the agent drives a real browser, clicks through the flow, and _observes_ whether it works. That's the bridge from "the code looks right" to "the behavior is observably correct." Small personal detail: this site's dev server is agent-friendly — it auto-backgrounds itself with JSON logging (`bun run dev:bg`), so an agent can start it, test against it, and read the logs without blocking its own terminal.
+
+Then: **every change gets a URL.** Vercel builds a preview deployment per branch, so the agent can check its own work against a real, running URL — and I decide based on real behavior instead of a diff. Great for non-technical folks on a project, too.
+
+At the top of the ladder sits my favorite insight: **adversarial review.** An agent grading its own work is lenient; one told to _refute_ it is honest. Different perspectives find different bugs, so a loop scales naturally into roles — implementer, reviewer, verifier. At work that's cross-reviews plus the AI review layer in CI. At home it can be as simple as a second agent poking holes in the first one's work.
+
+One honest grounding note: loops need a stop condition, not babysitting. Goal-based (iterate until the Lighthouse score hits 90), interval-based (check open PRs and CI periodically), or event-triggered (a bug report, a dependency upgrade). And not every task needs a fancy loop — start with the simplest thing that works.
+
+## Infrastructure Decides Whether It Scales
+
+One story made the audience sit up more than any other. The numbers are a snapshot as of mid-2026 — they age fast.
+
+**Bun.** The JavaScript runtime was ported from Zig to Rust — roughly a million lines across 6,755 commits — in **six days**, with 99.8% of the test suite passing, via orchestrated agent workflows. The whole thing is public in [PR #30412](https://github.com/oven-sh/bun/pull/30412), merged May 14, 2026 — and the Bun team has since published a detailed write-up, ["Rewriting Bun in Rust"](https://bun.com/blog/bun-in-rust), on how they pulled it off. Honest footnote: automated review still surfaced 78+ issues, and the PR was explicitly not release-ready. Loops do the heavy lifting; humans still decide.
+
+What made that possible wasn't a smarter model — it was the platform around it: a massive test suite as the verification signal, orchestrated workflows, and infrastructure that could run thousands of loops in parallel.
+
+The personal translation: this is why the ISO processes from the beginning turned out to be an _asset_ — and why even my personal website has CI, preview deploys, tests, and repo-level context files. Same investment, hobby scale. The "state of the art — with an asterisk" processes weren't in the way. They were the head start.
+
+## Where This Is Heading
+
+If I look ahead, the loop is already leaving the terminal. Agents run asynchronously in the background, coupled to CI — reading errors, fixing code, re-running the suite until it's green. To be clear, they're not magical daemons: they run through configured integrations and event triggers, kicked off from Slack or Git, not out of thin air. But when a million lines can be ported in six days, the lesson is the same one the auditor's asterisk taught me: the model was never the bottleneck. The platform was.
+
+That's why I'm convinced the job of a software engineer isn't shrinking — it's shifting. Less typing lines, more designing the systems agents work in: the context they see, the loops that verify them, the infrastructure that scales them. Depth stays valuable; breadth just became affordable — even for small teams, even for one person and their website.
+
+If you take three things away from this post, make it these:
+
+1. **Context** decides whether agents work sensibly.
+2. **Verification** decides whether results hold up.
+3. **Infrastructure** decides whether it scales.
+
+Or, as I put it on the last slide: **don't babysit agents — build systems.** And then allow yourself to think bigger. 🚀
+
+<Image
+  src={finalSlideImage}
+  alt="Dark presentation slide reading 'Nicht Agenten babysitten. Systeme bauen.' with 'Systeme bauen' highlighted in cyan, and the subtitle 'Investiert in Prozesse und Plattform – dann darf euer Team größer denken.'"
+  caption="If you remember one slide from the talk, make it this one."
+/>
