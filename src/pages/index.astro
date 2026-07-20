@@ -39,7 +39,7 @@ const seo: SEOData = {
 </style>
 
 <Layout seo={seo}>
-  <main>
+  <main id="main" tabindex="-1">
     <BoxedContent>
       <h1 class="my-12 text-6xl font-black sm:text-7xl dark:text-white">
         <span class="relative z-10">Hello, I am</span><br />
@@ -126,12 +126,13 @@ const seo: SEOData = {
       <div class="mt-12 text-center">
         <a
           href="/about/"
-          class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl"
+          class="focus-ring inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl focus-visible:z-10 focus-visible:scale-150 focus-visible:rotate-0 focus-visible:skew-x-0"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
             class="mr-1 h-5 w-5"
+            aria-hidden="true"
           >
             <path
               d="M4.75 3A1.75 1.75 0 003 4.75v2.752l.104-.002h13.792c.035 0 .07 0 .104.002V6.75A1.75 1.75 0 0015.25 5h-3.836a.25.25 0 01-.177-.073L9.823 3.513A1.75 1.75 0 008.586 3H4.75zM3.104 9a1.75 1.75 0 00-1.673 2.265l1.385 4.5A1.75 1.75 0 004.488 17h11.023a1.75 1.75 0 001.673-1.235l1.384-4.5A1.75 1.75 0 0016.896 9H3.104z"
@@ -164,10 +165,10 @@ const seo: SEOData = {
             href="https://sueden.social/@florivdg"
             target="_blank"
             rel="noopener noreferrer"
-            class="block opacity-75 transition-opacity duration-150 hover:opacity-100"
+            class="focus-ring block opacity-75 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
             ><span class="sr-only">Florian van der Galiën on Mastodon</span><img
               src="/icons/mastodon.svg"
-              alt="Mastodon"
+              alt=""
               width="230.842"
               height="247.477"
               class="h-auto w-12"
@@ -180,10 +181,10 @@ const seo: SEOData = {
             href="https://github.com/florivdg"
             target="_blank"
             rel="noopener noreferrer"
-            class="block opacity-75 transition-opacity duration-150 hover:opacity-100"
+            class="focus-ring block opacity-75 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
             ><span class="sr-only">Florian van der Galiën on Github</span><img
               src="/icons/github-mark.svg"
-              alt="Github"
+              alt=""
               width="98"
               height="96"
               class="h-auto w-12 dark:hidden"
@@ -191,7 +192,7 @@ const seo: SEOData = {
             />
             <img
               src="/icons/github-mark-white.svg"
-              alt="Github"
+              alt=""
               width="98"
               height="96"
               class="hidden h-auto w-12 dark:inline"

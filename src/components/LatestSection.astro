@@ -35,7 +35,8 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
     @apply transition-all duration-150;
   }
 
-  .bento-grid:has(:hover) > :not(:hover) {
+  .bento-grid:has(:hover) > :not(:hover),
+  .bento-grid:has(:focus-visible) > :not(:focus-visible) {
     opacity: 0.75;
   }
 
@@ -60,7 +61,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
   >
     <a
       href={`/reads/${featuredRead.id}`}
-      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 dark:shadow-slate-950/20"
+      class="focus-ring group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 dark:shadow-slate-950/20"
     >
       {
         featuredRead.data.image ? (
@@ -107,7 +108,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/grid/${firstPhoto.id}/`}
-      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
+      class="focus-ring group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
     >
       <Picture
         src={firstPhoto.data.image}
@@ -136,7 +137,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/grid/${secondPhoto.id}/`}
-      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
+      class="focus-ring group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
     >
       <Picture
         src={secondPhoto.data.image}
@@ -167,7 +168,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/reads/${secondRead.id}`}
-      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 dark:shadow-slate-950/20"
+      class="focus-ring group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 dark:shadow-slate-950/20"
     >
       {
         secondRead.data.image ? (
@@ -205,7 +206,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/grid/${thirdPhoto.id}/`}
-      class="group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
+      class="focus-ring group relative block min-h-64 -rotate-[0.1deg] -skew-x-[0.5deg] overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-105 hover:motion-safe:-rotate-1 lg:h-full dark:shadow-slate-950/20"
     >
       <Picture
         src={thirdPhoto.data.image}
@@ -234,7 +235,7 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
 
     <a
       href={`/reads/${thirdRead.id}`}
-      class="group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 md:flex-row lg:col-span-3 dark:shadow-slate-950/20"
+      class="focus-ring group flex -rotate-[0.1deg] -skew-x-[0.5deg] flex-col overflow-hidden rounded-lg shadow-xl shadow-slate-700/10 hover:scale-[1.02] hover:motion-safe:-rotate-1 md:col-span-2 md:flex-row lg:col-span-3 dark:shadow-slate-950/20"
     >
       <div
         class="img-fill relative aspect-video shrink-0 md:aspect-auto md:w-2/5"
@@ -285,13 +286,14 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
   <div class="mt-12 flex flex-wrap items-center justify-center gap-4">
     <a
       href="/reads/"
-      class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl"
+      class="focus-ring inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl focus-visible:z-10 focus-visible:scale-150 focus-visible:rotate-0 focus-visible:skew-x-0"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
         class="mr-1 h-5 w-5"
+        aria-hidden="true"
       >
         <path
           d="M10.75 16.82A7.462 7.462 0 0115 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0018 15.06V3.44a.75.75 0 00-.556-.724A9.006 9.006 0 0015 2.5a8.96 8.96 0 00-4.25 1.065v13.255zM9.25 4.75c0-.212.04-.416.116-.604A8.96 8.96 0 005 3.5a9.007 9.007 0 00-2.444.274.75.75 0 00-.556.724v11.62a.75.75 0 00.954.724A7.465 7.465 0 015 16.5a7.465 7.465 0 013.25.748V4.75z"
@@ -301,13 +303,14 @@ const [firstPhoto, secondPhoto, thirdPhoto] = photos
     </a>
     <a
       href="/grid/"
-      class="inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl"
+      class="focus-ring inline-flex -skew-x-6 items-center rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-8 py-2 font-mono font-semibold text-white transition-all duration-150 hover:z-10 hover:scale-150 hover:rotate-0 hover:skew-x-0 hover:shadow-2xl focus-visible:z-10 focus-visible:scale-150 focus-visible:rotate-0 focus-visible:skew-x-0"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
         class="mr-1 h-5 w-5"
+        aria-hidden="true"
       >
         <path
           fill-rule="evenodd"
