@@ -13,7 +13,12 @@
     },
     {
       "source": "/reads/astro-to-the-moon-and-back",
-      "destination": "/reads/astro-the-perfect-application-framework",
+      "destination": "/reads/astro-the-perfect-application-framework/",
+      "permanent": true
+    },
+    {
+      "source": "/reads/astro-to-the-moon-and-back/",
+      "destination": "/reads/astro-the-perfect-application-framework/",
       "permanent": true
     }
   ]
