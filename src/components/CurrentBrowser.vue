@@ -10,12 +10,16 @@
       </p>
       <div
         v-if="browser"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        :aria-label="`Current default browser: ${getBrowserAlt(browser)}`"
         class="my-4 flex aspect-square w-2/3 items-center self-center rounded-2xl bg-white @xl:my-8 @xl:w-60 @4xl:self-auto dark:bg-slate-800"
       >
         <img
           v-if="isBrowserValid(browser)"
           :src="`/icons/${browser}.svg`"
-          :alt="getBrowserAlt(browser)"
+          alt=""
           class="aspect-square w-full object-contain p-5 @4xl:p-10"
           loading="lazy"
           width="100"
@@ -29,6 +33,7 @@
           height="100"
           viewBox="0 0 320 512"
           class="mx-auto block self-center fill-current text-slate-500 dark:text-slate-400"
+          aria-hidden="true"
         >
           <!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
           <path
@@ -50,8 +55,9 @@
           :class="[status === 'CLOSED' ? 'cursor-pointer' : 'cursor-default']"
         >
           <span
-            class="inline-block h-2.5 w-2.5 animate-pulse rounded-full"
+            class="inline-block h-2.5 w-2.5 rounded-full motion-safe:animate-pulse"
             :class="[status === 'OPEN' ? 'bg-lime-500' : 'bg-red-500']"
+            aria-hidden="true"
           ></span>
           <span
             class="font-mono text-xs font-bold text-slate-600 uppercase dark:text-slate-400"
@@ -77,11 +83,8 @@ const { status, data } = useEventSource(
  */
 const browser = ref<string | null>(null)
 
-/**
- * Watch for changes in the websocket data.
- */
-watch(data, (data) => {
-  if (data) browser.value = data
+watch(data, (next) => {
+  if (next && next !== browser.value) browser.value = next
 })
 
 /**

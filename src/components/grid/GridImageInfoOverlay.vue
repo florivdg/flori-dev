@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute bottom-0 right-0 top-0 z-30 max-w-96 p-4">
+  <div class="absolute top-0 right-0 bottom-0 z-30 max-w-96 p-4">
     <Transition
       enter-from-class="translate-x-[105%] scale-95"
       enter-active-class="transform transition ease-in-out duration-500 sm:duration-700"
@@ -10,14 +10,17 @@
     >
       <div
         v-show="showInfo"
+        id="grid-info-panel"
+        role="region"
+        aria-label="Photo details"
         class="h-full overflow-hidden rounded-xl bg-slate-100/80 shadow-xl backdrop-blur-lg dark:bg-slate-800/80"
       >
-        <div class="h-full overflow-y-auto px-6 pb-20 pt-6">
-          <h1
-            class="mb-4 inline-block text-balance bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text text-3xl font-black text-transparent dark:from-pink-400 dark:to-sky-400"
+        <div class="h-full overflow-y-auto px-6 pt-6 pb-20">
+          <h2
+            class="mb-4 inline-block bg-gradient-to-tr from-pink-500 to-sky-500 bg-clip-text text-3xl font-black text-balance text-transparent dark:from-pink-400 dark:to-sky-400"
           >
             {{ entry.data.title }}
-          </h1>
+          </h2>
 
           <p
             v-if="entry.data.location"
@@ -33,7 +36,6 @@
               <tr>
                 <td class="w-10">
                   <svg
-                    id="icon"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
@@ -55,7 +57,6 @@
               <tr>
                 <td>
                   <svg
-                    id="icon"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
@@ -74,7 +75,6 @@
               <tr>
                 <td>
                   <svg
-                    id="icon"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
@@ -91,7 +91,6 @@
               <tr>
                 <td>
                   <svg
-                    id="icon"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
@@ -106,13 +105,13 @@
                       transform="translate(0 0)"
                     />
                   </svg>
+                  <span class="sr-only">Focal length</span>
                 </td>
                 <td>{{ parseInt(entry.data.exif.focal_length) }} mm</td>
               </tr>
               <tr>
                 <td>
                   <svg
-                    id="icon"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
@@ -148,7 +147,6 @@
               <tr>
                 <td>
                   <svg
-                    id="icon"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 32 32"
                     aria-hidden="true"
@@ -218,11 +216,14 @@ const showInfo = useLocalStorage('show-photograph-info', false, {
 })
 
 /**
- * Toggle info on keypress.
+ * Toggle info on keypress; close on Escape.
  */
-const { i } = useMagicKeys()
+const { i, escape } = useMagicKeys()
 watch(i, (i) => {
   if (i) showInfo.value = !showInfo.value
+})
+watch(escape, (pressed) => {
+  if (pressed && showInfo.value) showInfo.value = false
 })
 
 /*

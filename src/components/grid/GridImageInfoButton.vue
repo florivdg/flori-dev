@@ -1,9 +1,13 @@
 <template>
-  <div class="absolute bottom-0 right-0 z-50 p-6">
+  <div class="absolute right-0 bottom-0 z-50 p-6">
     <button
       type="button"
       @click="showInfo = !showInfo"
-      title="Show info about the photograph"
+      :aria-label="
+        showInfo ? 'Hide photograph details' : 'Show photograph details'
+      "
+      :aria-expanded="showInfo"
+      aria-controls="grid-info-panel"
       class="image-grid-button"
       :class="{
         active: showInfo,
@@ -16,6 +20,7 @@
         stroke-width="1.25"
         stroke="currentColor"
         class="h-6 w-6 text-inherit"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
