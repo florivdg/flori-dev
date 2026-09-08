@@ -22,34 +22,179 @@
   font-style: oblique -11deg 0deg;
 }
 
+/*
+ * Focus indicator: dual-tone core + brand halo.
+ *
+ * The core is two adjacent 2px rings, one light and one dark. Whatever sits
+ * behind the indicator — page background, gradient button, arbitrary photo —
+ * at least one of the two bands clears 3:1 non-text contrast against it, so
+ * the indicator never disappears. `--focus-core-in` sits against the element,
+ * `--focus-core-out` faces the page, and the two swap in dark mode so the
+ * outermost band always reads against the page background.
+ *
+ * The brand halo is two offset, blurred glows — pink toward the bottom-left,
+ * blue toward the top-right — which echoes the site's `to-tr` pink→blue
+ * gradient without needing a gradient-painted pseudo element.
+ */
 :root {
-  --focus-contrast: #0f172a;
-  --focus-brand-from: #ec4899;
-  --focus-brand-to: #3b82f6;
+  --focus-core-in: #ffffff;
+  --focus-core-out: #0f172a;
+  --focus-halo-from: rgb(236 72 153 / 0.5);
+  --focus-halo-to: rgb(59 130 246 / 0.5);
 }
 
 :where(.dark, .dark *) {
-  --focus-contrast: #f8fafc;
-  --focus-brand-from: #f472b6;
-  --focus-brand-to: #38bdf8;
+  --focus-core-in: #0b1220;
+  --focus-core-out: #f8fafc;
+  --focus-halo-from: rgb(244 114 182 / 0.55);
+  --focus-halo-to: rgb(56 189 248 / 0.55);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --focus-contrast: #f8fafc;
-    --focus-brand-from: #f472b6;
-    --focus-brand-to: #38bdf8;
+    --focus-core-in: #0b1220;
+    --focus-core-out: #f8fafc;
+    --focus-halo-from: rgb(244 114 182 / 0.55);
+    --focus-halo-to: rgb(56 189 248 / 0.55);
   }
 }
 
 @keyframes focus-ring-in {
   from {
-    opacity: 0;
-    transform: scale(0.96);
+    box-shadow: var(--focus-shadow-from);
   }
   to {
-    opacity: 1;
-    transform: scale(1);
+    box-shadow: var(--focus-shadow-to);
+  }
+}
+
+/*
+ * These three live in Tailwind's `utilities` layer on purpose. Unlayered rules
+ * beat every layered rule regardless of specificity, so an unlayered
+ * `.focus-ring { position: relative }` used to override `.sr-only` and
+ * `focus:fixed` on the skip link and push every page down by its line box.
+ * Inside the layer they compete with Tailwind on specificity alone, and the
+ * one positioning declaration that is still needed is wrapped in `:where()`
+ * so it carries zero specificity and any Tailwind position utility wins.
+ */
+@layer utilities {
+  /* `.focus-ring` and `.focus-ring-inset` are drawn purely with box-shadow, so
+     they need no containing block at all. Only the overlay variant paints a
+     pseudo element and therefore needs a positioned ancestor. */
+  :where(.focus-ring-overlay) {
+    position: relative;
+  }
+
+  .focus-ring:focus-visible,
+  .focus-ring-inset:focus-visible,
+  .focus-ring-overlay:focus-visible {
+    outline: none;
+
+    /* Re-emit Tailwind's own shadow/ring stack so utilities like `shadow-xl`
+       survive while the element is focused. All five are registered custom
+       properties defaulting to `0 0 #0000`, so this is always a valid value
+       and keeps the shadow list length identical between the two keyframes. */
+    --focus-tw-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  /*
+   * Outer ring. Built from box-shadow rather than a pseudo element because an
+   * element's own `overflow: hidden` clips its pseudo elements but never its
+   * own box-shadow or outline — the bento tiles in LatestSection.astro carry
+   * `overflow-hidden` on the very element that gets the ring.
+   */
+  .focus-ring:focus-visible {
+    --focus-shadow-from:
+      0 0 0 0 transparent, 0 0 0 1px transparent, -1px 1px 4px 0 transparent,
+      1px -1px 4px 0 transparent, var(--focus-tw-shadow);
+    --focus-shadow-to:
+      0 0 0 2px var(--focus-core-in), 0 0 0 4px var(--focus-core-out),
+      -3px 3px 12px 1px var(--focus-halo-from),
+      3px -3px 12px 1px var(--focus-halo-to), var(--focus-tw-shadow);
+
+    box-shadow: var(--focus-shadow-to);
+    animation: focus-ring-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /*
+   * Inset ring for tightly packed controls (`.image-grid-button`, the skewed
+   * nav pill whose `<ul>` clips with `overflow-hidden`). Inset shadows are
+   * painted inside the border box, so an ancestor's clip can never remove them.
+   */
+  .focus-ring-inset:focus-visible {
+    --focus-shadow-from:
+      inset 0 0 0 0 transparent, inset 0 0 0 1px transparent,
+      inset 2px -2px 5px 0 transparent, inset -2px 2px 5px 0 transparent,
+      var(--focus-tw-shadow);
+    --focus-shadow-to:
+      inset 0 0 0 2px var(--focus-core-out),
+      inset 0 0 0 4px var(--focus-core-in),
+      inset 3px -3px 10px -1px var(--focus-halo-from),
+      inset -3px 3px 10px -1px var(--focus-halo-to), var(--focus-tw-shadow);
+
+    box-shadow: var(--focus-shadow-to);
+    animation: focus-ring-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /*
+   * Overlay ring for links whose ANCESTOR clips with `overflow: hidden` (the
+   * grid tiles). An ancestor's clip does remove box-shadow and outline, so the
+   * ring has to be an in-bounds pseudo element stacked above the photo.
+   */
+  .focus-ring-overlay:focus-visible::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 10;
+
+    --focus-shadow-from:
+      inset 0 0 0 0 transparent, inset 0 0 0 1px transparent,
+      inset 2px -2px 6px 0 transparent, inset -2px 2px 6px 0 transparent;
+    --focus-shadow-to:
+      inset 0 0 0 2px var(--focus-core-out),
+      inset 0 0 0 4px var(--focus-core-in),
+      inset 4px -4px 14px -2px var(--focus-halo-from),
+      inset -4px 4px 14px -2px var(--focus-halo-to);
+
+    box-shadow: var(--focus-shadow-to);
+    animation: focus-ring-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* No entry animation under reduce — the ring is painted at full strength
+     immediately because `box-shadow` already holds the end state. */
+  @media (prefers-reduced-motion: reduce) {
+    .focus-ring:focus-visible,
+    .focus-ring-inset:focus-visible,
+    .focus-ring-overlay:focus-visible::after {
+      animation: none;
+    }
+  }
+
+  /* Windows High Contrast strips backgrounds and box-shadows, which would take
+     the entire indicator with them. Fall back to a thick system-colored
+     outline, which forced-colors mode keeps. */
+  @media (forced-colors: active) {
+    .focus-ring:focus-visible,
+    .focus-ring-inset:focus-visible,
+    .focus-ring-overlay:focus-visible {
+      outline: 3px solid Highlight;
+      outline-offset: 2px;
+      box-shadow: none;
+      animation: none;
+    }
+
+    .focus-ring-inset:focus-visible,
+    .focus-ring-overlay:focus-visible {
+      outline-offset: -3px;
+    }
+
+    .focus-ring-overlay:focus-visible::after {
+      content: none;
+    }
   }
 }
 
@@ -72,7 +217,10 @@
   & li {
     @apply relative;
 
-    ::before {
+    /* `li::before`, NOT `li ::before`: a bare `::before` in nested CSS compiles
+       to a descendant selector and would paint the bullet on every descendant
+       (`a`, `strong`, …) instead of the list item itself. */
+    &::before {
       content: '';
       @apply absolute top-2.5 -left-3 inline-block h-2 w-1.5 -rotate-1 -skew-x-6 rounded-[1px] bg-gradient-to-tr from-slate-400 to-slate-500 leading-none;
     }
@@ -83,111 +231,19 @@
   text-wrap: balance;
 }
 
+/*
+ * Deliberately carries no `outline` declaration of its own. This rule is
+ * unlayered, so any outline it emitted — `focus:outline-none` used to be in the
+ * list below — would beat the layered `@media (forced-colors: active)` fallback
+ * above regardless of specificity and leave these controls with no indicator at
+ * all in Windows High Contrast. Every consumer pairs the class with
+ * `.focus-ring-inset`, whose layered `outline: none` already suppresses the UA
+ * outline in normal mode.
+ */
 .image-grid-button {
-  @apply flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-300/50 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none hover:motion-safe:-rotate-2 dark:bg-slate-700/80;
+  @apply flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-300/50 text-center backdrop-blur transition-all duration-150 hover:scale-105 hover:motion-safe:-rotate-2 dark:bg-slate-700/80;
 
   &.active {
     @apply bg-slate-800/80 text-slate-100 dark:bg-slate-200/80 dark:text-slate-700;
-  }
-}
-
-.focus-ring,
-.focus-ring-inset,
-.focus-ring-overlay {
-  position: relative;
-}
-
-.focus-ring:focus-visible,
-.focus-ring-inset:focus-visible,
-.focus-ring-overlay:focus-visible {
-  outline: none;
-}
-
-.focus-ring:focus-visible {
-  outline: 1px solid var(--focus-contrast);
-  outline-offset: 5px;
-}
-
-.focus-ring:focus-visible::before {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  padding: 2px;
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    var(--focus-brand-from),
-    var(--focus-brand-to)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  animation: focus-ring-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.focus-ring-inset:focus-visible {
-  outline: 1px solid var(--focus-contrast);
-  outline-offset: -1px;
-}
-
-.focus-ring-inset:focus-visible::before {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  padding: 2px;
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    var(--focus-brand-from),
-    var(--focus-brand-to)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  animation: focus-ring-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.focus-ring-overlay:focus-visible::before,
-.focus-ring-overlay:focus-visible::after {
-  content: '';
-  position: absolute;
-  pointer-events: none;
-  z-index: 10;
-  border-radius: inherit;
-}
-
-.focus-ring-overlay:focus-visible::before {
-  inset: 0;
-  border: 1px solid var(--focus-contrast);
-}
-
-.focus-ring-overlay:focus-visible::after {
-  inset: 2px;
-  padding: 2px;
-  background: linear-gradient(
-    135deg,
-    var(--focus-brand-from),
-    var(--focus-brand-to)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: focus-ring-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .focus-ring:focus-visible::before,
-  .focus-ring-inset:focus-visible::before,
-  .focus-ring-overlay:focus-visible::before,
-  .focus-ring-overlay:focus-visible::after {
-    animation: none;
   }
 }
