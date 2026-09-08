@@ -55,7 +55,7 @@ const currentPath = new URL(Astro.request.url).pathname
                           'hover:text-slate-800 dark:hover:text-slate-400':
                             !isActive,
                         },
-                        'xs:px-4 flex h-full items-center px-2 py-2.5 transition focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:outline-none focus-visible:ring-inset sm:px-6 dark:focus-visible:ring-slate-300',
+                        'focus-ring-inset xs:px-4 flex h-full items-center px-2 py-2.5 transition sm:px-6',
                       ]}
                       href={item.href}
                       aria-current={isActive ? 'page' : undefined}

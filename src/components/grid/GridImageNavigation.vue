@@ -8,7 +8,7 @@
             :aria-disabled="button.href ? undefined : 'true'"
             :tabindex="button.href ? undefined : -1"
             :aria-label="button.label"
-            class="image-grid-button"
+            class="image-grid-button focus-ring-inset"
             :class="{ 'pointer-events-none opacity-50': !button.href }"
           >
             <svg

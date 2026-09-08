@@ -8,7 +8,7 @@
       "
       :aria-expanded="showInfo"
       aria-controls="grid-info-panel"
-      class="image-grid-button"
+      class="image-grid-button focus-ring-inset"
       :class="{
         active: showInfo,
       }"

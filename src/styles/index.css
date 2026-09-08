@@ -22,6 +22,37 @@
   font-style: oblique -11deg 0deg;
 }
 
+:root {
+  --focus-contrast: #0f172a;
+  --focus-brand-from: #ec4899;
+  --focus-brand-to: #3b82f6;
+}
+
+:where(.dark, .dark *) {
+  --focus-contrast: #f8fafc;
+  --focus-brand-from: #f472b6;
+  --focus-brand-to: #38bdf8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --focus-contrast: #f8fafc;
+    --focus-brand-from: #f472b6;
+    --focus-brand-to: #38bdf8;
+  }
+}
+
+@keyframes focus-ring-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .highlight {
   @apply inline-block -rotate-1 -skew-x-3 rounded bg-gradient-to-tr from-pink-500 to-blue-500 px-1.5 text-white;
 }
@@ -53,13 +84,110 @@
 }
 
 .image-grid-button {
-  @apply flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-300/50 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 hover:motion-safe:-rotate-2 dark:bg-slate-700/80 dark:focus-visible:ring-slate-300 dark:focus-visible:ring-offset-gray-950;
+  @apply flex h-10 w-10 -rotate-[0.1deg] -skew-x-[0.5deg] items-center justify-center rounded-lg bg-slate-300/50 text-center backdrop-blur transition-all duration-150 hover:scale-105 focus:outline-none hover:motion-safe:-rotate-2 dark:bg-slate-700/80;
 
   &.active {
     @apply bg-slate-800/80 text-slate-100 dark:bg-slate-200/80 dark:text-slate-700;
   }
 }
 
-.focus-ring {
-  @apply rounded-xs focus-visible:ring-2 focus-visible:ring-slate-700 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 focus-visible:outline-none dark:focus-visible:ring-slate-300 dark:focus-visible:ring-offset-gray-900;
+.focus-ring,
+.focus-ring-inset,
+.focus-ring-overlay {
+  position: relative;
+}
+
+.focus-ring:focus-visible,
+.focus-ring-inset:focus-visible,
+.focus-ring-overlay:focus-visible {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 1px solid var(--focus-contrast);
+  outline-offset: 5px;
+}
+
+.focus-ring:focus-visible::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  padding: 2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--focus-brand-from),
+    var(--focus-brand-to)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: focus-ring-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.focus-ring-inset:focus-visible {
+  outline: 1px solid var(--focus-contrast);
+  outline-offset: -1px;
+}
+
+.focus-ring-inset:focus-visible::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  padding: 2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--focus-brand-from),
+    var(--focus-brand-to)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: focus-ring-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.focus-ring-overlay:focus-visible::before,
+.focus-ring-overlay:focus-visible::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+}
+
+.focus-ring-overlay:focus-visible::before {
+  inset: 0;
+  border: 1px solid var(--focus-contrast);
+}
+
+.focus-ring-overlay:focus-visible::after {
+  inset: 2px;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--focus-brand-from),
+    var(--focus-brand-to)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: focus-ring-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .focus-ring:focus-visible::before,
+  .focus-ring-inset:focus-visible::before,
+  .focus-ring-overlay:focus-visible::before,
+  .focus-ring-overlay:focus-visible::after {
+    animation: none;
+  }
 }

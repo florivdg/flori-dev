@@ -1,9 +1,9 @@
 <template>
-  <div class="absolute left-0 top-0 z-10 p-6">
+  <div class="absolute top-0 left-0 z-10 p-6">
     <a
       href="/grid/"
       title="Go back to the photo grid"
-      class="image-grid-button"
+      class="image-grid-button focus-ring-inset"
       @click="handleBackNavigation($event)"
     >
       <svg
