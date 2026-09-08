@@ -1,5 +1,8 @@
 import type { Plugin } from 'unified'
 import type { Root, Link } from 'mdast'
+// Loads the `declare module 'mdast'` augmentation that adds `data.hProperties`.
+// @astrojs/mdx v8 no longer pulls this into the TS program transitively.
+import type {} from 'mdast-util-to-hast'
 
 interface ExternalLinksOptions {
   /** What to set as the target attribute; defaults to "_blank". */
@@ -59,8 +62,10 @@ const remarkExternalLinks: Plugin<[ExternalLinksOptions?], Root> = (
           linkNode.data.hProperties = linkNode.data.hProperties || {}
 
           // Set the target and rel attributes for security best practices.
+          // hast types `rel` as a space-separated list, so pass it as an array;
+          // hast-util-to-html joins it back with spaces on output.
           linkNode.data.hProperties.target = target
-          linkNode.data.hProperties.rel = rel
+          linkNode.data.hProperties.rel = rel.split(/\s+/).filter(Boolean)
         }
       }
     })
