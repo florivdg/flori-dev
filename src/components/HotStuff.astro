@@ -36,7 +36,7 @@ const stuff = [
   }
 
   .hot-stuff:has(:hover) li:not(:hover),
-  .hot-stuff:has(:focus-visible) li:not(:focus-visible) {
+  .hot-stuff:has(:focus-visible) li:not(:has(:focus-visible)) {
     opacity: 0.5;
   }
 </style>
