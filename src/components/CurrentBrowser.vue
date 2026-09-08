@@ -8,12 +8,16 @@
       >
         I'm on
       </p>
+      <p role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+        {{
+          browser
+            ? `Current default browser: ${getBrowserAlt(browser)}`
+            : 'Waiting for the current default browser.'
+        }}
+      </p>
+
       <div
         v-if="browser"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        :aria-label="`Current default browser: ${getBrowserAlt(browser)}`"
         class="my-4 flex aspect-square w-2/3 items-center self-center rounded-2xl bg-white @xl:my-8 @xl:w-60 @4xl:self-auto dark:bg-slate-800"
       >
         <img

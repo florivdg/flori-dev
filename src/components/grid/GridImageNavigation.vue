@@ -4,9 +4,9 @@
       <ul class="flex gap-2">
         <li v-for="button in buttons" :key="button.label">
           <a
-            :href="button.href ?? '#'"
+            :href="button.href"
+            :role="button.href ? undefined : 'link'"
             :aria-disabled="button.href ? undefined : 'true'"
-            :tabindex="button.href ? undefined : -1"
             :aria-label="button.label"
             class="image-grid-button focus-ring-inset"
             :class="{ 'pointer-events-none opacity-50': !button.href }"
