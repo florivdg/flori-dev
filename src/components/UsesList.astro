@@ -10,7 +10,7 @@ export interface Props {
 const { title, secondTitle, uses } = Astro.props
 ---
 
-<h2 class="mb-8 mt-12 text-3xl font-semibold">
+<h2 class="mt-12 mb-8 text-3xl font-semibold">
   <span class="highlight">{title}</span>{secondTitle ? ` ${secondTitle}` : ''}
 </h2>
 
@@ -20,7 +20,12 @@ const { title, secondTitle, uses } = Astro.props
       return (
         <li class="text-xl">
           {u.url ? (
-            <a href={u.url} target="_blank" rel="noopener noreferrer">
+            <a
+              href={u.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link focus-ring"
+            >
               <strong>{u.title}:</strong>
             </a>
           ) : (
