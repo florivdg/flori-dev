@@ -14,7 +14,7 @@ Personal website for [flori.dev](https://flori.dev) — an Astro static site wit
 - **Type check:** `bunx astro check`
 - **Type aware linting:** `bun run lint --type-aware`
 - **Format:** `bunx prettier --write .`
-- **Generate photo metadata:** `bun run grid:prepare` (requires `OPENAI_API_KEY`)
+- **Generate photo metadata:** `bun run grid:prepare` (requires `OPENAI_API_KEY`; also downscales new photos to 3600px)
 
 Use **Bun** as the package manager (not npm/yarn/pnpm). Install dependencies with `bun install`.
 

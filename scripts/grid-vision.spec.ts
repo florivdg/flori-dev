@@ -1,5 +1,9 @@
-import { describe, it, expect } from 'bun:test'
-import { mergeMetaAndVisionData } from './grid-vision'
+import { afterAll, describe, it, expect } from 'bun:test'
+import { mkdtemp, rm } from 'fs/promises'
+import { tmpdir } from 'os'
+import { join } from 'path'
+import sharp from 'sharp'
+import { mergeMetaAndVisionData, resizeImage } from './grid-vision'
 import type {
   ExifMetadata,
   ImageMetadataSuggestion,
@@ -58,5 +62,43 @@ const EXIF_DATA: ExifMetadata = {
 describe('mergeMetaAndVisionData', () => {
   it('should merge Exif and Vision data', () => {
     expect(mergeMetaAndVisionData(EXIF_DATA, VISION_DATA)).toEqual(FINAL)
+  })
+})
+
+describe('resizeImage', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'grid-vision-'))
+
+  afterAll(async () => {
+    await rm(dir, { recursive: true, force: true })
+  })
+
+  async function createImage(name: string, width: number, height: number) {
+    const path = join(dir, name)
+    await sharp({
+      create: { width, height, channels: 3, background: '#808080' },
+    })
+      .jpeg()
+      .withExif({ IFD0: { Make: 'Canon', Model: 'Canon EOS R6m2' } })
+      .toFile(path)
+    return path
+  }
+
+  it('should downscale oversized images and keep Exif data', async () => {
+    const path = await createImage('large.jpg', 6000, 4000)
+
+    expect(await resizeImage(path)).toBe(true)
+
+    const metadata = await sharp(path).metadata()
+    expect(metadata.width).toBe(3600)
+    expect(metadata.height).toBe(2400)
+    expect(metadata.exif?.toString('latin1')).toContain('Canon EOS R6m2')
+  })
+
+  it('should leave images within the limit untouched', async () => {
+    const path = await createImage('small.jpg', 2400, 3600)
+    const before = await Bun.file(path).arrayBuffer()
+
+    expect(await resizeImage(path)).toBe(false)
+    expect(await Bun.file(path).arrayBuffer()).toEqual(before)
   })
 })

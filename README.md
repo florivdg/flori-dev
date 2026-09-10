@@ -63,7 +63,7 @@ The dev server starts at `http://localhost:4321`.
 
 ## Photo Metadata Generation
 
-The `grid:prepare` script processes new photos in `src/content/grid/`. It extracts EXIF data and uses OpenAI Vision to generate titles, descriptions, tags, and location info.
+The `grid:prepare` script processes new photos in `src/content/grid/`. It extracts EXIF data, downscales photos whose longest edge exceeds 3600px (keeping the EXIF data) to keep deployments small, and uses OpenAI Vision to generate titles, descriptions, tags, and location info.
 
 Requirements:
 
