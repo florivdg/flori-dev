@@ -6,12 +6,19 @@ import { consola } from 'consola'
 import { destr } from 'destr'
 import OpenAI from 'openai'
 import { zodResponseFormat } from 'openai/helpers/zod'
+import sharp from 'sharp'
 import { z } from 'zod'
 
 /**
  * Define the directory where the images are located.
  */
 const GRID_DIR = join(__dirname, '../src/content/grid')
+
+/**
+ * Maximum length of the longest image edge in pixels. The grid renders images
+ * at most 1800px wide at 2x density, so anything larger only bloats deployments.
+ */
+const MAX_DIMENSION = 3600
 
 /**
  * Instantiate the OpenAI client.
@@ -109,6 +116,28 @@ async function extractExifMetadata(imagePath: string): Promise<ExifMetadata> {
   const proc = Bun.spawn(['exiftool', '-j', imagePath])
   const output = await new Response(proc.stdout).json()
   return output[0]
+}
+
+/**
+ * Downscales an image in place so its longest edge is at most `MAX_DIMENSION`.
+ * EXIF data is preserved. Images within the limit are left untouched.
+ * @param imagePath - The path to the image file.
+ * @returns A promise that resolves to `true` if the image was downscaled.
+ */
+export async function resizeImage(imagePath: string): Promise<boolean> {
+  const { width, height } = await sharp(imagePath).metadata()
+  if (Math.max(width, height) <= MAX_DIMENSION) {
+    return false
+  }
+
+  const buffer = await sharp(imagePath)
+    .resize({ width: MAX_DIMENSION, height: MAX_DIMENSION, fit: 'inside' })
+    .jpeg({ quality: 85, mozjpeg: true })
+    .keepMetadata()
+    .toBuffer()
+
+  await Bun.write(imagePath, buffer)
+  return true
 }
 
 /**
@@ -248,6 +277,15 @@ async function main() {
   /// Extract EXIF metadata from these images.
   const exifData = await Promise.all(
     images.map(async (i) => await extractExifMetadata(i)),
+  )
+
+  /// Downscale oversized images in place before they are sent to the AI.
+  const resized = await Promise.all(
+    images.map(async (i) => await resizeImage(i)),
+  )
+  const resizedCount = resized.filter(Boolean).length
+  consola.info(
+    `Downscaled ${resizedCount} ${resizedCount === 1 ? 'image' : 'images'} to ${MAX_DIMENSION}px`,
   )
 
   /// Determine the image description, title suggestions and tags for each image with AI.

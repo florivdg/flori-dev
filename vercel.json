@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "renovate/**": false
+    }
+  },
   "rewrites": [
     {
       "source": "/slides/ubt26-beyond-the-vibe/:path*",
