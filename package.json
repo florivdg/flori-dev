@@ -22,16 +22,16 @@
   "dependencies": {
     "@astrojs/check": "0.9.10",
     "@astrojs/markdown-remark": "7.3.1",
-    "@astrojs/mdx": "8.0.1",
+    "@astrojs/mdx": "8.0.2",
     "@astrojs/sitemap": "3.7.4",
-    "@astrojs/vercel": "11.0.10",
+    "@astrojs/vercel": "11.0.11",
     "@astrojs/vue": "7.0.3",
-    "@unovis/vue": "^1.7.0",
+    "@unovis/vue": "^1.7.1",
     "@vercel/speed-insights": "^2.0.0",
     "@vueuse/core": "^15.0.0",
-    "astro": "7.3.3",
+    "astro": "7.3.5",
     "astro-expressive-code": "^0.44.2",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "vue": "^3.5.43",
@@ -45,11 +45,11 @@
     "consola": "^3.4.2",
     "destr": "^2.0.5",
     "mdast-util-to-hast": "13.2.1",
-    "openai": "^7.21.0",
-    "oxlint": "^1.85.0",
-    "oxlint-tsgolint": "^7.0.2002",
-    "prettier": "^3.9.8",
-    "prettier-plugin-astro": "^1.0.1",
+    "openai": "^7.25.0",
+    "oxlint": "^1.86.0",
+    "oxlint-tsgolint": "^7.0.2003",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "vue-tsc": "^3.3.11"
   },
@@ -59,6 +59,7 @@
     "vue-demi"
   ],
   "overrides": {
-    "estree-walker": "2.0.2"
+    "estree-walker": "2.0.2",
+    "path-to-regexp": "6.3.0"
   }
 }
