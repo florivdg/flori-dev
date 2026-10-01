@@ -1,0 +1,126 @@
+---
+title: 'One Prompt, Two Reviewers: Breaking Down My /orchestrate Skill'
+pubDate: 2026-10-01
+description: "I got tired of babysitting Claude Code through the same plan, build, review, fix, and ship loop. So I wrote it down once as a skill. Here's what's inside /orchestrate and why the rules are there."
+image:
+  {
+    src: '../../assets/reads/breaking-down-my-orchestrate-skill.jpg',
+    alt: 'A developer seen from behind stands on a glowing orange platform, raising a conductor baton. Around them, six friendly robots in different shapes and colors work on floating code panels connected to the developer by glowing blue lines. In the bottom right corner, a hooded orange figure inspects code through a magnifying glass.',
+  }
+tags: ['AI', 'Agents', 'Claude', 'Codex', 'Software Development']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/breaking-down-my-orchestrate-skill.jpg'
+
+<Image
+  src={coverImage}
+  alt="A developer seen from behind stands on a glowing orange platform, raising a conductor baton. Around them, six friendly robots in different shapes and colors work on floating code panels connected to the developer by glowing blue lines. In the bottom right corner, a hooded orange figure inspects code through a magnifying glass."
+  caption="Everyone gets a part to play. The grumpy one with the magnifying glass is from a different vendor, and that's on purpose."
+  lazy={false}
+/>
+
+For a while, my Claude Code sessions all followed the same script. I'd describe a task and Claude would build it. I'd ask it to review its own work, and it would find two small things and tell me everything looked great. Then commit, push, open a merge request, and read the diff myself, where I'd find the thing nobody caught.
+
+None of that was hard, just repetitive. The part that mattered most, an honest second opinion, was also the part that worked worst. A model reviewing its own code in the same session is like proofreading an email you just wrote: you read what you meant to write.
+
+So I wrote the loop down once, as a skill. Most non-trivial tasks now start like this:
+
+```
+/orchestrate add rate limiting to the login endpoint
+```
+
+I get a coffee, and when I'm back there's usually a merge request waiting. I've been running it for a few months now, and it has shipped well over a hundred merge requests.
+
+## What a Skill Is
+
+A [Claude Code skill](https://docs.anthropic.com/en/docs/claude-code/skills) is a folder with a `SKILL.md` in it: frontmatter with a name and description, then plain instructions. Claude loads the body only when you call `/orchestrate` or ask for something that matches the description. There's no code or plugin involved. It's a runbook for a very fast, very literal colleague.
+
+<Note>
+  **☝️ Good To Know:** My skills live in `~/.agents/skills/` and are symlinked
+  into `~/.claude/skills/`. Other agents that understand the same format can
+  pick them up too, and I only maintain one copy.
+</Note>
+
+## The Cast
+
+The skill starts with a table of roles:
+
+| Role                | Model                         | How it runs           |
+| ------------------- | ----------------------------- | --------------------- |
+| Orchestrator        | My current session            | Inline                |
+| Judgment            | The strongest model available | Workflow agent        |
+| Implementer / fixer | A strong coding model         | Workflow agent        |
+| Reviewer A + triage | A Claude model                | Fresh Workflow agents |
+| Reviewer B          | A current OpenAI model        | Codex CLI             |
+| Simplifier          | Built-in `/simplify` skill    | Skill call            |
+
+The session I talk to never writes code. It plans, hands out work, and runs git. Since it never reads 40 files itself, it still remembers the original task an hour later.
+
+The strongest model only gets the decisions, like "new table or new column?", and the orchestrator batches those into one call. Nobody needs that model to run `git push`.
+
+My favorite part is that Reviewer B comes from a different company. Two Claude reviewers share the habits and blind spots of the Claude that wrote the code, while a model from another lab disagrees in more useful ways. That's the hooded figure in the cover image.
+
+There are only three flags: one to run in a separate git worktree, one to put the strongest model on review for risky changes, and one to stop after the commit.
+
+## The Workflow
+
+The skill has nine steps. Here are the rules that change how the agent behaves.
+
+**1. Never touch the default branch.** The orchestrator creates a feature branch, then reads the real name back with `git rev-parse --abbrev-ref HEAD`. Agents love to "remember" a branch name that doesn't quite exist.
+
+**2. Ask once, then go.** `AskUserQuestion` is the only planned interactive gate. If an agent can stop and ask at any time, it will, and I'm back to babysitting. Everything else it has to figure out from the code.
+
+**3. Parallelize carefully.** Independent tasks can run in parallel worktrees, but only if they don't share files, interfaces, or config. My [Python-to-Bun migration](/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code) showed me how much parallel agents need clear boundaries.
+
+**4. Clean up before review.** `/simplify` and the repo's checks run first, so the reviewers spend their effort on bugs instead of pointing out a duplicated helper.
+
+**5. Review in parallel, hands off.** Both reviewers get the original task and the same working tree, and nobody edits files until both are done. Otherwise they end up reviewing different code.
+
+**6. Stop after one fix round.** If I could only keep one rule, it would be this one. A fresh agent merges both sets of findings and returns `{ approved, fixTasks }`. It has to be a fresh one, because a reviewer will defend its own findings. Fixes get applied, both reviewers run once more, and whatever's left goes into the merge request description. Two models will _always_ find something, so without a cap the review never ends.
+
+**7–9. Ship, but don't merge.** The orchestrator writes a conventional commit, pushes, and opens a PR or MR depending on the remote. At work it also waits up to two minutes for our AI review bot and summarizes its comments for the human reviewer. Then the skill says:
+
+> Report its URL; do not merge it.
+
+## The Codex Command
+
+The Codex call has a few quirks:
+
+```bash
+printf '%s\n' \
+  "Review the uncommitted changes in this repository: staged, unstaged, and untracked files. Ignore committed history." \
+  "Task these changes implement: <task description>" \
+  "List blocking issues first, then nitpicks, each with file:line and supporting detail." \
+| codex review \
+    -c 'model="<model>"' \
+    -c 'review_model="<model>"' \
+    -c 'model_reasoning_effort="medium"' \
+    - 2>"${TMPDIR:-/tmp}/codex-review.log"
+```
+
+- The prompt goes through stdin (the lone `-`), so long task descriptions don't need shell escaping.
+- The scope lives in the prompt, because a custom prompt can't be combined with `--uncommitted` or `--base`.
+- The model is pinned twice. `review_model` overrides `model`, and my local config has opinions on both.
+- stderr goes to a log file, so the orchestrator can read it when stdout comes back empty.
+
+<Note>
+  **🔥 Hot Tip:** Note which tool version you last tested with in any skill that
+  shells out to a CLI. When it breaks, and it will, you and the agent know where
+  to start looking.
+</Note>
+
+## Build Your Own
+
+A lot of my skill is tuned to my own setup, so I wouldn't copy it as-is. These ideas should work anywhere, though:
+
+1. Keep your main session out of the implementation. Its context is the most valuable thing you have.
+2. Get the second opinion from a different model family.
+3. Cap the fix loop at one round, then hand it to a human.
+4. Never let the agent merge.
+5. When a run goes wrong, add a line to the skill so it doesn't happen again.
+
+The biggest change for me is where my attention goes. I used to spend my day writing code and squeezing in reviews between tasks. Now I spend it writing good task descriptions, reading merge requests, and making the calls the agents shouldn't make on their own. It's a different job, and honestly, I like it more than I expected.
+
+Most days I'm standing in the middle, pointing a stick at things, and now and then telling the robot in the corner to put down the magnifying glass.
