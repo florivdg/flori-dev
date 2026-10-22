@@ -60,6 +60,6 @@
   ],
   "overrides": {
     "estree-walker": "2.0.2",
-    "path-to-regexp": "6.3.0"
+    "path-to-regexp": "8.4.2"
   }
 }
