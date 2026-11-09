@@ -1,0 +1,96 @@
+---
+title: 'Hill Climbing'
+pubDate: 2026-11-09
+description: 'I had Claude rebuild an old prototype in an afternoon, then let a council of AI agents improve it for 15 rounds overnight. How the loop worked, what it found, and how many tokens it took.'
+image:
+  {
+    src: '../../assets/reads/hill-climbing.jpg',
+    alt: 'A sleeping developer lies in a tent at the foot of a terraced hill, lit by an orange lantern. Glowing steps with small flags climb the hill toward a dawn sky. Halfway up, a blue robot and a green robot debate over two holographic lists while a purple robot with a crown points up the path. Two small robots carry code panels up the steps, and an orange hooded robot inspects one through a magnifying glass near the top.',
+  }
+tags: ['AI', 'Agents', 'Claude', 'Software Development']
+---
+
+import Image from '../../components/reads/Image.astro'
+import Note from '../../components/reads/Note.astro'
+import coverImage from '../../assets/reads/hill-climbing.jpg'
+import RunTimeline from '../../components/reads/hill-climbing/RunTimeline.astro'
+import ClimbChart from '../../components/reads/hill-climbing/ClimbChart.astro'
+import TokenChart from '../../components/reads/hill-climbing/TokenChart.astro'
+
+<Image
+  src={coverImage}
+  alt="A sleeping developer lies in a tent at the foot of a terraced hill, lit by an orange lantern. Glowing steps with small flags climb the hill toward a dawn sky. Halfway up, a blue robot and a green robot debate over two holographic lists while a purple robot with a crown points up the path. Two small robots carry code panels up the steps, and an orange hooded robot inspects one through a magnifying glass near the top."
+  caption="One step per round, decided by the one with the crown. I was asleep for most of it."
+  lazy={false}
+/>
+
+WatchFox started in 2023 as a prototype at work. It snapshots websites, compares them, and has an AI explain what changed. The idea worked, but the prototype never ran on its own and never notified anyone.
+
+On Friday afternoon I had Claude rebuild it. By Saturday morning, a council of agents had run fifteen improvement rounds on it, one merged pull request each, most of them overnight.
+
+## Step One: Spec, Spike, Fakes
+
+The rebuild started from a v1 spec, not from the old code. Claude was allowed to read the legacy repo (Supabase, Deno, OpenAI) and kept three things: the logic that turns a site's navigation into JSON, the German prompts, and the fox logo. The spec decided everything else.
+
+Before building anything, Claude spiked the three risks the spec named: Puppeteer under Bun, pixel diffs on a 1440 × 10,000 px page, and keeping the renderer away from private IP addresses. A sub-agent built dummy websites with a control panel for price changes, renamed menus, swapped logos and outages, plus a fake Telegram server. Every test after that ran locally.
+
+Between milestones, Opus 5.5 and GPT-6.1 hunted bugs, the same two-vendor setup as in my [/orchestrate skill](/reads/breaking-down-my-orchestrate-skill). v1 took about two hours and fifteen minutes: 8 pull requests, 271 tests, and around 40 real issues caught on the way, several of them SSRF holes.
+
+## The Council
+
+Then I sent this from the road:
+
+> Actually, I want you to run a [council] every hour between an Opus subagent and a GPT 6.1 SOL extra high subagent. They should come up with ideas for improving the application. […] Once they've come up with ideas, let a Fable subagent decide what to build. […] open a PR once you're happy with it and merge it into main.
+
+Hill climbing is an old optimization method. You can't see the landscape, so you take the best step up from where you stand and repeat. Each round here is one step, and nobody plans round 9 during round 1.
+
+| Role         | Model                           | Job                                        |
+| ------------ | ------------------------------- | ------------------------------------------ |
+| Advisors     | Opus 5.5 and GPT-6.1 sol        | Use the live app, propose ranked ideas     |
+| Decider      | Fable 5.1                       | Pick up to three ideas, write build briefs |
+| Builders     | Opus 5.5, one worktree each     | Build one idea each, in parallel           |
+| Reviewers    | Opus 5.5 + code-review, GPT-6.1 | Bug hunt on the round's diff               |
+| Orchestrator | Opus 5.5, my main session       | Run the round, merge, fix, open the PR     |
+
+The advisors worked independently. They logged into the running app, took screenshots at 320 px and timed queries on a test database with 200,000 incidents. Fable gave each idea its own files, allowed one schema change per round at most, and sent anything that would change an incident's state automatically back to me. Every round ended with an entry in `docs/improvements.md`: what was built, why, and what got deferred.
+
+<Note>
+  **🔥 Hot Tip:** Keep a deferred list. It's the climber's memory. The best idea
+  of the night sat on it for five rounds before Fable picked it.
+</Note>
+
+## The Night
+
+<RunTimeline />
+
+After round 1 I dropped the hourly timer: "Do a new council whenever the last round is finished." Near the end of round 3, I sent the message that changed the climb the most:
+
+> important note for UI/UX: less is more!
+
+Until then, every round had added something to the screen. From round 4 on, advisors had to say what their idea removes, and reviewers counted clutter as a real finding. Round 4 added 866 lines and deleted 404, and the incident page got 28% shorter on a phone. A hill climber only knows which way is up because you tell it.
+
+## The Milestones
+
+<ClimbChart />
+
+Three of these are worth telling.
+
+The first councils found three bugs that every test had passed. All three were mismatches between what the worker stored and what the UI expected. The milestone reviewers had read the code, and the advisors had used the app.
+
+In the demo data, 20 of 24 open incidents were the same renamed menu item. Grouping identical changes had been deferred since round 1, and in round 6 Fable picked it. After that the idea kept spreading: in round 7, one keypress acknowledged a change on every page, and in round 11 Telegram started sending one alert per change instead of one per page.
+
+In round 8, the orchestrator found that Bun's `Worker.terminate()` can't stop a runaway regular expression. GPT had just shown that one bad ignore pattern froze the web server for over 40 seconds. Patterns now run in a child process that gets killed after 500 ms.
+
+## The Tokens
+
+<TokenChart />
+
+The rounds were fairly even, at about 81 million tokens each. v1 alone used as much as three rounds. Almost all of it was cache reads, because every agent call re-reads its context. Opus accounts for 90% of the total. Fable made every build decision and used 2% of the tokens, which is a nice argument for giving the expensive judgment calls to one strong model and the long work to another.
+
+## Where It Slipped
+
+- The advisors changed the shared dev stack twice. Once they saved a broken menu selector that emptied the navigation on all 19 pages. From round 13 on, the brief made the stack read-only.
+- A review fix in round 14 would have deleted every backup on a setting like `14d`. Both reviewers caught it, but only because I asked for one more review of just that commit.
+- The orchestrator told me round 15 was merged while CI on `main` was red. A timing test had taken 66 ms on GitHub's runner against a 60 ms limit.
+
+Two product decisions are waiting for me now, and so is PR #24.

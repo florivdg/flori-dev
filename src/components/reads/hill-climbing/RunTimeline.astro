@@ -1,0 +1,180 @@
+---
+import VizFigure from './VizFigure.astro'
+
+/** Local time (CET, UTC+1) on 6 or 7 November 2026, as a timestamp. */
+const at = (day: number, hhmm: string) => {
+  const [h, m] = hhmm.split(':').map(Number)
+  return Date.UTC(2026, 10, day, h - 1, m)
+}
+
+const start = at(6, '14:30')
+const end = at(7, '09:30')
+const x = (t: number) => ((t - start) / (end - start)) * 100
+
+const phases = [
+  { label: 'Build v1', color: 'var(--viz-s1)' },
+  { label: 'Rounds 1–3: open scope', color: 'var(--viz-s2)' },
+  { label: 'Rounds 4–8: UI/UX and speed', color: 'var(--viz-s3)' },
+  { label: 'Rounds 9–15: full scope', color: 'var(--viz-s4)' },
+]
+
+const merges: [number, string][] = [
+  [6, '18:35'],
+  [6, '19:46'],
+  [6, '20:38'],
+  [6, '21:26'],
+  [6, '22:16'],
+  [6, '23:18'],
+  [7, '00:22'],
+  [7, '01:24'],
+  [7, '02:46'],
+  [7, '03:44'],
+  [7, '04:34'],
+  [7, '05:36'],
+  [7, '06:36'],
+  [7, '07:56'],
+  [7, '08:52'],
+]
+const roundStarts = [at(6, '17:49'), at(6, '19:01')]
+
+const segments = [
+  {
+    label: 'Build v1',
+    from: at(6, '14:55'),
+    to: at(6, '17:10'),
+    phase: 0,
+    round: null as number | null,
+  },
+  ...merges.map(([day, time], i) => ({
+    label: `Round ${i + 1}`,
+    from: roundStarts[i] ?? at(...merges[i - 1]),
+    to: at(day, time),
+    phase: i < 3 ? 1 : i < 8 ? 2 : 3,
+    round: i + 1,
+  })),
+]
+
+const fmt = (t: number) => new Date(t + 3600_000).toISOString().slice(11, 16)
+
+const messages: [number, string, string][] = [
+  [6, '14:55', 'Spec link: "What do you need to know?"'],
+  [6, '14:59', '"Build as far as you can"'],
+  [6, '15:06', 'Bug hunts between milestones, use sub-agents'],
+  [6, '15:16', 'Use oxfmt and oxlint'],
+  [6, '17:38', 'Send me screenshots'],
+  [6, '17:49', 'Start the hourly council'],
+  [6, '18:53', 'Screenshots per milestone'],
+  [6, '19:00', 'Drop the timer, loop up to 15 rounds'],
+  [6, '19:19', 'Haiku: research UI/UX best practices'],
+  [6, '20:27', 'Next five rounds: UI/UX and performance'],
+  [6, '20:30', '"less is more!"'],
+  [7, '07:33', '"Final review. Focus on last fixes."'],
+  [7, '09:27', 'Is CI broken?'],
+].map(([d, t, text]) => [
+  at(d as number, t as string),
+  t as string,
+  text as string,
+])
+
+const quiet = { from: at(6, '20:30'), to: at(7, '07:33') }
+
+const ticks = [
+  [6, '15:00', '15:00'],
+  [6, '18:00', '18:00'],
+  [6, '21:00', '21:00'],
+  [7, '00:00', '00:00'],
+  [7, '03:00', '03:00'],
+  [7, '06:00', '06:00'],
+  [7, '09:00', '09:00'],
+] as const
+
+const alwaysShown = new Set([1, 4, 9, 15])
+---
+
+<VizFigure
+  title="18 hours from the first message to the last merge"
+  caption="Friday afternoon to Saturday morning, local time. Each round runs from the end of the previous one to its merge. Hover a dot or a bar for details."
+>
+  <ul class="flex flex-wrap gap-x-4 gap-y-1 text-xs" aria-label="Phases">
+    {phases.map((p) => (
+      <li class="flex items-center gap-1.5">
+        <span
+          class="inline-block size-2.5 rounded-sm"
+          style={`background:${p.color}`}
+        />
+        {p.label}
+      </li>
+    ))}
+  </ul>
+
+  <div class="mt-5 text-xs">
+    <p class="viz-muted mb-1.5">My messages</p>
+    <div class="relative h-7">
+      <div
+        class="viz-fade viz-muted absolute inset-y-0 flex items-center justify-center overflow-hidden rounded text-[11px] whitespace-nowrap"
+        style={`left:${x(quiet.from)}%;width:${x(quiet.to) - x(quiet.from)}%;background:var(--viz-band);--d:900ms`}
+      >
+        11 hours without a message
+      </div>
+      {messages.map(([t, time, text], i) => (
+        <span
+          class="absolute top-1/2 flex size-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+          style={`left:${x(t)}%`}
+          title={`${time} · ${text}`}
+        >
+          <span
+            class="viz-pop block size-2.5 rounded-full"
+            style={`background:var(--viz-ink);box-shadow:0 0 0 2px var(--viz-surface);--d:${200 + i * 45}ms`}
+          />
+        </span>
+      ))}
+    </div>
+
+    <p class="viz-muted mt-4 mb-1.5">Agents working</p>
+    <div class="relative h-7">
+      {segments.map((s, i) => (
+        <span
+          class="viz-grow-x absolute inset-y-0 rounded"
+          style={`left:${x(s.from)}%;width:calc(${x(s.to) - x(s.from)}% - 2px);background:${phases[s.phase].color};--d:${i * 55}ms`}
+          title={`${s.label}: ${fmt(s.from)}–${fmt(s.to)}`}
+        />
+      ))}
+    </div>
+    <div
+      class="viz-fade relative mt-1 h-4"
+      style="--d:1000ms"
+      aria-hidden="true"
+    >
+      {segments
+        .filter((s) => s.round)
+        .map((s) => (
+          <span
+            class:list={[
+              'viz-muted absolute -translate-x-1/2 text-[10px] tabular-nums',
+              !alwaysShown.has(s.round!) && 'hidden sm:block',
+            ]}
+            style={`left:${(x(s.from) + x(s.to)) / 2}%`}
+          >
+            {s.round}
+          </span>
+        ))}
+    </div>
+
+    <div
+      class="relative mt-2 h-5 border-t"
+      style="border-color:var(--viz-grid)"
+    >
+      {ticks.map(([d, t, label]) => (
+        <span
+          class:list={[
+            'viz-muted absolute top-1 -translate-x-1/2 text-[10px] whitespace-nowrap tabular-nums',
+            (t === '18:00' || t === '03:00') && 'hidden sm:block',
+          ]}
+          style={`left:${x(at(d, t))}%`}
+        >
+          {label}
+        </span>
+      ))}
+    </div>
+  </div>
+</VizFigure>
