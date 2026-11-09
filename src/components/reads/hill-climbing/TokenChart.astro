@@ -1,0 +1,165 @@
+---
+import VizFigure from './VizFigure.astro'
+
+/** Millions of tokens per round: [Claude models, OpenAI models]. */
+const rounds: [string, number, number][] = [
+  ['v1', 235.6, 6.1],
+  ['1', 66.8, 5.6],
+  ['2', 64.8, 4.8],
+  ['3', 86.8, 6.2],
+  ['4', 59.1, 8.2],
+  ['5', 62.4, 7.3],
+  ['6', 54.7, 5.9],
+  ['7', 60.0, 9.6],
+  ['8', 66.9, 6.0],
+  ['9', 81.3, 6.1],
+  ['10', 71.7, 7.3],
+  ['11', 77.4, 5.7],
+  ['12', 78.3, 7.4],
+  ['13', 80.6, 4.1],
+  ['14', 99.2, 16.9],
+  ['15', 93.5, 7.8],
+]
+const labelled = new Set(['v1', '14'])
+const max = 280
+const h = (v: number) => (v / max) * 100
+const grid = [100, 200]
+
+const models = [
+  [
+    'Claude Opus 5.5',
+    'orchestrator, advisor, builders, reviewer',
+    '1,322M',
+    '90.0%',
+  ],
+  ['GPT-6.1 sol', 'advisor, reviewer', '94.6M', '6.4%'],
+  ['Claude Fable 5.1', 'decider', '29.7M', '2.0%'],
+  ['Codex auto-review', 'approvals inside Codex', '20.4M', '1.4%'],
+  ['Claude Haiku 5.5', 'UX research', '1.7M', '0.1%'],
+]
+
+const stats = [
+  ['1.47B', 'tokens in total'],
+  ['98%', 'of them cache reads'],
+  ['2%', 'used by Fable, the decider'],
+]
+---
+
+<VizFigure
+  title="Tokens per round, in millions"
+  caption="Counted from the local Claude Code and Codex session logs of every WatchFox agent, Friday 14:50 to Saturday 09:40. Fresh input, cache reads, cache writes and output are all included. The v1 bar also covers the break before the first council."
+>
+  <dl class="mb-6 grid grid-cols-3 gap-3">
+    {stats.map(([value, label], i) => (
+      <div
+        class="viz-fade-up flex flex-col-reverse rounded border px-3 py-2"
+        style={`border-color:var(--viz-border);--d:${i * 110}ms`}
+      >
+        <dt class="viz-muted text-xs leading-snug">{label}</dt>
+        <dd class="viz-ink text-xl font-semibold tabular-nums sm:text-2xl">
+          {value}
+        </dd>
+      </div>
+    ))}
+  </dl>
+
+  <ul class="flex flex-wrap gap-x-4 gap-y-1 text-xs" aria-label="Series">
+    <li class="flex items-center gap-1.5">
+      <span
+        class="inline-block size-2.5 rounded-sm"
+        style="background:var(--viz-s1)"
+      ></span>
+      Claude models
+    </li>
+    <li class="flex items-center gap-1.5">
+      <span
+        class="inline-block size-2.5 rounded-sm"
+        style="background:var(--viz-s2)"
+      ></span>
+      OpenAI models
+    </li>
+  </ul>
+
+  <div class="relative mt-3 h-52 text-[10px]">
+    <div class="absolute top-2 right-0 bottom-6 left-10">
+      {grid.map((g) => (
+        <div
+          class="absolute inset-x-0 border-t"
+          style={`bottom:${h(g)}%;border-color:var(--viz-grid)`}
+        >
+          <span class="viz-muted absolute right-full mr-2 -translate-y-1/2 tabular-nums">
+            {g}M
+          </span>
+        </div>
+      ))}
+
+      <div class="absolute inset-0 flex items-end gap-[3px] sm:gap-1.5">
+        {rounds.map(([label, claude, openai], i) => (
+          <div
+            class="relative h-full flex-1"
+            title={`${label === 'v1' ? 'v1' : `Round ${label}`}: ${claude}M Claude, ${openai}M OpenAI`}
+          >
+            {labelled.has(label) && (
+              <span
+                class="viz-fade viz-ink absolute left-1/2 -translate-x-1/2 pb-1 font-semibold whitespace-nowrap tabular-nums"
+                style={`bottom:${h(claude + openai)}%;--d:${400 + i * 45 + 500}ms`}
+              >
+                {Math.round(claude + openai)}M
+              </span>
+            )}
+            <div
+              class="viz-grow-y flex h-full flex-col justify-end gap-[2px]"
+              style={`--d:${400 + i * 45}ms`}
+            >
+              <span
+                class="block rounded-t"
+                style={`height:${h(openai)}%;background:var(--viz-s2)`}
+              />
+              <span
+                class="block"
+                style={`height:${h(claude)}%;background:var(--viz-s1)`}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="absolute inset-x-0 bottom-0 border-t"
+        style="border-color:var(--viz-muted)"
+      ></div>
+
+      <div class="absolute inset-x-0 top-full mt-1.5 flex gap-[3px] sm:gap-1.5">
+        {rounds.map(([label]) => (
+          <span class="viz-muted flex-1 text-center tabular-nums">{label}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <details class="mt-6 text-sm">
+    <summary class="viz-ink cursor-pointer font-medium">
+      Tokens per model
+    </summary>
+    <table class="mt-3 w-full text-left text-xs">
+      <thead class="viz-muted">
+        <tr>
+          <th class="py-1 pr-3 font-medium">Model</th>
+          <th class="py-1 pr-3 font-medium">Role</th>
+          <th class="py-1 pr-3 text-right font-medium">Tokens</th>
+          <th class="py-1 text-right font-medium">Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        {models.map(([model, role, tokens, share]) => (
+          <tr class="border-t" style="border-color:var(--viz-grid)">
+            <td class="viz-ink py-1.5 pr-3">{model}</td>
+            <td class="py-1.5 pr-3">{role}</td>
+            <td class="py-1.5 pr-3 text-right tabular-nums">{tokens}</td>
+            <td class="py-1.5 text-right tabular-nums">{share}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </details>
+</VizFigure>

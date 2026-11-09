@@ -1,0 +1,135 @@
+---
+import VizFigure from './VizFigure.astro'
+
+const tests = [
+  271, 307, 338, 413, 426, 462, 505, 539, 593, 654, 704, 739, 795, 848, 905,
+  937,
+]
+const labels = tests.map((_, i) => (i === 0 ? 'v1' : String(i)))
+const max = 1000
+const x = (i: number) => (i / (tests.length - 1)) * 100
+const y = (v: number) => (v / max) * 100
+
+const milestones = [
+  {
+    at: 2,
+    text: 'Rounds 1–2: the council finds three bugs every test had passed',
+  },
+  { at: 4, text: 'Round 4: "less is more" starts taking things away' },
+  { at: 6, text: 'Round 6: one change on many pages becomes one incident' },
+  { at: 8, text: 'Round 8: user-written regexes finally get a time limit' },
+  {
+    at: 9,
+    text: 'Round 9: changing a setting stops creating incidents',
+    below: true,
+  },
+  { at: 12, text: 'Rounds 12–15: finishing for production' },
+]
+
+const points = tests.map((v, i) => `${x(i)},${100 - y(v)}`).join(' ')
+const grid = [250, 500, 750, 1000]
+---
+
+<VizFigure
+  title="Tests in the suite after each merge, with the milestones"
+  caption="Test count from the CI output after each merge. v1 is the state before the first council."
+>
+  <div class="relative h-56 text-[10px]">
+    <div class="absolute top-3 right-3 bottom-6 left-9">
+      {grid.map((g) => (
+        <div
+          class="absolute inset-x-0 border-t"
+          style={`bottom:${y(g)}%;border-color:var(--viz-grid)`}
+        >
+          <span class="viz-muted absolute right-full mr-2 -translate-y-1/2 tabular-nums">
+            {g}
+          </span>
+        </div>
+      ))}
+      <div
+        class="absolute inset-x-0 bottom-0 border-t"
+        style="border-color:var(--viz-muted)"
+      ></div>
+
+      <svg
+        class="viz-reveal absolute inset-0 h-full w-full overflow-visible"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <polyline
+          points={points}
+          fill="none"
+          stroke="var(--viz-s1)"
+          stroke-width="2"
+          stroke-linejoin="round"
+          vector-effect="non-scaling-stroke"
+        ></polyline>
+      </svg>
+
+      {tests.map((v, i) => (
+        <span
+          class="absolute flex size-4 -translate-x-1/2 translate-y-1/2 items-center justify-center"
+          style={`left:${x(i)}%;bottom:${y(v)}%`}
+          title={`${i === 0 ? 'v1' : `Round ${i}`}: ${v} tests`}
+        >
+          <span
+            class="viz-pop block size-2.5 rounded-full"
+            style={`background:var(--viz-s1);box-shadow:0 0 0 2px var(--viz-surface);--d:${i * 80}ms`}
+          />
+        </span>
+      ))}
+
+      {milestones.map((m, n) => (
+        <span
+          class="viz-pop viz-ink absolute flex size-[18px] -translate-x-1/2 items-center justify-center rounded-full border text-[10px] font-semibold"
+          style={`left:${x(m.at)}%;bottom:calc(${y(tests[m.at])}% ${m.below ? '- 30px' : '+ 12px'});border-color:var(--viz-ink-2);background:var(--viz-surface);--d:${m.at * 80 + 250}ms`}
+          title={m.text}
+        >
+          {n + 1}
+        </span>
+      ))}
+
+      <span
+        class="viz-fade viz-ink absolute ml-2 font-semibold tabular-nums"
+        style={`left:${x(0)}%;bottom:calc(${y(tests[0])}% - 22px);--d:150ms`}
+      >
+        271
+      </span>
+      <span
+        class="viz-fade viz-ink absolute -translate-x-full pr-1 font-semibold tabular-nums"
+        style={`left:${x(15)}%;bottom:calc(${y(tests[15])}% - 24px);--d:1350ms`}
+      >
+        937
+      </span>
+
+      <div class="absolute inset-x-0 top-full mt-1.5">
+        {labels.map((l, i) => (
+          <span
+            class="viz-muted absolute -translate-x-1/2 tabular-nums"
+            style={`left:${x(i)}%`}
+          >
+            {l}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <ol class="mt-6 space-y-1.5 text-sm">
+    {milestones.map((m, n) => (
+      <li
+        class="viz-fade-up flex items-start gap-2.5"
+        style={`--d:${1300 + n * 90}ms`}
+      >
+        <span
+          class="viz-ink mt-0.5 flex size-[18px] shrink-0 items-center justify-center rounded-full border text-[10px] font-semibold"
+          style="border-color:var(--viz-ink-2)"
+        >
+          {n + 1}
+        </span>
+        <span>{m.text}</span>
+      </li>
+    ))}
+  </ol>
+</VizFigure>
