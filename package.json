@@ -44,7 +44,7 @@
     "@types/bun": "^1.4.2",
     "consola": "^3.4.2",
     "destr": "^2.0.5",
-    "mdast-util-to-hast": "13.2.1",
+    "mdast-util-to-hast": "13.2.2",
     "openai": "^7.25.0",
     "oxlint": "^1.86.0",
     "oxlint-tsgolint": "^7.0.2003",
