@@ -33,64 +33,64 @@ const reads = (
   <main id="main" tabindex="-1">
     <BoxedContent>
       <h1 class="mb-6 text-4xl font-black">
-        <span class="font-light line-through" aria-hidden="true">
-          Blog
-        </span>
+        <span class="font-light line-through" aria-hidden="true">Blog</span>
         Reads
       </h1>
       <p class="mb-4 text-xl font-semibold">
-        <span class="highlight">tl;dr</span> This is not a blog. It's
-        documentation!
+        <span class="highlight">tl;dr</span> This is not a blog. It's documentation!
       </p>
 
       <p class="mb-8 text-xl lg:mb-12">
         Welcome to my not-a-blog. It's definitely not a blog, because blogs are
-        for rambling and ranting, and this is purely{' '}
-        <span class="highlight">documentation</span>. Okay, maybe there will be
-        a little bit of rambling, but only in the name of thoroughness.
+        for rambling and ranting, and this is purely <span class="highlight"
+          >documentation</span
+        >. Okay, maybe there will be a little bit of rambling, but only in the
+        name of thoroughness.
       </p>
     </BoxedContent>
 
     <FluidContent>
       <ul class="-mx-4 grid grid-cols-1 gap-10 sm:mx-0 lg:grid-cols-2">
-        {reads.map((entry, i) => (
-          <li class="flex -rotate-[0.1deg] -skew-x-[0.5deg] rounded-lg shadow-xl shadow-slate-700/10 transition-transform duration-150 hover:motion-safe:rotate-[0.5deg] dark:shadow-slate-950/20">
-            <a
-              href={`/reads/${entry.id}/`}
-              class="group flex w-full flex-col overflow-hidden rounded-lg"
-            >
-              {entry.data.image ? (
-                <Image
-                  src={entry.data.image?.src}
-                  alt={entry.data.image?.alt}
-                  skew={false}
-                  lazy={i >= 2}
-                />
-              ) : undefined}
-
-              <div class="flex flex-1 flex-col bg-slate-50 p-6 transition-colors duration-150 ease-in-out group-hover:bg-slate-200 md:p-8 dark:bg-slate-700 dark:group-hover:bg-slate-900">
-                <time
-                  datetime={entry.data.pubDate.toISOString()}
-                  class="mb-3 inline-block text-xs font-semibold text-slate-500 dark:text-slate-300"
-                >
-                  {formatDate(entry.data.pubDate)}
-                </time>
-
-                <h2 class="text-3xl font-extrabold text-balance hyphens-auto">
-                  {entry.data.title}
-                </h2>
-
-                {entry.data.description ? (
-                  <p class="mt-6 text-xl">{entry.data.description}</p>
+        {
+          reads.map((entry, i) => (
+            <li class="flex -rotate-[0.1deg] -skew-x-[0.5deg] rounded-lg shadow-xl shadow-slate-700/10 transition-transform duration-150 hover:motion-safe:rotate-[0.5deg] dark:shadow-slate-950/20">
+              <a
+                href={`/reads/${entry.id}/`}
+                class="group flex w-full flex-col overflow-hidden rounded-lg"
+              >
+                {entry.data.image ? (
+                  <Image
+                    src={entry.data.image?.src}
+                    alt={entry.data.image?.alt}
+                    skew={false}
+                    lazy={i >= 2}
+                  />
                 ) : undefined}
 
-                <div class="mt-auto pt-6">
-                  <TagList tags={entry.data.tags} />
+                <div class="flex flex-1 flex-col bg-slate-50 p-6 transition-colors duration-150 ease-in-out group-hover:bg-slate-200 md:p-8 dark:bg-slate-700 dark:group-hover:bg-slate-900">
+                  <time
+                    datetime={entry.data.pubDate.toISOString()}
+                    class="mb-3 inline-block text-xs font-semibold text-slate-500 dark:text-slate-300"
+                  >
+                    {formatDate(entry.data.pubDate)}
+                  </time>
+
+                  <h2 class="text-3xl font-extrabold text-balance hyphens-auto">
+                    {entry.data.title}
+                  </h2>
+
+                  {entry.data.description ? (
+                    <p class="mt-6 text-xl">{entry.data.description}</p>
+                  ) : undefined}
+
+                  <div class="mt-auto pt-6">
+                    <TagList tags={entry.data.tags} />
+                  </div>
                 </div>
-              </div>
-            </a>
-          </li>
-        ))}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </FluidContent>
   </main>
