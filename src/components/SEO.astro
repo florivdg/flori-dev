@@ -29,10 +29,13 @@ if (og.image) {
   ogImage = src ?? ogImage
 }
 
-/// Prepend deploy URL to og:image for absolute URLs
-if (import.meta.env.PUBLIC_URL) {
-  ogImage = `https://${import.meta.env.PUBLIC_URL}${ogImage}`
-}
+/// Make og:image absolute, using the deploy URL if set, else the site URL
+ogImage = new URL(
+  ogImage,
+  import.meta.env.PUBLIC_URL
+    ? `https://${import.meta.env.PUBLIC_URL}`
+    : Astro.site,
+).href
 
 /// Title template with site name
 const siteName = 'flori.dev'
