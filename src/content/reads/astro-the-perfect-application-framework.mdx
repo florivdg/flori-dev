@@ -259,7 +259,7 @@ The plugin list is where Better Auth really earns its keep. The four I reach for
 - **`admin()`** — role gating and an admin API for managing users.
 - **`organization()`** — multi-tenant workspaces with invitations, member roles, and a notion of an "active org" baked into the session.
 
-Email-based flows (verification, password reset, organization invitations) wire straight into a transactional sender — I use **[nodemailer](https://nodemailer.com/)** with whatever SMTP provider is convenient. Password hashing is done via **[`Bun.password`](https://bun.sh/docs/runtime/hashing)** — argon2id, built into the runtime, with no separate `argon2` or `bcrypt` package needed. Better Auth is flexible enough to wire that in cleanly; I [walked through that exact setup](/reads/vite-nitro-minimal-fullstack) in an earlier post if you want to see it spelled out.
+Email-based flows (verification, password reset, organization invitations) wire straight into a transactional sender — I use **[nodemailer](https://nodemailer.com/)** with whatever SMTP provider is convenient. Password hashing is done via **[`Bun.password`](https://bun.sh/docs/runtime/hashing)** — argon2id, built into the runtime, with no separate `argon2` or `bcrypt` package needed. Better Auth is flexible enough to wire that in cleanly; I [walked through that exact setup](/reads/vite-nitro-minimal-fullstack/) in an earlier post if you want to see it spelled out.
 
 The result is that "build login" goes from a multi-week project to a single afternoon. You still own the schema, the database, and the cookies — Better Auth just stops you from reinventing the parts you'd rather not.
 

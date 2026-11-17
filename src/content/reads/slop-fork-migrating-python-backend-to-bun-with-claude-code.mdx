@@ -21,7 +21,7 @@ import coverImage from '../../assets/reads/slop-fork-migrating-python-backend-to
   lazy={false}
 />
 
-A few months ago I wrote about my [first hands-on experience with Claude Code](/reads/coding-agents-like-claude-code). Back then, I migrated a small Express app to Hono, improved test coverage for a Vue.js library, and added tests to a project that had none. The results were impressive, but these were relatively small projects. So naturally, I wondered: **could Claude Code handle a full production backend migration?**
+A few months ago I wrote about my [first hands-on experience with Claude Code](/reads/coding-agents-like-claude-code/). Back then, I migrated a small Express app to Hono, improved test coverage for a Vue.js library, and added tests to a project that had none. The results were impressive, but these were relatively small projects. So naturally, I wondered: **could Claude Code handle a full production backend migration?**
 
 The answer is yes. Sort of. What I ended up with is what they like to call a **"slop fork"** — a complete AI rewrite that passes its smoke test, but has never been tested against the actual frontend, never been deployed to a staging environment, and never had a human manually start the server and click through the app. The smoke test is the **only** proof that it works. And honestly? That's exactly the right outcome for a first pass.
 

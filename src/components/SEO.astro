@@ -38,12 +38,17 @@ if (import.meta.env.PUBLIC_URL) {
 const siteName = 'flori.dev'
 const currentPath = new URL(Astro.request.url).pathname
 const pageTitle = currentPath === '/' ? head.title : `${head.title} | flori.dev`
+
+/// Canonical URL always points at the production domain
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site)
 ---
 
 <meta name="description" content={head.description} />
 <title>{pageTitle}</title>
+<link rel="canonical" href={canonicalUrl} />
 <meta property="og:title" content={og.title ?? head.title} />
 <meta property="og:type" content={og.type} />
 <meta property="og:image" content={ogImage} />
 <meta property="og:description" content={og.description ?? head.description} />
+<meta property="og:url" content={canonicalUrl} />
 <meta property="og:site_name" content={siteName} />

@@ -14,7 +14,7 @@ import Image from '../../components/reads/Image.astro'
 import Note from '../../components/reads/Note.astro'
 import coverImage from '../../assets/reads/supabase-self-host-docker-traefik-reverse-proxy.jpg'
 
-Self-hosting **Supabase** is challenging enough on its own, but when it comes to **running it behind a reverse proxy**, things can get even trickier. In this guide, I’ll walk you through setting up Supabase with Docker and **Traefik** as a reverse proxy on a Hetzner Cloud VPS. (If you’re curious, I previously shared a [guide using Caddy](/reads/supabase-self-host-docker-caddy-reverse-proxy)—but this time we’re taking a deep dive with Traefik.)
+Self-hosting **Supabase** is challenging enough on its own, but when it comes to **running it behind a reverse proxy**, things can get even trickier. In this guide, I’ll walk you through setting up Supabase with Docker and **Traefik** as a reverse proxy on a Hetzner Cloud VPS. (If you’re curious, I previously shared a [guide using Caddy](/reads/supabase-self-host-docker-caddy-reverse-proxy/)—but this time we’re taking a deep dive with Traefik.)
 
 <Image src={coverImage} alt="" caption="" lazy={false} />
 
@@ -209,7 +209,7 @@ Remember, while Traefik handles incoming traffic on ports `80` and `443`, the Su
 
 ## Comparing with the Previous Caddy Setup
 
-Compared to my previous guide using Caddy ([Self-Hosting Supabase with Docker and Caddy as a Reverse Proxy](/reads/supabase-self-host-docker-caddy-reverse-proxy)), the Traefik setup offers:
+Compared to my previous guide using Caddy ([Self-Hosting Supabase with Docker and Caddy as a Reverse Proxy](/reads/supabase-self-host-docker-caddy-reverse-proxy/)), the Traefik setup offers:
 
 - A dynamic dashboard for real-time monitoring.
 - Simplified configuration via file providers.
