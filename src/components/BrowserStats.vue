@@ -14,7 +14,7 @@
         </h2>
         <p class="mt-1 text-sm text-slate-600 dark:text-slate-400">
           These counts come from the LaunchAgent + SSE backend I describe in my
-          <a href="/reads/default-browser-server-sent-events" class="link"
+          <a href="/reads/default-browser-server-sent-events/" class="link"
             >Reads article</a
           >
           and reflect which browser is currently the default on my Macs for the

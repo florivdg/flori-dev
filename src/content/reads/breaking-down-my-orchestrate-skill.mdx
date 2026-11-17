@@ -72,7 +72,7 @@ The skill has nine steps. Here are the rules that change how the agent behaves.
 
 **2. Ask once, then go.** `AskUserQuestion` is the only planned interactive gate. If an agent can stop and ask at any time, it will, and I'm back to babysitting. Everything else it has to figure out from the code.
 
-**3. Parallelize carefully.** Independent tasks can run in parallel worktrees, but only if they don't share files, interfaces, or config. My [Python-to-Bun migration](/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code) showed me how much parallel agents need clear boundaries.
+**3. Parallelize carefully.** Independent tasks can run in parallel worktrees, but only if they don't share files, interfaces, or config. My [Python-to-Bun migration](/reads/slop-fork-migrating-python-backend-to-bun-with-claude-code/) showed me how much parallel agents need clear boundaries.
 
 **4. Clean up before review.** `/simplify` and the repo's checks run first, so the reviewers spend their effort on bugs instead of pointing out a duplicated helper.
 

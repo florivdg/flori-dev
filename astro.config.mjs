@@ -20,6 +20,9 @@ import vercel from '@astrojs/vercel'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://flori.dev',
+  // Keep one URL per page: sitemap, internal links and canonical tags all use
+  // the trailing slash, and Vercel redirects the slash-less variant.
+  trailingSlash: 'always',
   prefetch: true,
 
   experimental: {
